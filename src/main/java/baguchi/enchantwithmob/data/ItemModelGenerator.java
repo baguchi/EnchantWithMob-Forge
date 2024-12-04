@@ -25,7 +25,6 @@ public class ItemModelGenerator extends ItemModelProvider {
         this.singleTex(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE);
         this.singleTex(ModItems.ENCHANTERS_BOOK);
         this.singleTex(ModItems.MOB_ENCHANT_BOOK);
-        this.egg(ModItems.ENCHANTER_SPAWNEGG);
     }
 
     private ItemModelBuilder singleTex(Supplier<Item> item) {

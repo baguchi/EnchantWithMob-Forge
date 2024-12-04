@@ -17,7 +17,6 @@ public class CraftingGenerator extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
-
         ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, new ItemStack(ModItems.ENCHANATERS_BOTTLE.get(), 3))
                 .pattern(" G ")
                 .pattern("ALA")
