@@ -15,13 +15,16 @@ import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
+
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent.Server event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        event.addProvider(new ItemModelGenerator(packOutput, existingFileHelper));
         BlockTagGenerator blockTagsProvider = new BlockTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper());
+
         generator.addProvider(true, blockTagsProvider);
         generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
         generator.addProvider(true, new EntityTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper()));
