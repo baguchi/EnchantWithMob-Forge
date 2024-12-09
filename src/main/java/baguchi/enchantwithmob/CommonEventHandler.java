@@ -7,9 +7,12 @@ import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
+import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
@@ -224,11 +227,11 @@ public class CommonEventHandler {
                             }
                         }
 
-                        /*if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
+                        if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
                             if (world.getRandom().nextFloat() < 0.1F + difficultScaleOnPercent * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(ModRegistries), 1));
+                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).get(MobEnchants.WIND).get(), 1));
                             }
-                        }*/
+                        }
 
                     }
                 }
