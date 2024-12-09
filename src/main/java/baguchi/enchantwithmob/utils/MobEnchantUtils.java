@@ -332,7 +332,7 @@ public class MobEnchantUtils {
 
 
 		for (MobEnchantHandler enchantHandler : capability.getEnchantCap().getMobEnchants()) {
-			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && enchantHandler.getMobEnchant().value().exclusiveSet().contains(mobEnchant)) {
+			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (enchantHandler.getMobEnchant().value().exclusiveSet().contains(mobEnchant) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
 				return false;
 			}
 		}
