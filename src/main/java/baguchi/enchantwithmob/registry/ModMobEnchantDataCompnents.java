@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.registry;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.mobenchant.effects.MobEnchantEntityEffect;
+import baguchi.enchantwithmob.mobenchant.effects.entity.MobEnchantAttributeEffect;
 import baguchi.enchantwithmob.mobenchant.effects.location.MobEnchantLocationBasedEffect;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -10,7 +11,6 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.enchantment.ConditionalEffect;
 import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
 import net.minecraft.world.item.enchantment.effects.DamageImmunity;
-import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -56,8 +56,8 @@ public class ModMobEnchantDataCompnents {
             "armor_effectiveness",
             p_380887_ -> p_380887_.persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_DAMAGE).listOf())
     );
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<EnchantmentAttributeEffect>>> ATTRIBUTES = register(
-            "attributes", p_345468_ -> p_345468_.persistent(EnchantmentAttributeEffect.CODEC.codec().listOf())
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<MobEnchantAttributeEffect>>> ATTRIBUTES = register(
+            "attributes", p_345468_ -> p_345468_.persistent(MobEnchantAttributeEffect.CODEC.codec().listOf())
     );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<MobEnchantEntityEffect>>>> TICK = register(
             "tick", p_380878_ -> p_380878_.persistent(ConditionalEffect.codec(MobEnchantEntityEffect.CODEC, LootContextParamSets.ENCHANTED_ENTITY).listOf())

@@ -16,6 +16,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -41,10 +42,10 @@ public class MobEnchantUtils {
 	public static final String TAG_STORED_MOBENCHANTS = "StoredMobEnchants";
 
 	//when projectile Shooter has mob enchant, start Runnable
-	public static void executeIfPresent(Entity entity, Holder<MobEnchant> mobEnchantment, Runnable runnable) {
+	public static void executeIfPresent(Entity entity, ResourceKey<MobEnchant> mobEnchantment, Runnable runnable) {
 		if (entity != null) {
 			if (entity instanceof IEnchantCap cap) {
-				if (MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), mobEnchantment)) {
+				if (MobEnchantUtils.findMobEnchantFromHandler(entity.registryAccess(), cap.getEnchantCap().getMobEnchants(), mobEnchantment)) {
 					runnable.run();
 				}
 			}
@@ -311,10 +312,10 @@ public class MobEnchantUtils {
 		return list.contains(findMobEnchant);
 	}
 
-	public static boolean findMobEnchantFromHandler(List<MobEnchantHandler> list, Holder<MobEnchant> findMobEnchant) {
+	public static boolean findMobEnchantFromHandler(RegistryAccess registryAccess, List<MobEnchantHandler> list, ResourceKey<MobEnchant> findMobEnchant) {
 		for (MobEnchantHandler mobEnchant : list) {
 			if (mobEnchant != null) {
-				if (mobEnchant.getMobEnchant().equals(findMobEnchant)) {
+				if (registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(findMobEnchant).is(mobEnchant.getMobEnchant())) {
 					return true;
 				}
 			}

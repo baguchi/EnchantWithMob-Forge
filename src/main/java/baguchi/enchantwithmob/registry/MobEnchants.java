@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.registry;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.mobenchant.effects.entity.MobEnchantAttributeEffect;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.TagPredicate;
 import net.minecraft.core.HolderGetter;
@@ -17,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
-import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 
@@ -26,6 +26,7 @@ public class MobEnchants {
     public static final ResourceKey<MobEnchant> PROTECTION = key("protection");
     public static final ResourceKey<MobEnchant> HEALTH_BOOST = key("health_boost");
     public static final ResourceKey<MobEnchant> TOUGH = key("tough");
+    public static final ResourceKey<MobEnchant> MULTISHOT = key("multishot");
 
     private static ResourceKey<MobEnchant> key(String name) {
         return ResourceKey.create(ModRegistries.MOB_ENCHANT, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, name));
@@ -79,16 +80,17 @@ public class MobEnchants {
                                         10,
                                         10,
                                         MobEnchant.dynamicCost(5, 5),
-                                        MobEnchant.dynamicCost(12, 5),
+                                        MobEnchant.dynamicCost(22, 5),
                                         1
                                 )
                         )
                         .withEffect(
                                 ModMobEnchantDataCompnents.ATTRIBUTES.get(),
-                                new EnchantmentAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "health"),
+                                new MobEnchantAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "health"),
                                         Attributes.MAX_HEALTH,
                                         LevelBasedValue.perLevel(2F),
-                                        AttributeModifier.Operation.ADD_VALUE))
+                                        AttributeModifier.Operation.ADD_VALUE)
+                        )
         );
         register(
                 context,
@@ -98,22 +100,34 @@ public class MobEnchants {
                                         5,
                                         5,
                                         MobEnchant.dynamicCost(5, 5),
-                                        MobEnchant.dynamicCost(12, 5),
+                                        MobEnchant.dynamicCost(22, 5),
                                         2
                                 )
                         )
                         .withEffect(
                                 ModMobEnchantDataCompnents.ATTRIBUTES.get(),
-                                new EnchantmentAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "armor"),
+                                new MobEnchantAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "armor"),
                                         Attributes.ARMOR,
                                         LevelBasedValue.perLevel(2F),
                                         AttributeModifier.Operation.ADD_VALUE))
                         .withEffect(
                                 ModMobEnchantDataCompnents.ATTRIBUTES.get(),
-                                new EnchantmentAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "tough"),
+                                new MobEnchantAttributeEffect(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "tough"),
                                         Attributes.ARMOR_TOUGHNESS,
                                         LevelBasedValue.perLevel(0.5F),
-                                        AttributeModifier.Operation.ADD_VALUE))
+                                        AttributeModifier.Operation.ADD_VALUE)));
+        register(
+                context,
+                MULTISHOT,
+                MobEnchant.enchantment(
+                        MobEnchant.definition(
+                                2,
+                                1,
+                                MobEnchant.dynamicCost(10, 5),
+                                MobEnchant.constantCost(50),
+                                3
+                        )
+                )
         );
     }
 

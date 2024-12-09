@@ -174,9 +174,9 @@ public class MobEnchantCapability {
 	 * Remove Enchant Attribute effect
 	 */
 	protected void onRemoveEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
-		if (entity.level() instanceof ServerLevel serverLevel) {
-			enchant.value().runLocationChangedEffects(enchant.value(), serverLevel, enchantLevel, entity, entity);
-		}
+
+		enchant.value().stopLocationBasedEffects(enchant.value(), enchantLevel, entity, entity);
+
 		AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 		if (modifiableattributeinstance != null) {
 			if (modifiableattributeinstance.hasModifier(HEALTH_MODIFIER_NAME)) {

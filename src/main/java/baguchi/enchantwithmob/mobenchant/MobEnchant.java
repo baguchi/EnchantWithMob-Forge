@@ -1,6 +1,7 @@
 package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.mobenchant.effects.MobEnchantEntityEffect;
+import baguchi.enchantwithmob.mobenchant.effects.entity.MobEnchantAttributeEffect;
 import baguchi.enchantwithmob.mobenchant.effects.location.MobEnchantLocationBasedEffect;
 import baguchi.enchantwithmob.registry.ModMobEnchantDataCompnents;
 import baguchi.enchantwithmob.registry.ModRegistries;
@@ -33,7 +34,6 @@ import net.minecraft.world.item.enchantment.ConditionalEffect;
 import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
 import net.minecraft.world.item.enchantment.effects.DamageImmunity;
-import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -396,7 +396,7 @@ public record MobEnchant(Component description, MobEnchant.EnchantmentDefinition
             return this;
         }
 
-        public MobEnchant.Builder withEffect(DataComponentType<List<EnchantmentAttributeEffect>> componentType, EnchantmentAttributeEffect effect) {
+        public MobEnchant.Builder withEffect(DataComponentType<List<MobEnchantAttributeEffect>> componentType, MobEnchantAttributeEffect effect) {
             this.getEffectsList(componentType).add(effect);
             return this;
         }
