@@ -45,10 +45,16 @@ public class MobEnchantUtils {
 	public static void executeIfPresent(Entity entity, ResourceKey<MobEnchant> mobEnchantment, Runnable runnable) {
 		if (entity != null) {
 			if (entity instanceof IEnchantCap cap) {
-				if (MobEnchantUtils.findMobEnchantFromHandler(entity.registryAccess(), cap.getEnchantCap().getMobEnchants(), mobEnchantment)) {
+				if (MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), mobEnchantment)) {
 					runnable.run();
 				}
 			}
+		}
+	}
+
+	public static void executeIfPresent(IEnchantCap cap, ResourceKey<MobEnchant> mobEnchantment, Runnable runnable) {
+		if (MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), mobEnchantment)) {
+			runnable.run();
 		}
 	}
 
@@ -312,10 +318,10 @@ public class MobEnchantUtils {
 		return list.contains(findMobEnchant);
 	}
 
-	public static boolean findMobEnchantFromHandler(RegistryAccess registryAccess, List<MobEnchantHandler> list, ResourceKey<MobEnchant> findMobEnchant) {
+	public static boolean findMobEnchantFromHandler(List<MobEnchantHandler> list, ResourceKey<MobEnchant> findMobEnchant) {
 		for (MobEnchantHandler mobEnchant : list) {
 			if (mobEnchant != null) {
-				if (registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(findMobEnchant).is(mobEnchant.getMobEnchant())) {
+				if (mobEnchant.getMobEnchant().is(findMobEnchant)) {
 					return true;
 				}
 			}
@@ -341,10 +347,10 @@ public class MobEnchantUtils {
 		return mobEnchant != null;
 	}
 
-	public static int getMobEnchantLevelFromHandler(List<MobEnchantHandler> list, Holder<MobEnchant> findMobEnchant) {
+	public static int getMobEnchantLevelFromHandler(List<MobEnchantHandler> list, ResourceKey<MobEnchant> findMobEnchant) {
 		for (MobEnchantHandler mobEnchant : list) {
 			if (mobEnchant != null) {
-				if (mobEnchant.getMobEnchant().equals(findMobEnchant)) {
+				if (mobEnchant.getMobEnchant().is(findMobEnchant)) {
 					return mobEnchant.getEnchantLevel();
 				}
 			}

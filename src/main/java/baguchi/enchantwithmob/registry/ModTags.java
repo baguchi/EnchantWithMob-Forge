@@ -12,6 +12,7 @@ public class ModTags {
         public static final TagKey<MobEnchant> TOOLTIP_ORDER = create("tooltip_order");
         public static final TagKey<MobEnchant> RANDOM_LOOT = create("random_loot");
         public static final TagKey<MobEnchant> RANDOM_SPAWN = create("random_spawn");
+        public static final TagKey<MobEnchant> POISON = create("poison");
 
         private static TagKey<MobEnchant> create(String p_341202_) {
             return TagKey.create(ModRegistries.MOB_ENCHANT, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, p_341202_));

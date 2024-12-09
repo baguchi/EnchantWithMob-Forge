@@ -1,7 +1,7 @@
 {
   "values": [
-    "enchantwithmob:tough",
-    "enchantwithmob:health_boost",
-    "enchantwithmob:protection"
+    "#enchantwithmob:random_spawn",
+    "enchantwithmob:wind",
+    "enchantwithmob:soul_steal"
   ]
 }

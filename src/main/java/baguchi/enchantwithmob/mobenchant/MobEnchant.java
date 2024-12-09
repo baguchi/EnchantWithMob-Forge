@@ -2,7 +2,6 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.mobenchant.effects.MobEnchantEntityEffect;
 import baguchi.enchantwithmob.mobenchant.effects.entity.MobEnchantAttributeEffect;
-import baguchi.enchantwithmob.mobenchant.effects.location.MobEnchantLocationBasedEffect;
 import baguchi.enchantwithmob.registry.ModMobEnchantDataCompnents;
 import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModTags;
@@ -322,15 +321,15 @@ public record MobEnchant(Component description, MobEnchant.EnchantmentDefinition
     }
 
     public void runLocationChangedEffects(MobEnchant changeMobEnchant, ServerLevel level, int enchantmentLevel, @Nullable LivingEntity owner, LivingEntity entity) {
-        for (ConditionalEffect<MobEnchantLocationBasedEffect> conditionaleffect : changeMobEnchant.getEffects(ModMobEnchantDataCompnents.LOCATION_CHANGED.get())) {
-            conditionaleffect.effect().onChangedBlock(level, enchantmentLevel, owner, entity, entity.position(), true);
+        for (MobEnchantAttributeEffect conditionaleffect : changeMobEnchant.getEffects(ModMobEnchantDataCompnents.ATTRIBUTES.get())) {
+            conditionaleffect.onChangedBlock(level, enchantmentLevel, owner, entity, entity.position(), true);
         }
 
     }
 
     public void stopLocationBasedEffects(MobEnchant removedMobEnchant, int enchantmentLevel, @Nullable LivingEntity owner, LivingEntity entity) {
-        for (ConditionalEffect<MobEnchantLocationBasedEffect> conditionaleffect : removedMobEnchant.getEffects(ModMobEnchantDataCompnents.LOCATION_CHANGED.get())) {
-            conditionaleffect.effect().onDeactivated(owner, entity, entity.position(), enchantmentLevel);
+        for (MobEnchantAttributeEffect conditionaleffect : removedMobEnchant.getEffects(ModMobEnchantDataCompnents.ATTRIBUTES.get())) {
+            conditionaleffect.onDeactivated(owner, entity, entity.position(), enchantmentLevel);
         }
 
     }

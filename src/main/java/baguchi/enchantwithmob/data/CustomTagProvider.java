@@ -23,10 +23,13 @@ public class CustomTagProvider {
 
         @Override
         protected void addTags(HolderLookup.Provider p_256380_) {
-            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).add(MobEnchants.TOUGH).add(MobEnchants.HEALTH_BOOST).add(MobEnchants.PROTECTION);
 
-            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH).add(MobEnchants.HEALTH_BOOST).add(MobEnchants.PROTECTION);
+            this.tag(ModTags.MobEnchantTags.POISON).add(MobEnchants.POISON_CLOUD).add(MobEnchants.POISON);
+            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH).add(MobEnchants.HEALTH_BOOST).add(MobEnchants.PROTECTION)
+                    .add(MobEnchants.MULTISHOT).add(MobEnchants.THORN).add(MobEnchants.WIND).add(MobEnchants.SPEEDY)
+                    .add(MobEnchants.DEFLECT).add(MobEnchants.POISON_CLOUD).add(MobEnchants.POISON);
             this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN);
+            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND).add(MobEnchants.SOUL_STEAL);
         }
     }
 }

@@ -2,6 +2,13 @@
   "values": [
     "enchantwithmob:tough",
     "enchantwithmob:health_boost",
-    "enchantwithmob:protection"
+    "enchantwithmob:protection",
+    "enchantwithmob:multishot",
+    "enchantwithmob:thorn",
+    "enchantwithmob:wind",
+    "enchantwithmob:speedy",
+    "enchantwithmob:deflect",
+    "enchantwithmob:poison_cloud",
+    "enchantwithmob:poison"
   ]
 }
