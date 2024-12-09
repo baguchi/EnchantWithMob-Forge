@@ -1,0 +1,30 @@
+{
+  "anvil_cost": 3,
+  "description": {
+    "translate": "mob_enchant.enchantwithmob.speedy"
+  },
+  "effects": {
+    "enchantwithmob:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.05,
+          "per_level_above_first": 0.05
+        },
+        "attribute": "minecraft:generic.movement_speed",
+        "id": "enchantwithmob:speed",
+        "operation": "add_multiplied_total"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 30,
+    "per_level_above_first": 5
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 5
+  },
+  "weight": 5
+}

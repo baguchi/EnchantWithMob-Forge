@@ -10,33 +10,15 @@
         {
           "type": "minecraft:item",
           "weight": 1,
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 1,
           "functions": [
             {
               "function": "enchantwithmob:mob_enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "min": 10.0,
-                "max": 30.0
+                "max": 30.0,
+                "min": 10.0
               },
-              "treasure": true
-            }
-          ],
-          "name": "enchantwithmob:mob_enchant_book"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "enchantwithmob:mob_enchant_randomly_function",
-              "mob_enchant": [
-                "enchantwithmob:soul_steal"
-              ]
+              "options": "#enchantwithmob:random_loot"
             }
           ],
           "name": "enchantwithmob:mob_enchant_book"

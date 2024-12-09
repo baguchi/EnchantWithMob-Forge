@@ -1,13 +1,12 @@
 {
   "required": true,
-  "package": "baguchan.enchantwithmob.mixin",
+  "package": "baguchi.enchantwithmob.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8.5",
   "refmap": "enchantwithmob.refmap.json",
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
-    "ServerLevelMixin",
     "WoodlandMansionPieceMixin"
   ],
   "client": [

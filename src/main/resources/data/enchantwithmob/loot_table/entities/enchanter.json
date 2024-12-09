@@ -136,10 +136,10 @@
           "function": "enchantwithmob:mob_enchant_with_levels",
           "levels": {
             "type": "minecraft:uniform",
-            "min": 10.0,
-            "max": 30.0
+            "max": 30.0,
+            "min": 10.0
           },
-          "treasure": true
+          "options": "#enchantwithmob:random_loot"
         }
       ],
       "conditions": [
@@ -172,10 +172,10 @@
           "function": "enchantwithmob:mob_enchant_with_levels",
           "levels": {
             "type": "minecraft:uniform",
-            "min": 10.0,
-            "max": 30.0
+            "max": 30.0,
+            "min": 10.0
           },
-          "treasure": true
+          "options": "#enchantwithmob:random_loot"
         }
       ],
       "conditions": [

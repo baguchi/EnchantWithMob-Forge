@@ -9,22 +9,16 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
           "weight": 1,
           "functions": [
             {
               "function": "enchantwithmob:mob_enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "min": 20.0,
-                "max": 40.0
+                "max": 40.0,
+                "min": 10.0
               },
-              "treasure": true,
-              "curse": true
+              "options": "#enchantwithmob:random_loot"
             }
           ],
           "name": "enchantwithmob:mob_enchant_book"
@@ -37,11 +31,10 @@
               "function": "enchantwithmob:mob_enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "min": 10.0,
-                "max": 40.0
+                "max": 40.0,
+                "min": 10.0
               },
-              "treasure": true,
-              "curse": true
+              "options": "#enchantwithmob:random_loot"
             }
           ],
           "name": "enchantwithmob:enchanters_book"

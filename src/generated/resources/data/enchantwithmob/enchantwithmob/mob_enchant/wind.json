@@ -1,0 +1,30 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "mob_enchant.enchantwithmob.wind"
+  },
+  "effects": {
+    "enchantwithmob:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 4.0,
+          "per_level_above_first": 4.0
+        },
+        "attribute": "minecraft:generic.safe_fall_distance",
+        "id": "enchantwithmob:fall",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 5
+  },
+  "weight": 1
+}

@@ -1,0 +1,40 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "mob_enchant.enchantwithmob.tough"
+  },
+  "effects": {
+    "enchantwithmob:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 2.0,
+          "per_level_above_first": 2.0
+        },
+        "attribute": "minecraft:generic.armor",
+        "id": "enchantwithmob:armor",
+        "operation": "add_value"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.5,
+          "per_level_above_first": 0.5
+        },
+        "attribute": "minecraft:generic.armor_toughness",
+        "id": "enchantwithmob:tough",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 22,
+    "per_level_above_first": 5
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 5
+  },
+  "weight": 5
+}
