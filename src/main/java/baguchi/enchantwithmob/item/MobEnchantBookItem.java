@@ -3,12 +3,12 @@ package baguchi.enchantwithmob.item;
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
-import com.google.common.collect.Lists;
+import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,10 +16,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -82,23 +84,27 @@ public class MobEnchantBookItem extends Item {
 		return super.use(level, playerIn, handIn);
 	}
 
-	public static List<ItemStack> generateMobEnchantmentBookTypesOnlyMaxLevel() {
-		List<ItemStack> items = Lists.newArrayList();
-		for (MobEnchant mobEnchant : MobEnchants.getRegistry()) {
-			if (!mobEnchant.isDisabled()) {
-				ItemStack stack = new ItemStack(ModItems.MOB_ENCHANT_BOOK.get());
-                MobEnchantUtils.enchant(mobEnchant, stack, mobEnchant.getMaxLevel());
-				items.add(stack);
-			}
-		}
-		for (MobEnchant mobEnchant : MobEnchants.getRegistry()) {
-			if (!mobEnchant.isDisabled()) {
-				ItemStack stack2 = new ItemStack(ModItems.ENCHANTERS_BOOK.get());
-                MobEnchantUtils.enchant(mobEnchant, stack2, mobEnchant.getMaxLevel());
-				items.add(stack2);
-			}
-		}
-		return items;
+	public static ItemStack createMobEnchantBook(MobEnchantmentData p_363915_) {
+		ItemStack itemstack = new ItemStack(ModItems.MOB_ENCHANT_BOOK.asItem());
+		MobEnchantUtils.enchant(p_363915_.enchantment, itemstack, p_363915_.enchantmentLevel);
+		return itemstack;
+	}
+
+	public static ItemStack createEnchanterBook(MobEnchantmentData p_363915_) {
+		ItemStack itemstack = new ItemStack(ModItems.ENCHANTERS_BOOK.asItem());
+		MobEnchantUtils.enchant(p_363915_.enchantment, itemstack, p_363915_.enchantmentLevel);
+		return itemstack;
+	}
+
+	public static void generateEnchantmentBookTypesOnlyMaxLevel(
+			BuildCreativeModeTabContentsEvent output, HolderLookup<MobEnchant> enchantments, CreativeModeTab.TabVisibility tabVisibility
+	) {
+		enchantments.listElements()
+				.map(p_360016_ -> createMobEnchantBook(new MobEnchantmentData(p_360016_, p_360016_.value().getMaxLevel())))
+				.forEach(p_269989_ -> output.accept(p_269989_, tabVisibility));
+		enchantments.listElements()
+				.map(p_360016_ -> createEnchanterBook(new MobEnchantmentData(p_360016_, p_360016_.value().getMaxLevel())))
+				.forEach(p_269989_ -> output.accept(p_269989_, tabVisibility));
 	}
 
 	@Override

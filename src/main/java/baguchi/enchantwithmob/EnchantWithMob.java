@@ -3,6 +3,7 @@ package baguchi.enchantwithmob;
 import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
 import baguchi.enchantwithmob.message.*;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -18,6 +19,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,9 +43,13 @@ public class EnchantWithMob {
 		modEventBus.addListener(this::preSetup);
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::setupPackets);
-		MobEnchants.MOB_ENCHANT.register(modEventBus);
+		MobEnchantLocationBasedEffects.LOCATION_BASED_EFFECT.register(modEventBus);
+		MobEnchantEntityEffects.ENTITY_EFFECT.register(modEventBus);
+		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(ModRegistries.MOB_ENCHANT, MobEnchant.DIRECT_CODEC, MobEnchant.DIRECT_CODEC));
+
 		ModEntities.ENTITIES_REGISTRY.register(modEventBus);
         ModDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
+		ModMobEnchantDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
 		ModItems.ITEM_REGISTRY.register(modEventBus);
 		ModLootItemFunctions.LOOT_REGISTRY.register(modEventBus);
 		ModCapability.ATTACHMENT_TYPES.register(modEventBus);

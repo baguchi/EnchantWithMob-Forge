@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.entity;
 
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModSounds;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import baguchi.enchantwithmob.utils.MobEnchantmentData;
@@ -182,7 +183,7 @@ public class Enchanter extends SpellcasterIllager {
         boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.1F;
         if (flag) {
             if (this instanceof IEnchantCap cap) {
-                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(MobEnchants.PROTECTION.get(), 2));
+                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(MobEnchants.PROTECTION), 2));
             }
         }
     }
@@ -277,7 +278,7 @@ public class Enchanter extends SpellcasterIllager {
             if (entity != null && entity.isAlive()) {
                 if (entity instanceof IEnchantCap cap) {
                     float difficulty = entity.level().getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
-                    MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2), false, false);
+                    MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2));
                 }
             }
         }

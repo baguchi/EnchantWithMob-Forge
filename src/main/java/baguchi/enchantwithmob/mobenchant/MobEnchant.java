@@ -1,270 +1,473 @@
 package baguchi.enchantwithmob.mobenchant;
 
-import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.registry.MobEnchants;
-import baguchi.enchantwithmob.utils.MobEnchantConfigUtils;
-import com.google.common.collect.Maps;
+import baguchi.enchantwithmob.mobenchant.effects.MobEnchantEntityEffect;
+import baguchi.enchantwithmob.mobenchant.effects.location.MobEnchantLocationBasedEffect;
+import baguchi.enchantwithmob.registry.ModMobEnchantDataCompnents;
+import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.ModTags;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.*;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureElement;
-import net.minecraft.world.flag.FeatureFlag;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
+import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
+import net.minecraft.world.item.enchantment.effects.DamageImmunity;
+import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class MobEnchant implements FeatureElement {
-    private final Map<Holder<Attribute>, AttributeTemplate> attributeModifierMap = Maps.newHashMap();
-	protected final Rarity enchantType;
-	private final int level;
-	private int minlevel = 1;
-    private final int anvilCost;
-    private final FeatureFlagSet requiredFeatures;
-    @Nullable
-    private String descriptionId;
+public record MobEnchant(Component description, MobEnchant.EnchantmentDefinition definition,
+                         HolderSet<MobEnchant> exclusiveSet, DataComponentMap effects) {
+    public static final int MAX_LEVEL = 255;
+    public static final Codec<MobEnchant> DIRECT_CODEC = RecordCodecBuilder.create(
+            p_344998_ -> p_344998_.group(
+                            ComponentSerialization.CODEC.fieldOf("description").forGetter(MobEnchant::description),
+                            MobEnchant.EnchantmentDefinition.CODEC.forGetter(MobEnchant::definition),
+                            RegistryCodecs.homogeneousList(ModRegistries.MOB_ENCHANT)
+                                    .optionalFieldOf("exclusive_set", HolderSet.direct())
+                                    .forGetter(MobEnchant::exclusiveSet),
+                            ModMobEnchantDataCompnents.CODEC.optionalFieldOf("effects", DataComponentMap.EMPTY).forGetter(MobEnchant::effects)
+                    )
+                    .apply(p_344998_, MobEnchant::new)
+    );
+    public static final Codec<Holder<MobEnchant>> CODEC = RegistryFixedCodec.create(ModRegistries.MOB_ENCHANT);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<MobEnchant>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.MOB_ENCHANT);
 
-    public MobEnchant(Properties properties) {
-
-        this.enchantType = properties.enchantType;
-		this.level = properties.level;
-        this.anvilCost = properties.getAnvilCost();
-        this.requiredFeatures = properties.requiredFeatures;
-	}
-
-
-    public Rarity getRarity() {
-        return enchantType;
+    public static MobEnchant.Cost constantCost(int cost) {
+        return new MobEnchant.Cost(cost, 0);
     }
 
-    public MobEnchant setMinLevel(int level) {
-        this.minlevel = level;
-
-        return this;
+    public static MobEnchant.Cost dynamicCost(int base, int perLevel) {
+        return new MobEnchant.Cost(base, perLevel);
     }
 
 
-    /**
-     * Returns the minimum level that the enchantment can have.
-     */
+    public static MobEnchant.EnchantmentDefinition definition(
+            int weight,
+            int maxLevel,
+            MobEnchant.Cost minCost,
+            MobEnchant.Cost maxCost,
+            int anvilCost
+    ) {
+        return new MobEnchant.EnchantmentDefinition(weight, maxLevel, minCost, maxCost, anvilCost);
+    }
+
+    public int getWeight() {
+        return this.definition.weight();
+    }
+
+    public int getAnvilCost() {
+        return this.definition.anvilCost();
+    }
+
     public int getMinLevel() {
-        return minlevel;
+        return 1;
+    }
+
+    public int getMaxLevel() {
+        return this.definition.maxLevel();
     }
 
     /**
-     * Returns the maximum level that the enchantment can have.
+     * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
-    public int getMaxLevel() {
-        return level;
+    public int getMinCost(int level) {
+        return this.definition.minCost().calculate(level);
     }
 
-    public int getMinEnchantability(int enchantmentLevel) {
-        return 1 + enchantmentLevel * 10;
-    }
-
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 5;
-    }
-
-
-	public void tick(LivingEntity entity, int level) {
-
-	}
-
-	public final boolean isCompatibleWith(MobEnchant enchantmentIn) {
-		return this.canApplyTogether(enchantmentIn) && enchantmentIn.canApplyTogether(this);
-	}
-
-	public boolean isTresureEnchant() {
-		return false;
-	}
-
-    public boolean isDiscoverable() {
-        return true;
-	}
-
-
-    public boolean isCompatibleMob(LivingEntity livingEntity) {
-        return !(livingEntity instanceof Player) || MobEnchantConfigUtils.isPlayerEnchantable(this);
-	}
-
-	/**
-	 * Determines if the enchantment passed can be applyied together with this enchantment.
-	 */
-	protected boolean canApplyTogether(MobEnchant ench) {
-		return this != ench;
-    }
-
-    public MobEnchant addAttributesModifier(Holder<Attribute> p_316656_, ResourceLocation p_350368_, double p_19475_, AttributeModifier.Operation p_19476_) {
-        this.attributeModifierMap.put(p_316656_, new AttributeTemplate(p_350368_, p_19475_, p_19476_));
-        return this;
-    }
-
-    public void createModifiers(int p_316803_, BiConsumer<Holder<Attribute>, AttributeModifier> p_316902_) {
-        this.attributeModifierMap.forEach((p_349971_, p_349972_) -> p_316902_.accept(p_349971_, p_349972_.create(p_316803_)));
-    }
-
-    public Map<Holder<Attribute>, AttributeTemplate> getAttributeModifierMap() {
-        return this.attributeModifierMap;
-    }
-
-	public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBaseIn, AttributeMap attributeMapIn) {
-        for (Map.Entry<Holder<Attribute>, AttributeTemplate> entry : this.attributeModifierMap.entrySet()) {
-			AttributeInstance modifiableattributeinstance = attributeMapIn.getInstance(entry.getKey());
-			if (modifiableattributeinstance != null) {
-                modifiableattributeinstance.removeModifier(entry.getValue().id());
-			}
-		}
-
-	}
-
-	public void applyAttributesModifiersToEntity(LivingEntity entityLivingBaseIn, AttributeMap attributeMapIn, int amplifier) {
-        for (Map.Entry<Holder<Attribute>, AttributeTemplate> entry : this.attributeModifierMap.entrySet()) {
-			AttributeInstance modifiableattributeinstance = attributeMapIn.getInstance(entry.getKey());
-			if (modifiableattributeinstance != null) {
-                AttributeTemplate attributemodifier = entry.getValue();
-                modifiableattributeinstance.removeModifier(attributemodifier.id());
-                modifiableattributeinstance.addPermanentModifier(((AttributeTemplate) entry.getValue()).create(amplifier));
-			}
-		}
-    }
-
-    public double getAttributeModifierAmount(int amplifier, AttributeTemplate modifier) {
-        return modifier.amount * (double) (amplifier);
-    }
-
-    public boolean isDisabled() {
-        return EnchantConfig.COMMON.DISABLE_ENCHANTS.get().contains(MobEnchants.getRegistry().getKey(this).toString());
-    }
-
-    public boolean isCursedEnchant() {
-        return false;
+    public int getMaxCost(int level) {
+        return this.definition.maxCost().calculate(level);
     }
 
     @Override
-    public FeatureFlagSet requiredFeatures() {
-        return this.requiredFeatures;
+    public String toString() {
+        return "Enchantment " + this.description.getString();
     }
 
-    @Override
-    public boolean isEnabled(FeatureFlagSet p_249172_) {
-        return !this.isDisabled() && this.requiredFeatures().isSubsetOf(p_249172_);
+    public static boolean areCompatible(Holder<MobEnchant> first, Holder<MobEnchant> second) {
+        return !first.equals(second) && !first.value().exclusiveSet.contains(second) && !second.value().exclusiveSet.contains(first);
     }
 
-    protected String getOrCreateDescriptionId() {
-        if (this.descriptionId == null) {
-            this.descriptionId = Util.makeDescriptionId("mob_enchant", MobEnchants.getRegistry().getKey(this));
-        }
-
-        return this.descriptionId;
-    }
-
-    public String getDescriptionId() {
-        return this.getOrCreateDescriptionId();
-    }
-
-    public Component getFullname(int p_44701_) {
-        MutableComponent mutablecomponent = Component.translatable(this.getDescriptionId());
-        if (this.isCursedEnchant()) {
-            mutablecomponent.withStyle(ChatFormatting.RED);
+    public static Component getFullname(Holder<MobEnchant> enchantment, int level) {
+        MutableComponent mutablecomponent = enchantment.value().description.copy();
+        if (enchantment.is(ModTags.MobEnchantTags.CURSE)) {
+            ComponentUtils.mergeStyles(mutablecomponent, Style.EMPTY.withColor(ChatFormatting.RED));
         } else {
-            mutablecomponent.withStyle(ChatFormatting.AQUA);
+            ComponentUtils.mergeStyles(mutablecomponent, Style.EMPTY.withColor(ChatFormatting.GRAY));
         }
 
-        if (p_44701_ != 1 || this.getMaxLevel() != 1) {
-            mutablecomponent.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + p_44701_));
+        if (level != 1 || enchantment.value().getMaxLevel() != 1) {
+            mutablecomponent.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + level));
         }
 
         return mutablecomponent;
     }
 
-    public int getAnvilCost() {
-        return this.anvilCost;
+    public <T> List<T> getEffects(DataComponentType<List<T>> component) {
+        return this.effects.getOrDefault(component, List.of());
     }
 
+    public boolean isImmuneToDamage(ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource) {
+        LootContext lootcontext = damageContext(level, enchantmentLevel, entity, damageSource);
 
-    public static class Properties {
-        private final Rarity enchantType;
-        private final int level;
-        private final int anvilCost;
-
-        FeatureFlagSet requiredFeatures = FeatureFlags.VANILLA_SET;
-
-        public Properties(Rarity enchantType, int level, int anvilCost) {
-            this.enchantType = enchantType;
-            this.level = level;
-            this.anvilCost = anvilCost;
+        for (ConditionalEffect<DamageImmunity> conditionaleffect : this.getEffects(ModMobEnchantDataCompnents.DAMAGE_IMMUNITY.get())) {
+            if (conditionaleffect.matches(lootcontext)) {
+                return true;
+            }
         }
 
-        public int getAnvilCost() {
-            return anvilCost;
+        return false;
+    }
+
+    public void modifyDamageProtection(
+            ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource, MutableFloat damageProtection
+    ) {
+        LootContext lootcontext = damageContext(level, enchantmentLevel, entity, damageSource);
+
+        for (ConditionalEffect<EnchantmentValueEffect> conditionaleffect : this.getEffects(ModMobEnchantDataCompnents.DAMAGE_PROTECTION.get())) {
+            if (conditionaleffect.matches(lootcontext)) {
+                damageProtection.setValue(conditionaleffect.effect().process(enchantmentLevel, entity.getRandom(), damageProtection.floatValue()));
+            }
+        }
+    }
+
+    public void modifyDamage(ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource, MutableFloat damage) {
+        this.modifyDamageFilteredValue(ModMobEnchantDataCompnents.DAMAGE.get(), level, enchantmentLevel, entity, damageSource, damage);
+    }
+
+    public void modifyKnockback(ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource, MutableFloat knockback) {
+        this.modifyDamageFilteredValue(ModMobEnchantDataCompnents.KNOCKBACK.value(), level, enchantmentLevel, entity, damageSource, knockback);
+    }
+
+    public void modifyArmorEffectivness(
+            ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource, MutableFloat armorEffectiveness
+    ) {
+        this.modifyDamageFilteredValue(ModMobEnchantDataCompnents.ARMOR_EFFECTIVENESS.get(), level, enchantmentLevel, entity, damageSource, armorEffectiveness);
+    }
+
+    public void doPostAttack(
+            ServerLevel level, int enchantmentLevel, @Nullable LivingEntity owner, EnchantmentTarget target, Entity entity, DamageSource damageSource
+    ) {
+        for (TargetedConditionalEffect<MobEnchantEntityEffect> targetedconditionaleffect : this.getEffects(ModMobEnchantDataCompnents.POST_ATTACK.get())) {
+            if (target == targetedconditionaleffect.enchanted()) {
+                doPostAttack(targetedconditionaleffect, level, enchantmentLevel, owner, entity, damageSource);
+            }
+        }
+    }
+
+    public static void doPostAttack(
+            TargetedConditionalEffect<MobEnchantEntityEffect> effect,
+            ServerLevel level,
+            int enchantmentLevel,
+            @Nullable LivingEntity owner,
+            Entity p_entity,
+            DamageSource damageSource
+    ) {
+        if (effect.matches(damageContext(level, enchantmentLevel, p_entity, damageSource))) {
+            Entity entity = switch (effect.affected()) {
+                case ATTACKER -> damageSource.getEntity();
+                case DAMAGING_ENTITY -> damageSource.getDirectEntity();
+                case VICTIM -> p_entity;
+            };
+            if (entity != null) {
+                effect.effect().apply(level, enchantmentLevel, owner, entity, entity.position());
+            }
+        }
+    }
+
+    public void modifyUnfilteredValue(DataComponentType<EnchantmentValueEffect> componentType, RandomSource random, int enchantmentLevel, MutableFloat value) {
+        EnchantmentValueEffect enchantmentvalueeffect = this.effects.get(componentType);
+        if (enchantmentvalueeffect != null) {
+            value.setValue(enchantmentvalueeffect.process(enchantmentLevel, random, value.floatValue()));
+        }
+    }
+
+    public void tick(ServerLevel level, int enchantmentLevel, @Nullable LivingEntity owner, Entity entity) {
+        applyEffects(
+                this.getEffects(ModMobEnchantDataCompnents.TICK.get()),
+                entityContext(level, enchantmentLevel, entity, entity.position()),
+                p_345592_ -> p_345592_.apply(level, enchantmentLevel, owner, entity, entity.position())
+        );
+    }
+
+    public void modifyItemFilteredCount(
+            DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> componentType,
+            ServerLevel level,
+            int enchantmentLevel,
+            MutableFloat value
+    ) {
+        applyEffects(
+                this.getEffects(componentType),
+                ownerContext(level, enchantmentLevel),
+                p_379237_ -> value.setValue(p_379237_.process(enchantmentLevel, level.getRandom(), value.getValue()))
+        );
+    }
+
+    public void modifyEntityFilteredValue(
+            DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> componentType,
+            ServerLevel level,
+            int enchantmentLevel,
+            ItemStack tool,
+            Entity entity,
+            MutableFloat value
+    ) {
+        applyEffects(
+                this.getEffects(componentType),
+                entityContext(level, enchantmentLevel, entity, entity.position()),
+                p_347312_ -> value.setValue(p_347312_.process(enchantmentLevel, entity.getRandom(), value.floatValue()))
+        );
+    }
+
+    public void modifyDamageFilteredValue(
+            DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> componentType,
+            ServerLevel level,
+            int enchantmentLevel,
+            Entity entity,
+            DamageSource damageSource,
+            MutableFloat value
+    ) {
+        applyEffects(
+                this.getEffects(componentType),
+                damageContext(level, enchantmentLevel, entity, damageSource),
+                p_347304_ -> value.setValue(p_347304_.process(enchantmentLevel, entity.getRandom(), value.floatValue()))
+        );
+    }
+
+    public static LootContext damageContext(ServerLevel level, int enchantmentLevel, Entity entity, DamageSource damageSource) {
+        LootParams lootparams = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ENCHANTMENT_LEVEL, enchantmentLevel)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, damageSource)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity())
+                .create(LootContextParamSets.ENCHANTED_DAMAGE);
+        return new LootContext.Builder(lootparams).create(Optional.empty());
+    }
+
+    public static LootContext ownerContext(ServerLevel level, int enchantmentLevel) {
+        LootParams lootparams = new LootParams.Builder(level)
+                .withParameter(LootContextParams.ENCHANTMENT_LEVEL, enchantmentLevel)
+                .create(LootContextParamSets.ENCHANTED_ITEM);
+        return new LootContext.Builder(lootparams).create(Optional.empty());
+    }
+
+    public static LootContext locationContext(ServerLevel level, int enchantmentLevel, Entity entity, boolean enchantmentActive) {
+        LootParams lootparams = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ENCHANTMENT_LEVEL, enchantmentLevel)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.ENCHANTMENT_ACTIVE, enchantmentActive)
+                .create(LootContextParamSets.ENCHANTED_LOCATION);
+        return new LootContext.Builder(lootparams).create(Optional.empty());
+    }
+
+    public static LootContext entityContext(ServerLevel level, int enchantmentLevel, Entity entity, Vec3 origin) {
+        LootParams lootparams = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ENCHANTMENT_LEVEL, enchantmentLevel)
+                .withParameter(LootContextParams.ORIGIN, origin)
+                .create(LootContextParamSets.ENCHANTED_ENTITY);
+        return new LootContext.Builder(lootparams).create(Optional.empty());
+    }
+
+    public static LootContext blockHitContext(ServerLevel level, int enchantmentLevel, Entity entity, Vec3 origin, BlockState state) {
+        LootParams lootparams = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ENCHANTMENT_LEVEL, enchantmentLevel)
+                .withParameter(LootContextParams.ORIGIN, origin)
+                .withParameter(LootContextParams.BLOCK_STATE, state)
+                .create(LootContextParamSets.HIT_BLOCK);
+        return new LootContext.Builder(lootparams).create(Optional.empty());
+    }
+
+    public static <T> void applyEffects(List<ConditionalEffect<T>> effects, LootContext context, Consumer<T> applier) {
+        for (ConditionalEffect<T> conditionaleffect : effects) {
+            if (conditionaleffect.matches(context)) {
+                applier.accept(conditionaleffect.effect());
+            }
+        }
+    }
+
+    public void runLocationChangedEffects(MobEnchant changeMobEnchant, ServerLevel level, int enchantmentLevel, @Nullable LivingEntity owner, LivingEntity entity) {
+        for (ConditionalEffect<MobEnchantLocationBasedEffect> conditionaleffect : changeMobEnchant.getEffects(ModMobEnchantDataCompnents.LOCATION_CHANGED.get())) {
+            conditionaleffect.effect().onChangedBlock(level, enchantmentLevel, owner, entity, entity.position(), true);
         }
 
-        public FeatureFlagSet getRequiredFeatures() {
-            return requiredFeatures;
+    }
+
+    public void stopLocationBasedEffects(MobEnchant removedMobEnchant, int enchantmentLevel, @Nullable LivingEntity owner, LivingEntity entity) {
+        for (ConditionalEffect<MobEnchantLocationBasedEffect> conditionaleffect : removedMobEnchant.getEffects(ModMobEnchantDataCompnents.LOCATION_CHANGED.get())) {
+            conditionaleffect.effect().onDeactivated(owner, entity, entity.position(), enchantmentLevel);
         }
 
-        public Properties requiredFeatures(FeatureFlag... p_250948_) {
-            this.requiredFeatures = FeatureFlags.REGISTRY.subset(p_250948_);
+    }
+
+    public static MobEnchant.Builder enchantment(MobEnchant.EnchantmentDefinition definition) {
+        return new MobEnchant.Builder(definition);
+    }
+
+//    TODO: Reimplement. Not sure if we want to patch EnchantmentDefinition or hack this in as an EnchantmentEffectComponent.
+//    /**
+//     * Is this enchantment allowed to be enchanted on books via Enchantment Table
+//     * @return false to disable the vanilla feature
+//     */
+//    public boolean isAllowedOnBooks() {
+//        return true;
+//    }
+
+    public static class Builder {
+        private final MobEnchant.EnchantmentDefinition definition;
+        private HolderSet<MobEnchant> exclusiveSet = HolderSet.direct();
+        private final Map<DataComponentType<?>, List<?>> effectLists = new HashMap<>();
+        private final DataComponentMap.Builder effectMapBuilder = DataComponentMap.builder();
+
+        /**
+         * Neo: Allow customizing or changing the {@link Component} created by the enchantment builder.
+         */
+        protected java.util.function.UnaryOperator<MutableComponent> nameFactory = java.util.function.UnaryOperator.identity();
+
+        public Builder(MobEnchant.EnchantmentDefinition definition) {
+            this.definition = definition;
+        }
+
+        public MobEnchant.Builder exclusiveWith(HolderSet<MobEnchant> exclusiveSet) {
+            this.exclusiveSet = exclusiveSet;
             return this;
         }
-    }
 
-    public static enum Rarity {
-        COMMON(10),
-        UNCOMMON(5),
-        RARE(2),
-        VERY_RARE(1);
+        public <E> MobEnchant.Builder withEffect(DataComponentType<List<ConditionalEffect<E>>> componentType, E effect, LootItemCondition.Builder requirements) {
+            this.getEffectsList(componentType).add(new ConditionalEffect<>(effect, Optional.of(requirements.build())));
+            return this;
+        }
 
-        private final int weight;
+        public <E> MobEnchant.Builder withEffect(DataComponentType<List<ConditionalEffect<E>>> componentType, E effect) {
+            this.getEffectsList(componentType).add(new ConditionalEffect<>(effect, Optional.empty()));
+            return this;
+        }
 
-        private Rarity(int rarityWeight) {
-            this.weight = rarityWeight;
+        public <E> MobEnchant.Builder withEffect(
+                DataComponentType<List<TargetedConditionalEffect<E>>> componentType,
+                EnchantmentTarget enchanted,
+                EnchantmentTarget affected,
+                E effect,
+                LootItemCondition.Builder requirements
+        ) {
+            this.getEffectsList(componentType).add(new TargetedConditionalEffect<>(enchanted, affected, effect, Optional.of(requirements.build())));
+            return this;
+        }
+
+        public <E> MobEnchant.Builder withEffect(
+                DataComponentType<List<TargetedConditionalEffect<E>>> componentType, EnchantmentTarget enchanted, EnchantmentTarget affected, E effect
+        ) {
+            this.getEffectsList(componentType).add(new TargetedConditionalEffect<>(enchanted, affected, effect, Optional.empty()));
+            return this;
+        }
+
+        public MobEnchant.Builder withEffect(DataComponentType<List<EnchantmentAttributeEffect>> componentType, EnchantmentAttributeEffect effect) {
+            this.getEffectsList(componentType).add(effect);
+            return this;
+        }
+
+        public <E> MobEnchant.Builder withSpecialEffect(DataComponentType<E> component, E value) {
+            this.effectMapBuilder.set(component, value);
+            return this;
+        }
+
+        public MobEnchant.Builder withEffect(DataComponentType<Unit> componentType) {
+            this.effectMapBuilder.set(componentType, Unit.INSTANCE);
+            return this;
         }
 
         /**
-         * Retrieves the weight of Rarity.
+         * Allows specifying an operator that can customize the default {@link Component} created by {@link #build(ResourceLocation)}.
+         *
+         * @return this
          */
-        public int getWeight() {
-            return this.weight;
+        public MobEnchant.Builder withCustomName(java.util.function.UnaryOperator<MutableComponent> nameFactory) {
+            this.nameFactory = nameFactory;
+            return this;
         }
 
+        private <E> List<E> getEffectsList(DataComponentType<List<E>> componentType) {
+            return (List<E>) this.effectLists.computeIfAbsent(componentType, p_346247_ -> {
+                ArrayList<E> arraylist = new ArrayList<>();
+                this.effectMapBuilder.set(componentType, arraylist);
+                return arraylist;
+            });
+        }
 
+        public MobEnchant build(ResourceLocation location) {
+            return new MobEnchant(
+                    // Neo: permit custom name components instead of a single hardcoded translatable component.
+                    this.nameFactory.apply(Component.translatable(Util.makeDescriptionId("mob_enchant", location))),
+                    this.definition, this.exclusiveSet, this.effectMapBuilder.build()
+            );
+        }
     }
 
-    static record AttributeTemplate(ResourceLocation id, double amount, AttributeModifier.Operation operation) {
-        AttributeTemplate(ResourceLocation id, double amount, AttributeModifier.Operation operation) {
-            this.id = id;
-            this.amount = amount;
-            this.operation = operation;
-        }
+    public static record Cost(int base, int perLevelAboveFirst) {
+        public static final Codec<MobEnchant.Cost> CODEC = RecordCodecBuilder.create(
+                p_345979_ -> p_345979_.group(
+                                Codec.INT.fieldOf("base").forGetter(MobEnchant.Cost::base),
+                                Codec.INT.fieldOf("per_level_above_first").forGetter(MobEnchant.Cost::perLevelAboveFirst)
+                        )
+                        .apply(p_345979_, MobEnchant.Cost::new)
+        );
 
-        public AttributeModifier create(int p_316614_) {
-            return new AttributeModifier(this.id, this.amount * (double) (p_316614_ + 1), this.operation);
+        public int calculate(int level) {
+            return this.base + this.perLevelAboveFirst * (level - 1);
         }
+    }
 
-        public ResourceLocation id() {
-            return this.id;
-        }
-
-        public double amount() {
-            return this.amount;
-        }
-
-        public AttributeModifier.Operation operation() {
-            return this.operation;
-        }
+    public static record EnchantmentDefinition(
+            int weight,
+            int maxLevel,
+            MobEnchant.Cost minCost,
+            MobEnchant.Cost maxCost,
+            int anvilCost
+    ) {
+        public static final MapCodec<MobEnchant.EnchantmentDefinition> CODEC = RecordCodecBuilder.mapCodec(
+                p_344890_ -> p_344890_.group(
+                                ExtraCodecs.intRange(1, 1024).fieldOf("weight").forGetter(MobEnchant.EnchantmentDefinition::weight),
+                                ExtraCodecs.intRange(1, 255).fieldOf("max_level").forGetter(MobEnchant.EnchantmentDefinition::maxLevel),
+                                MobEnchant.Cost.CODEC.fieldOf("min_cost").forGetter(MobEnchant.EnchantmentDefinition::minCost),
+                                MobEnchant.Cost.CODEC.fieldOf("max_cost").forGetter(MobEnchant.EnchantmentDefinition::maxCost),
+                                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("anvil_cost").forGetter(MobEnchant.EnchantmentDefinition::anvilCost)
+                        )
+                        .apply(p_344890_, MobEnchant.EnchantmentDefinition::new)
+        );
     }
 }

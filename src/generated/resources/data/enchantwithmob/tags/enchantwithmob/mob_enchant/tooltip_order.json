@@ -1,18 +1,7 @@
 {
   "values": [
-    "enchantwithmob:protection",
     "enchantwithmob:tough",
-    "enchantwithmob:speedy",
-    "enchantwithmob:strong",
-    "enchantwithmob:thorn",
     "enchantwithmob:health_boost",
-    "enchantwithmob:poison",
-    "enchantwithmob:poison_cloud",
-    "enchantwithmob:multishot",
-    "enchantwithmob:wind",
-    "enchantwithmob:soul_steal",
-    "enchantwithmob:deflect",
-    "enchantwithmob:small",
-    "enchantwithmob:huge"
+    "enchantwithmob:protection"
   ]
 }
