@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.registry;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.item.MobEnchantBookItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -15,7 +16,7 @@ public class ModCreativeTabs {
             event.accept(ModItems.ENCHANTER_SPAWNEGG.get());
         }
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
-            event.acceptAll(MobEnchantBookItem.generateMobEnchantmentBookTypesOnlyMaxLevel());
+            MobEnchantBookItem.generateEnchantmentBookTypesOnlyMaxLevel(event, event.getParameters().holders().lookupOrThrow(ModRegistries.MOB_ENCHANT), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.ENCHANATERS_BOTTLE.get());

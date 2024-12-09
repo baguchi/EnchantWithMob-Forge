@@ -27,13 +27,13 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
-        nbt.put("MobEnchantData", this.getEnchantCap().serializeNBT());
+        nbt.put("MobEnchantData", this.getEnchantCap().serializeNBT(this.registryAccess()));
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
-        mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"));
+        mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"), this.registryAccess());
         this.setEnchantCap(mobEnchantCapability);
     }
 

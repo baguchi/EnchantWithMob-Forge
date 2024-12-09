@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.client.render.layer;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ModModelLayers;
 import baguchi.enchantwithmob.client.model.EnchantedWindModel;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -32,7 +33,7 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
     @Override
     public void render(PoseStack p_117349_, MultiBufferSource p_117350_, int p_117351_, T p_361554_, float p_117353_, float p_117354_) {
         if (p_361554_ instanceof IEnchantCap cap) {
-            if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.hasWindEnchant(cap.getEnchantCap().getMobEnchants())) {
+            MobEnchantUtils.executeIfPresent(cap, MobEnchants.WIND, () -> {
 
                 float f = (float) p_361554_.ageInTicks;
                 VertexConsumer vertexconsumer = p_117350_.getBuffer(RenderType.breezeWind(getWindTextureLocation(), this.xOffset(f) % 1.0F, 0.0F));
@@ -49,7 +50,8 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
                 this.model.windMiddle().skipDraw = true;
                 this.model.windBottom().skipDraw = true;
                 this.model.root().render(p_117349_, vertexconsumer, p_117351_, OverlayTexture.NO_OVERLAY);
-            }
+
+            });
         }
     }
 

@@ -1,10 +1,13 @@
 package baguchi.enchantwithmob.loot;
 
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.ModLootItemFunctions;
+import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
@@ -17,30 +20,31 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class MobEnchantWithLevelsFunction extends LootItemConditionalFunction {
-	public static final MapCodec<MobEnchantWithLevelsFunction> CODEC = RecordCodecBuilder.mapCodec((p_298285_) -> {
-        return commonFields(p_298285_).and(p_298285_.group(NumberProviders.CODEC.fieldOf("levels").forGetter((p_298991_) -> {
-            return p_298991_.levels;
-        }), Codec.BOOL.fieldOf("treasure").orElse(false).forGetter((p_298792_) -> {
-            return p_298792_.treasure;
-        }), Codec.BOOL.fieldOf("curse").orElse(false).forGetter((p_298792_) -> {
-            return p_298792_.treasure;
-        }))).apply(p_298285_, MobEnchantWithLevelsFunction::new);
-    });
-	final NumberProvider levels;
-	final boolean treasure;
-	final boolean curse;
+	public static final MapCodec<MobEnchantWithLevelsFunction> CODEC = RecordCodecBuilder.mapCodec(
+			p_344692_ -> commonFields(p_344692_)
+					.and(
+							p_344692_.group(
+									NumberProviders.CODEC.fieldOf("levels").forGetter(p_298844_ -> p_298844_.levels),
+									RegistryCodecs.homogeneousList(ModRegistries.MOB_ENCHANT).optionalFieldOf("options").forGetter(p_344691_ -> p_344691_.options)
+							)
+					)
+					.apply(p_344692_, MobEnchantWithLevelsFunction::new)
+	);
+	private final NumberProvider levels;
+	private final Optional<HolderSet<MobEnchant>> options;
 
-    MobEnchantWithLevelsFunction(List<LootItemCondition> p_165193_, NumberProvider p_165194_, boolean p_165195_, boolean curse) {
-		super(p_165193_);
-		this.levels = p_165194_;
-		this.treasure = p_165195_;
-		this.curse = curse;
+	MobEnchantWithLevelsFunction(List<LootItemCondition> condtions, NumberProvider levels, Optional<HolderSet<MobEnchant>> options) {
+		super(condtions);
+		this.levels = levels;
+		this.options = options;
 	}
 
-	public LootItemFunctionType getType() {
+	@Override
+	public LootItemFunctionType<MobEnchantWithLevelsFunction> getType() {
 		return ModLootItemFunctions.MOB_ENCHANT_WITH_LEVELS.get();
 	}
 
@@ -49,40 +53,42 @@ public class MobEnchantWithLevelsFunction extends LootItemConditionalFunction {
 		return this.levels.getReferencedContextParams();
 	}
 
-	public ItemStack run(ItemStack p_80483_, LootContext p_80484_) {
-		RandomSource random = p_80484_.getRandom();
-		return MobEnchantUtils.addRandomEnchantmentToItemStack(random, p_80483_, this.levels.getInt(p_80484_), this.treasure, this.curse);
+	/**
+	 * Called to perform the actual action of this function, after conditions have been checked.
+	 */
+	@Override
+	public ItemStack run(ItemStack stack, LootContext context) {
+		RandomSource randomsource = context.getRandom();
+		RegistryAccess registryaccess = context.getLevel().registryAccess();
+		return MobEnchantUtils.addRandomEnchantmentToItemStack(randomsource, registryaccess, stack, this.levels.getInt(context), this.options.map(HolderSet::stream)
+				.orElseGet(() -> context.getLevel().registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).listElements().map(p_344499_ -> (Holder<MobEnchant>) p_344499_)));
 	}
 
-	public static Builder enchantWithLevels(NumberProvider p_165197_) {
-		return new Builder(p_165197_);
+	public static MobEnchantWithLevelsFunction.Builder enchantWithLevels(HolderLookup.Provider registries, NumberProvider levels) {
+		return new MobEnchantWithLevelsFunction.Builder(levels)
+				.fromOptions(registries.lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(ModTags.MobEnchantTags.RANDOM_LOOT));
 	}
 
-	public static class Builder extends LootItemConditionalFunction.Builder<Builder> {
+	public static class Builder extends LootItemConditionalFunction.Builder<MobEnchantWithLevelsFunction.Builder> {
 		private final NumberProvider levels;
-		private boolean treasure;
-		private boolean curse;
+		private Optional<HolderSet<MobEnchant>> options = Optional.empty();
 
-		public Builder(NumberProvider p_165200_) {
-			this.levels = p_165200_;
+		public Builder(NumberProvider levels) {
+			this.levels = levels;
 		}
 
-		protected Builder getThis() {
+		protected MobEnchantWithLevelsFunction.Builder getThis() {
 			return this;
 		}
 
-		public Builder allowTreasure() {
-			this.treasure = true;
+		public MobEnchantWithLevelsFunction.Builder fromOptions(HolderSet<MobEnchant> options) {
+			this.options = Optional.of(options);
 			return this;
 		}
 
-		public Builder allowCurse() {
-			this.curse = true;
-			return this;
-		}
-
+		@Override
 		public LootItemFunction build() {
-			return new MobEnchantWithLevelsFunction(this.getConditions(), this.levels, this.treasure, this.curse);
+			return new MobEnchantWithLevelsFunction(this.getConditions(), this.levels, this.options);
 		}
 	}
 }

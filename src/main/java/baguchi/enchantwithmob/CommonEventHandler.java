@@ -7,12 +7,9 @@ import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
-import baguchi.enchantwithmob.utils.MobEnchantCombatRules;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
-import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
@@ -20,14 +17,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
@@ -89,17 +86,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                         }
                         livingEntity.setHealth(livingEntity.getMaxHealth());
@@ -113,17 +110,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                 break;
                         }
 
@@ -152,17 +149,17 @@ public class CommonEventHandler {
                         case EASY:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                         case NORMAL:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                         case HARD:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                     }
 
@@ -176,17 +173,17 @@ public class CommonEventHandler {
                         case EASY:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                         case NORMAL:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                         case HARD:
                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
 
-                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
+                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                             break;
                     }
 
@@ -208,17 +205,17 @@ public class CommonEventHandler {
                                         case EASY:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 20);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                             break;
                                         case NORMAL:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 40);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                             break;
                                         case HARD:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale * scale, 1, 50);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
                                             break;
                                     }
 
@@ -227,11 +224,11 @@ public class CommonEventHandler {
                             }
                         }
 
-                        if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
+                        /*if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
                             if (world.getRandom().nextFloat() < 0.1F + difficultScaleOnPercent * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(MobEnchants.WIND.get(), 1));
+                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(ModRegistries), 1));
                             }
-                        }
+                        }*/
 
                     }
                 }
@@ -261,7 +258,9 @@ public class CommonEventHandler {
 
         if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
             for (MobEnchantHandler enchantHandler : cap.getEnchantCap().getMobEnchants()) {
-                enchantHandler.getMobEnchant().tick(livingEntity, enchantHandler.getEnchantLevel());
+                if (livingEntity.level() instanceof ServerLevel serverLevel) {
+                    enchantHandler.getMobEnchant().value().tick(serverLevel, enchantHandler.getEnchantLevel(), livingEntity, livingEntity);
+                }
             }
             if (cap.getEnchantCap().hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
@@ -284,33 +283,18 @@ public class CommonEventHandler {
         if (event.getSource().getEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
 
-            if (attacker instanceof IEnchantCap cap) {
+            if (attacker instanceof IEnchantCap cap && attacker.level() instanceof ServerLevel serverLevel) {
 
-                if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON.get())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON.get());
+                if (cap.getEnchantCap().hasEnchant()) {
 
                     if (event.getNewDamage() > 0) {
-                        if (attacker.getRandom().nextFloat() < i * 0.125F) {
-                            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), attacker);
+                        for (MobEnchantHandler handler : cap.getEnchantCap().getMobEnchants()) {
+                            handler.getMobEnchant().value().doPostAttack(serverLevel, handler.getEnchantLevel(), attacker, EnchantmentTarget.ATTACKER, livingEntity, event.getSource());
                         }
                     }
                 }
 
 
-            }
-        }
-
-        if (livingEntity instanceof IEnchantCap cap) {
-            if (event.getSource().getDirectEntity() != null) {
-                if (cap.getEnchantCap().hasEnchant()) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.THORN.get());
-
-                    if (event.getSource().getDirectEntity() instanceof LivingEntity && !event.getSource().is(DamageTypeTags.IS_PROJECTILE) && !event.getSource().is(DamageTypes.THORNS) && livingEntity.getRandom().nextFloat() < i * 0.1F) {
-                        LivingEntity attacker = (LivingEntity) event.getSource().getDirectEntity();
-
-                        attacker.hurt(livingEntity.damageSources().thorns(livingEntity), MobEnchantCombatRules.getThornDamage(event.getNewDamage(), cap.getEnchantCap()));
-                    }
-                }
             }
         }
     }
@@ -321,17 +305,16 @@ public class CommonEventHandler {
 
         if (event.getSource().getEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
+            if (attacker.level() instanceof ServerLevel serverLevel) {
+                if (attacker instanceof IEnchantCap cap) {
+                    if (cap.getEnchantCap().hasEnchant()) {
+                        //make snowman stronger
+                        if (!livingEntity.isDamageSourceBlocked(event.getSource()) && event.getAmount() == 0) {
+                            event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
 
-            if (attacker instanceof IEnchantCap cap) {
-                if (cap.getEnchantCap().hasEnchant()) {
-                    int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.STRONG.get());
-                    int mobEnchantSize = cap.getEnchantCap().getMobEnchants().size();
-
-                    //make snowman stronger
-                    if (!livingEntity.isDamageSourceBlocked(event.getSource()) && event.getAmount() == 0) {
-                        event.setAmount(MobEnchantCombatRules.getDamageAddition(1, mobEnchantLevel, mobEnchantSize));
-                    } else if (event.getAmount() > 0) {
-                        event.setAmount(MobEnchantCombatRules.getDamageAddition(event.getAmount(), mobEnchantLevel, mobEnchantSize));
+                        } else if (event.getAmount() > 0) {
+                            event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
+                        }
                     }
                 }
             }
@@ -339,10 +322,10 @@ public class CommonEventHandler {
 
         if (livingEntity instanceof IEnchantCap cap) {
             if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && cap.getEnchantCap().hasEnchant()) {
-                int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.PROTECTION.get());
-                int mobEnchantSize = cap.getEnchantCap().getMobEnchants().size();
-
-                event.setAmount(MobEnchantCombatRules.getDamageReduction(event.getAmount(), mobEnchantLevel, mobEnchantSize));
+                if (livingEntity.level() instanceof ServerLevel serverLevel) {
+                    float f = CombatRules.getDamageAfterMagicAbsorb(event.getAmount(), MobEnchantUtils.getDamageProtection(serverLevel, livingEntity, event.getSource()));
+                    event.setAmount(f);
+                }
             }
         }
     }
@@ -477,7 +460,7 @@ public class CommonEventHandler {
 
                     for (Object2IntMap.Entry<Holder<MobEnchant>> entry : itemenchantments.entrySet()) {
                         Holder<MobEnchant> holder = entry.getKey();
-                        MobEnchant enchantment = holder.value();
+                        Holder<MobEnchant> enchantment = holder;
                         int i2 = itemenchantments$mutable.getLevel(enchantment);
                         int j2 = entry.getIntValue();
                         j2 = i2 == j2 ? j2 + 1 : Math.max(j2, i2);
@@ -487,7 +470,7 @@ public class CommonEventHandler {
                         }
 
                         for (Holder<MobEnchant> holder1 : itemenchantments$mutable.keySet()) {
-                            if (!holder1.equals(holder) && !enchantment.isCompatibleWith(holder1.value())) {
+                            if (!holder1.equals(holder) && enchantment.value().exclusiveSet().contains(holder1)) {
                                 flag1 = false;
                                 i++;
                             }
@@ -497,12 +480,12 @@ public class CommonEventHandler {
                             flag3 = true;
                         } else {
                             flag2 = true;
-                            if (j2 > enchantment.getMaxLevel()) {
-                                j2 = enchantment.getMaxLevel();
+                            if (j2 > enchantment.value().getMaxLevel()) {
+                                j2 = enchantment.value().getMaxLevel();
                             }
 
                             itemenchantments$mutable.set(enchantment, j2);
-                            int l3 = enchantment.getAnvilCost();
+                            int l3 = enchantment.value().getAnvilCost();
                             if (flag) {
                                 l3 = Math.max(1, l3 / 2);
                             }
@@ -568,12 +551,15 @@ public class CommonEventHandler {
         }
     }
 
+
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
             if (player instanceof IEnchantCap cap) {
+
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(serverPlayer, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
                     PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
 
                 }
@@ -587,13 +573,27 @@ public class CommonEventHandler {
         if (playerEntity instanceof IEnchantCap cap) {
             if (!playerEntity.level().isClientSide()) {
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(playerEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(playerEntity, new MobEnchantedMessage(playerEntity, cap.getEnchantCap().getMobEnchants().get(i)));
                 }
             }
         }
-        ;
     }
 
+    @SubscribeEvent
+    public static void onEntitySpawn(EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
+            if (!entity.level().isClientSide()) {
+                for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(livingEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantedMessage(entity, cap.getEnchantCap().getMobEnchants().get(i)));
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onClone(PlayerEvent.Clone event) {

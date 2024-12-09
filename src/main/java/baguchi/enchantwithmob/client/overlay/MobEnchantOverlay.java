@@ -9,6 +9,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 
 public class MobEnchantOverlay implements LayeredDraw.Layer {
@@ -23,12 +24,10 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
                         guiGraphics.drawString(mc.font, mc.player.getDisplayName(), (int) EnchantConfig.CLIENT.hudXPostion.getAsInt(), (int) EnchantConfig.CLIENT.hudYPostion.getAsInt(), 0xe0e0e0);
 
                         for (MobEnchantHandler mobEnchantHandler : cap.getEnchantCap().getMobEnchants()) {
-                            MobEnchant mobEnchant = mobEnchantHandler.getMobEnchant();
-                            int mobEnchantLevel = mobEnchantHandler.getEnchantLevel();
 
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                            Component s = mobEnchant.getFullname(mobEnchantLevel);
+                            Component s = MobEnchant.getFullname(mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
 
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
@@ -45,12 +44,12 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
                         guiGraphics.drawString(mc.font, mc.crosshairPickEntity.getDisplayName(), (int) 20, (int) 50, 0xe0e0e0);
 
                         for (MobEnchantHandler mobEnchantHandler : cap.getEnchantCap().getMobEnchants()) {
-                            MobEnchant mobEnchant = mobEnchantHandler.getMobEnchant();
+                            Holder<MobEnchant> mobEnchant = mobEnchantHandler.getMobEnchant();
                             int mobEnchantLevel = mobEnchantHandler.getEnchantLevel();
 
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                            Component s = mobEnchant.getFullname(mobEnchantLevel);
+                            Component s = MobEnchant.getFullname(mobEnchant, mobEnchantLevel);
 
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 60;

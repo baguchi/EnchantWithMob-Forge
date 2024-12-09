@@ -6,9 +6,12 @@ import baguchi.enchantwithmob.message.*;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.collect.Lists;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,6 +20,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class MobEnchantCapability {
@@ -39,7 +43,7 @@ public class MobEnchantCapability {
 	 * @param mobEnchant   Mob Enchant attached to mob
 	 * @param enchantLevel Mob Enchant Level
 	 */
-	public void addMobEnchant(LivingEntity entity, MobEnchant mobEnchant, int enchantLevel) {
+	public void addMobEnchant(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel) {
 
 		this.mobEnchants.add(new MobEnchantHandler(mobEnchant, enchantLevel));
 		if (!entity.level().isClientSide) {
@@ -52,7 +56,7 @@ public class MobEnchantCapability {
 		entity.refreshDimensions();
 	}
 
-	public void addMobEnchant(LivingEntity entity, MobEnchant mobEnchant, int enchantLevel, boolean ancient) {
+	public void addMobEnchant(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel, boolean ancient) {
 		this.addMobEnchant(entity, mobEnchant, enchantLevel);
 		this.setEnchantType(entity, ancient ? EnchantType.ANCIENT : EnchantType.NORMAL);
 	}
@@ -73,7 +77,7 @@ public class MobEnchantCapability {
 	 * @param enchantLevel Mob Enchant Level
 	 * @param owner        OwnerEntity with a mob Enchant attached to that mob
 	 */
-	public void addMobEnchantFromOwner(LivingEntity entity, MobEnchant mobEnchant, int enchantLevel, LivingEntity owner) {
+	public void addMobEnchantFromOwner(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel, LivingEntity owner) {
 
 		this.mobEnchants.add(new MobEnchantHandler(mobEnchant, enchantLevel));
 		if (!entity.level().isClientSide) {
@@ -109,7 +113,7 @@ public class MobEnchantCapability {
 	public void removeAllMobEnchant(LivingEntity entity) {
 
 		for (int i = 0; i < mobEnchants.size(); ++i) {
-			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant());
+			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant(), mobEnchants.get(i).getEnchantLevel());
 		}
 		//Sync Client Enchant
 		if (!entity.level().isClientSide) {
@@ -126,7 +130,7 @@ public class MobEnchantCapability {
 	 */
 	public void removeMobEnchantFromOwner(LivingEntity entity) {
 		for (int i = 0; i < mobEnchants.size(); ++i) {
-			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant());
+			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant(), mobEnchants.get(i).getEnchantLevel());
 		}
 		//Sync Client Enchant
 		if (!entity.level().isClientSide) {
@@ -143,9 +147,10 @@ public class MobEnchantCapability {
 	/*
 	 * Add Enchant Attribute
 	 */
-	public void onNewEnchantEffect(LivingEntity entity, MobEnchant enchant, int enchantLevel) {
-		enchant.applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
-
+	public void onNewEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
+		if (entity.level() instanceof ServerLevel serverLevel) {
+			enchant.value().runLocationChangedEffects(enchant.value(), serverLevel, enchantLevel, entity, entity);
+		}
 		if (EnchantConfig.COMMON.dungeonsLikeHealth.get()) {
 			AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 			if (modifiableattributeinstance != null && !modifiableattributeinstance.hasModifier(HEALTH_MODIFIER_NAME)) {
@@ -159,15 +164,18 @@ public class MobEnchantCapability {
 	/*
 	 * Changed Enchant Attribute When Enchant is Changed
 	 */
-	public void onChangedEnchantEffect(LivingEntity entity, MobEnchant enchant, int enchantLevel) {
-		enchant.applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
+	public void onChangedEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
+		if (entity.level() instanceof ServerLevel serverLevel) {
+			enchant.value().runLocationChangedEffects(enchant.value(), serverLevel, enchantLevel, entity, entity);
+		}
 	}
 
 	/*
 	 * Remove Enchant Attribute effect
 	 */
-	protected void onRemoveEnchantEffect(LivingEntity entity, MobEnchant enchant) {
-		enchant.removeAttributesModifiersFromEntity(entity, entity.getAttributes());
+	protected void onRemoveEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
+
+		enchant.value().stopLocationBasedEffects(enchant.value(), enchantLevel, entity, entity);
 
 		AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 		if (modifiableattributeinstance != null) {
@@ -208,13 +216,13 @@ public class MobEnchantCapability {
 		return enchantType == EnchantType.ANCIENT;
 	}
 
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(RegistryAccess registryAccess) {
 		CompoundTag nbt = new CompoundTag();
 
 		ListTag listnbt = new ListTag();
 
 		for (int i = 0; i < mobEnchants.size(); i++) {
-			listnbt.add(mobEnchants.get(i).writeNBT());
+			listnbt.add(mobEnchants.get(i).writeNBT(registryAccess));
 		}
 
 		nbt.put("StoredMobEnchants", listnbt);
@@ -225,7 +233,7 @@ public class MobEnchantCapability {
 		return nbt;
 	}
 
-	public void deserializeNBT(CompoundTag nbt) {
+	public void deserializeNBT(CompoundTag nbt, RegistryAccess registryAccess) {
 		ListTag list = MobEnchantUtils.getEnchantmentListForNBT(nbt);
 
 		mobEnchants.clear();
@@ -233,10 +241,10 @@ public class MobEnchantCapability {
 		for (int i = 0; i < list.size(); ++i) {
 			CompoundTag compoundnbt = list.getCompound(i);
 
-			MobEnchant mobEnchant = MobEnchantUtils.getEnchantFromNBT(compoundnbt);
+			Optional<Holder.Reference<MobEnchant>> mobEnchant = MobEnchantUtils.getEnchantFromNBT(compoundnbt, registryAccess);
 			//check mob enchant is not null
-			if (mobEnchant != null) {
-				mobEnchants.add(new MobEnchantHandler(mobEnchant, MobEnchantUtils.getEnchantLevelFromNBT(compoundnbt)));
+			if (mobEnchant.isPresent()) {
+				mobEnchants.add(new MobEnchantHandler(mobEnchant.get(), MobEnchantUtils.getEnchantLevelFromNBT(compoundnbt)));
 			}
 		}
 
