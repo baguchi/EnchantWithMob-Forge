@@ -551,12 +551,15 @@ public class CommonEventHandler {
         }
     }
 
+
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
             if (player instanceof IEnchantCap cap) {
+
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(serverPlayer, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
                     PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
 
                 }
@@ -570,13 +573,27 @@ public class CommonEventHandler {
         if (playerEntity instanceof IEnchantCap cap) {
             if (!playerEntity.level().isClientSide()) {
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(playerEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(playerEntity, new MobEnchantedMessage(playerEntity, cap.getEnchantCap().getMobEnchants().get(i)));
                 }
             }
         }
-        ;
     }
 
+    @SubscribeEvent
+    public static void onEntitySpawn(EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
+            if (!entity.level().isClientSide()) {
+                for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                    cap.getEnchantCap().onNewEnchantEffect(livingEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantedMessage(entity, cap.getEnchantCap().getMobEnchants().get(i)));
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onClone(PlayerEvent.Clone event) {
