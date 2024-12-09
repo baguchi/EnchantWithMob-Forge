@@ -11,10 +11,6 @@
     "enchantwithmob:multishot",
     "enchantwithmob:wind",
     "enchantwithmob:soul_steal",
-    "enchantwithmob:deflect",
-    "enchantwithmob:small",
-    "enchantwithmob:huge",
-    "enchantwithmob:fast",
-    "enchantwithmob:slow"
+    "enchantwithmob:deflect"
   ]
 }
