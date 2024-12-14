@@ -5,7 +5,7 @@
       "name": "ENCHANTWITHMOB_ENCHANTER",
       "constructor": "(Ljava/util/function/Supplier;[I)V",
       "parameters": {
-        "class": "baguchan/enchantwithmob/registry/RaiderEnumParams",
+        "class": "baguchi/enchantwithmob/registry/RaiderEnumParams",
         "field": "ENCHANTER"
       }
     }
