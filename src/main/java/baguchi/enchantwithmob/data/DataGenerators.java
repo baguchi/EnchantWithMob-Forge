@@ -9,7 +9,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,19 +20,17 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         DatapackBuiltinEntriesProvider datapackProvider = new RegistryDataGenerator(packOutput, event.getLookupProvider());
 
         CompletableFuture<HolderLookup.Provider> lookupProvider = datapackProvider.getRegistryProvider();
         generator.addProvider(true, datapackProvider);
 
-        event.addProvider(new ItemModelGenerator(packOutput, existingFileHelper));
-        BlockTagGenerator blockTagsProvider = new BlockTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper());
+        BlockTagGenerator blockTagsProvider = new BlockTagGenerator(packOutput, lookupProvider);
 
         generator.addProvider(true, blockTagsProvider);
-        generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
-        generator.addProvider(true, new EntityTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper()));
-        generator.addProvider(true, new CustomTagProvider.MobEnchantTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider, blockTagsProvider.contentsGetter()));
+        generator.addProvider(true, new EntityTagGenerator(packOutput, lookupProvider));
+        generator.addProvider(true, new CustomTagProvider.MobEnchantTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new Runner(packOutput, lookupProvider));
     }
 

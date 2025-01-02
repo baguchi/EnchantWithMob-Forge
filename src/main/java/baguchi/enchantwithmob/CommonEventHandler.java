@@ -417,7 +417,7 @@ public class CommonEventHandler {
             boolean flag = false;
             if (!stack2.isEmpty()) {
                 flag = stack2.has(DataComponents.STORED_ENCHANTMENTS);
-                if (stack1.isDamageableItem() && stack1.isRepairable()) {
+                if (stack1.isDamageableItem()) {
                     int l2 = Math.min(stack1.getDamageValue(), stack1.getMaxDamage() / 4);
                     if (l2 <= 0) {
                         event.setOutput(ItemStack.EMPTY);
