@@ -174,7 +174,7 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 		this.everything.translateAndRotate(poseStack);
 		this.body.translateAndRotate(poseStack);
 		modelPart.translateAndRotate(poseStack);
-		poseStack.translate(0, -(6F / 16F), 0);
+		poseStack.translate(0, -(5F / 16F), 0);
 		poseStack.scale(1.05F, 1.05F, 1.05F);
 	}
 
@@ -190,7 +190,6 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 	public void translateToLeg(ModelPart modelPart, PoseStack poseStack) {
 		this.everything.translateAndRotate(poseStack);
 		modelPart.translateAndRotate(poseStack);
-		poseStack.translate(0, -(12F / 16F), 0);
 		poseStack.scale(1.05F, 1.05F, 1.05F);
 	}
 
