@@ -9,7 +9,6 @@ import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
@@ -244,7 +243,7 @@ public class Enchanter extends SpellcasterIllager {
                     //set enchant limit
                     if (enchanted_list.size() < 5) {
                         LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
-                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getType().is(EntityTypeTags.ILLAGER_FRIENDS) && target.getTeam() == null)) {
+                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getTeam() == null)) {
                             Enchanter.this.setEnchantTarget(target);
                             Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
                             return true;

@@ -21,12 +21,12 @@ public abstract class EntityMixin implements IEnchantedTime {
     private float differentTime = 1.0F;
 
     @Override
-    public float getDifferentTime() {
+    public float enchantWithMob_Forge$getDifferentTime() {
         return differentTime;
     }
 
     @Override
-    public void setDifferentTime(float time) {
+    public void enchantWithMob_Forge$setDifferentTime(float time) {
         differentTime = time;
     }
 

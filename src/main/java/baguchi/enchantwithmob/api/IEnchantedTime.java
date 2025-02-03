@@ -2,7 +2,7 @@ package baguchi.enchantwithmob.api;
 
 public interface IEnchantedTime {
 
-    float getDifferentTime();
+    float enchantWithMob_Forge$getDifferentTime();
 
-    void setDifferentTime(float time);
+    void enchantWithMob_Forge$setDifferentTime(float time);
 }

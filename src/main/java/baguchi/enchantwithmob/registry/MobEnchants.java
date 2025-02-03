@@ -43,6 +43,8 @@ public class MobEnchants {
     public static final ResourceKey<MobEnchant> POISON = key("poison");
     public static final ResourceKey<MobEnchant> POISON_CLOUD = key("poison_cloud");
     public static final ResourceKey<MobEnchant> SOUL_STEAL = key("soul_steal");
+    public static final ResourceKey<MobEnchant> FAST = key("fast");
+    public static final ResourceKey<MobEnchant> SLOW = key("slow");
 
     private static ResourceKey<MobEnchant> key(String name) {
         return ResourceKey.create(ModRegistries.MOB_ENCHANT, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, name));
@@ -266,6 +268,33 @@ public class MobEnchants {
                                 3
                         )
                 )
+        );
+
+        register(
+                context,
+                FAST,
+                MobEnchant.enchantment(
+                        MobEnchant.definition(
+                                1,
+                                2,
+                                MobEnchant.dynamicCost(15, 5),
+                                MobEnchant.dynamicCost(60, 5),
+                                4
+                        )
+                ).exclusiveWith(holdergetter1.getOrThrow(ModTags.MobEnchantTags.TIME))
+        );
+        register(
+                context,
+                SLOW,
+                MobEnchant.enchantment(
+                        MobEnchant.definition(
+                                1,
+                                2,
+                                MobEnchant.dynamicCost(15, 5),
+                                MobEnchant.dynamicCost(60, 5),
+                                4
+                        )
+                ).exclusiveWith(holdergetter1.getOrThrow(ModTags.MobEnchantTags.TIME))
         );
     }
 

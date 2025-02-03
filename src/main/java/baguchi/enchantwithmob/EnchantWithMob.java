@@ -52,7 +52,7 @@ public class EnchantWithMob {
 		ModMobEnchantDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
 		ModItems.ITEM_REGISTRY.register(modEventBus);
 		ModLootItemFunctions.LOOT_REGISTRY.register(modEventBus);
-		ModCapability.ATTACHMENT_TYPES.register(modEventBus);
+		ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 		ModSounds.SOUND_EVENTS.register(modEventBus);
 		ModParticles.PARTICLE_TYPES.register(modEventBus);
 

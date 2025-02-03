@@ -1,0 +1,17 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "mob_enchant.enchantwithmob.slow"
+  },
+  "exclusive_set": "#enchantwithmob:time",
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 5
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 5
+  },
+  "weight": 1
+}

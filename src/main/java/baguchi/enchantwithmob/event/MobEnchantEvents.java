@@ -5,7 +5,7 @@ import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.message.SoulParticleMessage;
 import baguchi.enchantwithmob.registry.MobEnchants;
-import baguchi.enchantwithmob.registry.ModCapability;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -169,7 +169,7 @@ public class MobEnchantEvents {
             ((AbstractArrow) newProjectile).pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
         }
 
-        newProjectile.getData(ModCapability.ITEM_MOB_ENCHANT.get()).setHasEnchant(true);
+        newProjectile.getData(ModAttachments.ITEM_MOB_ENCHANT.get()).setHasEnchant(true);
 
         level.addFreshEntity(newProjectile);
     }
