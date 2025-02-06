@@ -405,20 +405,22 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
         ItemStack stack3 = event.getLeft();
+        ItemStack itemstack = event.getLeft();
         int i = 0;
         long j = 0L;
         int k = 0;
         if (!stack3.isEmpty() && MobEnchantUtils.canStoreEnchantments(stack3)) {
-            ItemStack stack1 = stack3.copy();
-            ItemStack stack2 = event.getRight();
-            ItemMobEnchantments.Mutable itemenchantments$mutable = new ItemMobEnchantments.Mutable(MobEnchantUtils.getEnchantmentsForCrafting(stack1));
-            j += (long) stack3.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue()
-                    + (long) stack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue();
+            ItemStack itemstack1 = event.getLeft().copy();
+            ItemStack itemstack2 = event.getRight();
+            ItemMobEnchantments.Mutable itemenchantments$mutable = new ItemMobEnchantments.Mutable(MobEnchantUtils.getEnchantmentsForCrafting(itemstack1));
+            j += (long) itemstack.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue()
+                    + (long) itemstack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue();
+            event.setCost(0);
             boolean flag = false;
-            if (!stack2.isEmpty()) {
-                flag = stack2.has(DataComponents.STORED_ENCHANTMENTS);
-                if (stack1.isDamageableItem()) {
-                    int l2 = Math.min(stack1.getDamageValue(), stack1.getMaxDamage() / 4);
+            if (!itemstack2.isEmpty()) {
+                flag = itemstack2.has(ModDataCompnents.MOB_ENCHANTMENTS.get());
+                if (itemstack1.isDamageableItem() && itemstack.isValidRepairItem(itemstack2)) {
+                    int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
                     if (l2 <= 0) {
                         event.setOutput(ItemStack.EMPTY);
                         event.setCost(0);
@@ -426,54 +428,55 @@ public class CommonEventHandler {
                     }
 
                     int j3;
-                    for (j3 = 0; l2 > 0 && j3 < stack2.getCount(); j3++) {
-                        int k3 = stack1.getDamageValue() - l2;
-                        stack1.setDamageValue(k3);
+                    for (j3 = 0; l2 > 0 && j3 < itemstack2.getCount(); j3++) {
+                        int k3 = itemstack1.getDamageValue() - l2;
+                        itemstack1.setDamageValue(k3);
                         i++;
-                        l2 = Math.min(stack1.getDamageValue(), stack1.getMaxDamage() / 4);
+                        l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
                     }
-
-                    event.setMaterialCost(j3);
+                    event.setCost(j3);
                 } else {
-                    if (!flag && (!stack1.is(stack2.getItem()) || !stack1.isDamageableItem())) {
+                    if (!flag && (!itemstack1.is(itemstack2.getItem()) || !itemstack1.isDamageableItem())) {
                         event.setOutput(ItemStack.EMPTY);
                         event.setCost(0);
                         return;
                     }
 
-                    if (stack1.isDamageableItem() && !flag) {
-                        int l = stack3.getMaxDamage() - stack3.getDamageValue();
-                        int i1 = stack2.getMaxDamage() - stack2.getDamageValue();
-                        int j1 = i1 + stack1.getMaxDamage() * 12 / 100;
+                    if (itemstack1.isDamageableItem() && !flag) {
+                        int l = itemstack.getMaxDamage() - itemstack.getDamageValue();
+                        int i1 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
+                        int j1 = i1 + itemstack1.getMaxDamage() * 12 / 100;
                         int k1 = l + j1;
-                        int l1 = stack1.getMaxDamage() - k1;
+                        int l1 = itemstack1.getMaxDamage() - k1;
                         if (l1 < 0) {
                             l1 = 0;
                         }
 
-                        if (l1 < stack1.getDamageValue()) {
-                            stack1.setDamageValue(l1);
+                        if (l1 < itemstack1.getDamageValue()) {
+                            itemstack1.setDamageValue(l1);
                             i += 2;
                         }
                     }
 
-                    ItemMobEnchantments itemenchantments = MobEnchantUtils.getEnchantmentsForCrafting(stack2);
+                    ItemMobEnchantments itemenchantments = MobEnchantUtils.getEnchantmentsForCrafting(itemstack2);
                     boolean flag2 = false;
                     boolean flag3 = false;
 
                     for (Object2IntMap.Entry<Holder<MobEnchant>> entry : itemenchantments.entrySet()) {
                         Holder<MobEnchant> holder = entry.getKey();
-                        Holder<MobEnchant> enchantment = holder;
-                        int i2 = itemenchantments$mutable.getLevel(enchantment);
+                        int i2 = itemenchantments$mutable.getLevel(holder);
                         int j2 = entry.getIntValue();
                         j2 = i2 == j2 ? j2 + 1 : Math.max(j2, i2);
+                        MobEnchant enchantment = holder.value();
+                        // Neo: Respect IItemExtension#supportsMobEnchant - we also delegate the logic for Enchanted Books to this method.
+                        // Though we still allow creative players to combine any item with any enchantment in the anvil here.
                         boolean flag1 = true;
-                        if (event.getPlayer().getAbilities().instabuild || stack3.is(ModItems.MOB_ENCHANT_BOOK.get()) || stack3.is(ModItems.ENCHANTERS_BOOK.get())) {
+                        if (event.getPlayer().getAbilities().instabuild) {
                             flag1 = true;
                         }
 
                         for (Holder<MobEnchant> holder1 : itemenchantments$mutable.keySet()) {
-                            if (!holder1.equals(holder) && enchantment.value().exclusiveSet().contains(holder1)) {
+                            if (!holder1.equals(holder) && !MobEnchant.areCompatible(holder, holder1)) {
                                 flag1 = false;
                                 i++;
                             }
@@ -483,18 +486,18 @@ public class CommonEventHandler {
                             flag3 = true;
                         } else {
                             flag2 = true;
-                            if (j2 > enchantment.value().getMaxLevel()) {
-                                j2 = enchantment.value().getMaxLevel();
+                            if (j2 > enchantment.getMaxLevel()) {
+                                j2 = enchantment.getMaxLevel();
                             }
 
-                            itemenchantments$mutable.set(enchantment, j2);
-                            int l3 = enchantment.value().getAnvilCost();
+                            itemenchantments$mutable.set(holder, j2);
+                            int l3 = enchantment.getAnvilCost();
                             if (flag) {
                                 l3 = Math.max(1, l3 / 2);
                             }
 
                             i += l3 * j2;
-                            if (stack3.getCount() > 1) {
+                            if (itemstack.getCount() > 1) {
                                 i = 40;
                             }
                         }
@@ -507,36 +510,38 @@ public class CommonEventHandler {
                     }
                 }
             }
-
-            int k2 = (int) Mth.clamp(j + (long) i, 0L, 2147483647L);
+            int k2 = i <= 0 ? 0 : (int) Mth.clamp(j + (long) i, 0L, 2147483647L);
             event.setCost(k2);
             if (i <= 0) {
-                stack1 = ItemStack.EMPTY;
+                itemstack1 = ItemStack.EMPTY;
             }
 
-            if (k == i && k > 0 && event.getCost() >= 40) {
-                event.setCost(39);
+            if (k == i && k > 0) {
+                if (event.getCost() >= 40) {
+                    event.setCost(39);
+                }
+
             }
 
             if (event.getCost() >= 40 && !event.getPlayer().getAbilities().instabuild) {
-                stack1 = ItemStack.EMPTY;
+                itemstack1 = ItemStack.EMPTY;
             }
 
-            if (!stack1.isEmpty()) {
-                int i3 = stack1.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0));
-                if (i3 < stack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0))) {
-                    i3 = stack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0));
+            if (!itemstack1.isEmpty()) {
+                int i3 = itemstack1.getOrDefault(DataComponents.REPAIR_COST, 0);
+                if (i3 < itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0)) {
+                    i3 = itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0);
                 }
 
                 if (k != i || k == 0) {
                     i3 = calculateIncreasedRepairCost(i3);
                 }
 
-                stack1.set(DataComponents.REPAIR_COST, i3);
-                MobEnchantUtils.setEnchantments(stack1, itemenchantments$mutable.toImmutable());
+                itemstack1.set(DataComponents.REPAIR_COST, i3);
+                MobEnchantUtils.setEnchantments(itemstack1, itemenchantments$mutable.toImmutable());
             }
 
-            event.setOutput(stack1);
+            event.setOutput(itemstack1);
         }
     }
 
