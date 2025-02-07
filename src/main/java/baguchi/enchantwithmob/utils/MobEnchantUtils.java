@@ -176,11 +176,13 @@ public class MobEnchantUtils {
 			if (checkAllowMobEnchantFromMob(mobEnchant, entity, capability)) {
 				capability.getEnchantCap().addMobEnchant(entity, mobEnchant, level);
 				flag = true;
+			}
+		}
 
-				if (!user.level().isClientSide()) {
-                    itemIn.hurtAndBreak(1, user, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+		if (flag) {
+			if (!user.level().isClientSide()) {
+				itemIn.hurtAndBreak(1, user, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
 
-				}
 			}
 		}
 		return flag;
@@ -196,10 +198,14 @@ public class MobEnchantUtils {
 				capability.getEnchantCap().addMobEnchantFromOwner(entity, mobEnchant, level, owner);
 				flag = true;
 
-				if (!owner.level().isClientSide()) {
-                    itemIn.hurtAndBreak(1, owner, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
 
-				}
+			}
+		}
+
+		if (flag) {
+			if (!owner.level().isClientSide()) {
+				itemIn.hurtAndBreak(1, owner, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+
 			}
 		}
 		return flag;
