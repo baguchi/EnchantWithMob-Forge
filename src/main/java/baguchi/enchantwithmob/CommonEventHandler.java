@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.entity.Entity;
@@ -404,13 +405,12 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
-        ItemStack stack3 = event.getLeft();
         ItemStack itemstack = event.getLeft();
         int i = 0;
         long j = 0L;
         int k = 0;
-        if (!stack3.isEmpty() && MobEnchantUtils.canStoreEnchantments(stack3)) {
-            ItemStack itemstack1 = event.getLeft().copy();
+        if (!itemstack.isEmpty() && MobEnchantUtils.canStoreEnchantments(itemstack)) {
+            ItemStack itemstack1 = itemstack.copy();
             ItemStack itemstack2 = event.getRight();
             ItemMobEnchantments.Mutable itemenchantments$mutable = new ItemMobEnchantments.Mutable(MobEnchantUtils.getEnchantmentsForCrafting(itemstack1));
             j += (long) itemstack.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue()
@@ -442,7 +442,7 @@ public class CommonEventHandler {
                         return;
                     }
 
-                    if (itemstack1.isDamageableItem() && !flag) {
+                    if (itemstack1.isDamageableItem()) {
                         int l = itemstack.getMaxDamage() - itemstack.getDamageValue();
                         int i1 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
                         int j1 = i1 + itemstack1.getMaxDamage() * 12 / 100;
@@ -510,6 +510,18 @@ public class CommonEventHandler {
                     }
                 }
             }
+
+            if (event.getName() != null && !StringUtil.isBlank(event.getName())) {
+                if (!event.getName().equals(itemstack.getHoverName().getString())) {
+                    k = 1;
+                    i += k;
+                    itemstack1.set(DataComponents.CUSTOM_NAME, Component.literal(event.getName()));
+                }
+            } else if (itemstack.has(DataComponents.CUSTOM_NAME)) {
+                k = 1;
+                i += k;
+                itemstack1.remove(DataComponents.CUSTOM_NAME);
+            }
             int k2 = i <= 0 ? 0 : (int) Mth.clamp(j + (long) i, 0L, 2147483647L);
             event.setCost(k2);
             if (i <= 0) {
@@ -540,8 +552,8 @@ public class CommonEventHandler {
                 itemstack1.set(DataComponents.REPAIR_COST, i3);
                 MobEnchantUtils.setEnchantments(itemstack1, itemenchantments$mutable.toImmutable());
             }
-
             event.setOutput(itemstack1);
+            //event.getPlayer().containerMenu.broadcastChanges();
         }
     }
 
