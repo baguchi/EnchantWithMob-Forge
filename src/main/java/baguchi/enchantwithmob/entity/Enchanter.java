@@ -4,6 +4,7 @@ import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModSounds;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import net.minecraft.server.level.ServerLevel;
@@ -277,7 +278,7 @@ public class Enchanter extends SpellcasterIllager {
             if (entity != null && entity.isAlive()) {
                 if (entity instanceof IEnchantCap cap) {
                     float difficulty = entity.level().getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
-                    MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2));
+                    MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2), ModTags.MobEnchantTags.ENCHANTER_ENCHANT);
                 }
             }
         }
