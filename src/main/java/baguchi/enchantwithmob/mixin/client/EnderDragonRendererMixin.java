@@ -39,7 +39,7 @@ public class EnderDragonRendererMixin {
                 p_114211_.translate(0.0F, -1.501F, 0.0F);
                 this.model.setupAnim(p_364805_);
                 if (p_364805_.deathTime <= 0) {
-                    VertexConsumer vertexconsumer3 = p_114212_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+                    VertexConsumer vertexconsumer3 = p_114212_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR));
                     this.model.renderToBuffer(p_114211_, vertexconsumer3, p_114213_, OverlayTexture.pack(0.0F, p_364805_.hasRedOverlay));
                 }
 

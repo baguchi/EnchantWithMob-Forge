@@ -37,7 +37,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
-        mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"), this.registryAccess());
+        mobEnchantCapability.deserializeNBT(nbt.getCompoundOrEmpty("MobEnchantData"), this.registryAccess());
         this.setEnchantCap(mobEnchantCapability);
     }
 
@@ -47,11 +47,11 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
             if (this.getEnchantCap().getEnchantOwner() == null || !this.getEnchantCap().getEnchantOwner().isAlive()) {
                 LivingEntity livingEntity = (LivingEntity) ((Object) this);
                 this.getEnchantCap().removeMobEnchantFromOwner(livingEntity);
-                this.playSound(SoundEvents.ITEM_BREAK, 1.5F, 1.6F);
+                this.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
             } else if (this.distanceToSqr(this.getEnchantCap().getEnchantOwner()) > 512) {
                 LivingEntity livingEntity = (LivingEntity) ((Object) this);
                 this.getEnchantCap().removeMobEnchantFromOwner(livingEntity);
-                this.playSound(SoundEvents.ITEM_BREAK, 1.5F, 1.6F);
+                this.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
             }
         }
     }

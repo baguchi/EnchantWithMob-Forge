@@ -75,8 +75,8 @@ public class MobEnchantUtils {
 	 * @param tag nbt tag
 	 */
 	public static Optional<Holder.Reference<MobEnchant>> getEnchantFromNBT(@Nullable CompoundTag tag, RegistryAccess registryAccess) {
-		if (tag != null && registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).containsKey(ResourceLocation.tryParse(tag.getString(TAG_MOBENCHANT)))) {
-			return registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).get(ResourceLocation.tryParse(tag.getString(TAG_MOBENCHANT)));
+        if (tag != null && registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).containsKey(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")))) {
+            return registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).get(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")));
 		} else {
 			return Optional.empty();
 		}
@@ -89,7 +89,7 @@ public class MobEnchantUtils {
 	 */
 	public static int getEnchantLevelFromNBT(@Nullable CompoundTag tag) {
 		if (tag != null) {
-			return tag.getInt(TAG_ENCHANT_LEVEL);
+            return tag.getIntOr(TAG_ENCHANT_LEVEL, 0);
 		} else {
 			return 0;
 		}
@@ -117,7 +117,7 @@ public class MobEnchantUtils {
 	 * @param compoundnbt nbt tag
 	 */
 	public static ListTag getEnchantmentListForNBT(CompoundTag compoundnbt) {
-		return compoundnbt != null ? compoundnbt.getList(TAG_STORED_MOBENCHANTS, 10) : new ListTag();
+        return compoundnbt != null ? compoundnbt.getListOrEmpty(TAG_STORED_MOBENCHANTS) : new ListTag();
 	}
 
 
@@ -402,7 +402,7 @@ public class MobEnchantUtils {
 			level = Mth.clamp(Math.round((float) level + (float) level * f), 1, Integer.MAX_VALUE);
 			List<MobEnchantmentData> list1 = getAvailableEnchantmentResults(level, possibleEnchantments);
 			if (!list1.isEmpty()) {
-				WeightedRandom.getRandomItem(randomIn, list1).ifPresent(list::add);
+                WeightedRandom.getRandomItem(randomIn, list1, MobEnchantmentData::weight).ifPresent(list::add);
 
 				while (randomIn.nextInt(50) <= level) {
 					if (!list.isEmpty()) {
@@ -412,7 +412,7 @@ public class MobEnchantUtils {
 						break;
 					}
 
-					WeightedRandom.getRandomItem(randomIn, list1).ifPresent(list::add);
+                    WeightedRandom.getRandomItem(randomIn, list1, MobEnchantmentData::weight).ifPresent(list::add);
 					level /= 2;
 				}
 			}

@@ -313,7 +313,7 @@ public class CommonEventHandler {
                 if (attacker instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {
                         //make snowman stronger
-                        if (!livingEntity.isDamageSourceBlocked(event.getSource()) && event.getAmount() == 0) {
+                        if (event.getAmount() == 0 && event.getContainer().getBlockedDamage() <= 0) {
                             event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
 
                         } else if (event.getAmount() > 0) {

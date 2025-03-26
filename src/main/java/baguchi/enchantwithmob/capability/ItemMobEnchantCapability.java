@@ -28,6 +28,6 @@ public class ItemMobEnchantCapability implements INBTSerializable<CompoundTag> {
 
 	@Override
 	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-		hasEnchant = compoundTag.getBoolean("HasEnchant");
+        hasEnchant = compoundTag.getBooleanOr("HasEnchant", false);
 	}
 }

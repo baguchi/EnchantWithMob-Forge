@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -59,28 +60,6 @@ public class ItemMobEnchantments implements TooltipProvider {
 
         String var10002 = String.valueOf(entry.getKey());
         throw new IllegalArgumentException("Enchantment " + var10002 + " has invalid level " + i);
-    }
-
-    @Override
-    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
-        if (this.showInTooltip) {
-            HolderLookup.Provider holderlookup$provider = context.registries();
-            HolderSet<MobEnchant> holderset = getTagOrEmpty(holderlookup$provider, ModRegistries.MOB_ENCHANT, ModTags.MobEnchantTags.TOOLTIP_ORDER);
-
-            for (Holder<MobEnchant> holder : holderset) {
-                int i = this.enchantments.getInt(holder);
-                if (i > 0) {
-                    tooltipAdder.accept(MobEnchant.getFullname(holder, i));
-                }
-            }
-
-            for (Object2IntMap.Entry<Holder<MobEnchant>> entry : this.enchantments.object2IntEntrySet()) {
-                Holder<MobEnchant> holder1 = entry.getKey();
-                if (!holderset.contains(holder1)) {
-                    tooltipAdder.accept(MobEnchant.getFullname(entry.getKey(), entry.getIntValue()));
-                }
-            }
-        }
     }
 
     private static <T> HolderSet<T> getTagOrEmpty(@Nullable HolderLookup.Provider p_341186_, ResourceKey<Registry<T>> p_341113_, TagKey<T> p_341409_) {
@@ -161,6 +140,28 @@ public class ItemMobEnchantments implements TooltipProvider {
 
     public int getLevel(Holder<MobEnchant> enchantment) {
         return this.enchantments.getInt(enchantment);
+    }
+
+    @Override
+    public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
+        if (this.showInTooltip) {
+            HolderLookup.Provider holderlookup$provider = tooltipContext.registries();
+            HolderSet<MobEnchant> holderset = getTagOrEmpty(holderlookup$provider, ModRegistries.MOB_ENCHANT, ModTags.MobEnchantTags.TOOLTIP_ORDER);
+
+            for (Holder<MobEnchant> holder : holderset) {
+                int i = this.enchantments.getInt(holder);
+                if (i > 0) {
+                    consumer.accept(MobEnchant.getFullname(holder, i));
+                }
+            }
+
+            for (Object2IntMap.Entry<Holder<MobEnchant>> entry : this.enchantments.object2IntEntrySet()) {
+                Holder<MobEnchant> holder1 = entry.getKey();
+                if (!holderset.contains(holder1)) {
+                    consumer.accept(MobEnchant.getFullname(entry.getKey(), entry.getIntValue()));
+                }
+            }
+        }
     }
 
 

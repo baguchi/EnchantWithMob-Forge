@@ -17,10 +17,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class EnchanterBottleItem extends Item {
 	public EnchanterBottleItem(Properties group) {
@@ -105,14 +105,11 @@ public class EnchanterBottleItem extends Item {
 		return super.use(p_41352_, p_41353_, p_41354_);
 	}
 
-
-
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, List<Component> tooltip, TooltipFlag p_41424_) {
-		super.appendHoverText(stack, level, tooltip, p_41424_);
+    public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer1, TooltipFlag flag) {
+        super.appendHoverText(stack, tooltipContext, tooltipDisplay, consumer1, flag);
 		ChatFormatting[] textformatting2 = new ChatFormatting[]{ChatFormatting.DARK_PURPLE};
-
-		tooltip.add(Component.translatable("mobenchant.enchantwithmob.enchanters_bottle.tooltip").withStyle(textformatting2));
+        consumer1.accept(Component.translatable("mobenchant.enchantwithmob.enchanters_bottle.tooltip").withStyle(textformatting2));
 	}
 
 	@Override

@@ -239,7 +239,7 @@ public class MobEnchantCapability {
 		mobEnchants.clear();
 
 		for (int i = 0; i < list.size(); ++i) {
-			CompoundTag compoundnbt = list.getCompound(i);
+            CompoundTag compoundnbt = list.getCompoundOrEmpty(i);
 
 			Optional<Holder.Reference<MobEnchant>> mobEnchant = MobEnchantUtils.getEnchantFromNBT(compoundnbt, registryAccess);
 			//check mob enchant is not null
@@ -248,8 +248,8 @@ public class MobEnchantCapability {
 			}
 		}
 
-		fromOwner = nbt.getBoolean("FromOwner");
-		enchantType = EnchantType.get(nbt.getString("EnchantType"));
+        fromOwner = nbt.getBooleanOr("FromOwner", false);
+        enchantType = EnchantType.get(nbt.getStringOr("EnchantType", EnchantType.NORMAL.name()));
 	}
 
 	public enum EnchantType {

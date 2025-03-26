@@ -20,11 +20,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class MobEnchantBookItem extends Item {
@@ -108,12 +107,12 @@ public class MobEnchantBookItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, List<Component> tooltip, TooltipFlag p_41424_) {
-		super.appendHoverText(stack, level, tooltip, p_41424_);
+    public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer1, TooltipFlag flag) {
+        super.appendHoverText(stack, tooltipContext, tooltipDisplay, consumer1, flag);
 		ChatFormatting[] textformatting2 = new ChatFormatting[]{ChatFormatting.DARK_PURPLE};
-        Consumer<Component> consumer = tooltip::add;
-        stack.addToTooltip(ModDataCompnents.MOB_ENCHANTMENTS.get(), level, consumer, p_41424_);
-		tooltip.add(Component.translatable("mobenchant.enchantwithmob.mob_enchant_book.tooltip").withStyle(textformatting2));
+        stack.addToTooltip(ModDataCompnents.MOB_ENCHANTMENTS.get(), tooltipContext, tooltipDisplay, consumer1, flag);
+        consumer1.accept(Component.translatable("mobenchant.enchantwithmob.mob_enchant_book.tooltip").withStyle(textformatting2));
+
 	}
 
     @Override

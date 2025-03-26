@@ -10,6 +10,12 @@ import baguchi.enchantwithmob.client.render.layer.EnchantedEyesLayer;
 import baguchi.enchantwithmob.client.render.layer.EnchantedWindLayer;
 import baguchi.enchantwithmob.client.render.layer.SlimeEnchantLayer;
 import baguchi.enchantwithmob.registry.ModEntities;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
@@ -21,10 +27,44 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientRegistrar {
+	public static final RenderPipeline MOB_ENCHANT =
+			RenderPipeline.builder(RenderPipelines.FOG_NO_COLOR_SNIPPET)
+					.withLocation(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant"))
+					.withVertexShader("core/entity")
+					.withFragmentShader("core/entity")
+					.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+					.withShaderDefine("EMISSIVE")
+					.withShaderDefine("NO_OVERLAY")
+					.withShaderDefine("NO_CARDINAL_LIGHTING")
+					.withShaderDefine("APPLY_TEXTURE_MATRIX")
+					.withSampler("Sampler0")
+					.withUniform("TextureMat", UniformType.MATRIX4X4)
+					.withBlend(BlendFunction.ADDITIVE)
+					.withCull(true)
+					.withVertexFormat(DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS)
+					.build();
+	public static final RenderPipeline MOB_ENCHANT_NO_CULL =
+			RenderPipeline.builder(RenderPipelines.FOG_NO_COLOR_SNIPPET)
+					.withLocation(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_no_cull"))
+					.withVertexShader("core/entity")
+					.withFragmentShader("core/entity")
+					.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+					.withShaderDefine("EMISSIVE")
+					.withShaderDefine("NO_OVERLAY")
+					.withShaderDefine("NO_CARDINAL_LIGHTING")
+					.withShaderDefine("APPLY_TEXTURE_MATRIX")
+					.withSampler("Sampler0")
+					.withUniform("TextureMat", UniformType.MATRIX4X4)
+					.withBlend(BlendFunction.ADDITIVE)
+					.withCull(false)
+					.withVertexFormat(DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS)
+					.build();
+
 	private static final RenderType BLAZE_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_blaze_eyes.png"));
 	private static final RenderType CREEPER_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_creeper_eyes.png"));
 	private static final RenderType EVOKER_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_evoker_eyes.png"));
@@ -120,4 +160,10 @@ public class ClientRegistrar {
 	public static void registerOverlay(RegisterGuiLayersEvent event) {
 		event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mobenchant"), new MobEnchantOverlay());
     }
+
+	@SubscribeEvent
+	public static void registerPipelines(RegisterRenderPipelinesEvent event) {
+		event.registerPipeline(MOB_ENCHANT);
+		event.registerPipeline(MOB_ENCHANT_NO_CULL);
+	}
 }

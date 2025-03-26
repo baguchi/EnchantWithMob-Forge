@@ -37,7 +37,7 @@ public class SlimeEnchantLayer<T extends LivingEntityRenderState> extends Render
 				if (!p_117473_.isInvisible) {
 					float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
 
-					VertexConsumer vertexconsumer = p_117471_.getBuffer(enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+                    VertexConsumer vertexconsumer = p_117471_.getBuffer(enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR));
 					this.model.setupAnim(p_117473_);
 					this.model.renderToBuffer(p_117470_, vertexconsumer, p_117472_, LivingEntityRenderer.getOverlayCoords(p_117473_, 0.0F));
 				}
@@ -54,7 +54,7 @@ public class SlimeEnchantLayer<T extends LivingEntityRenderState> extends Render
 				float f = (float) entitylivingbaseIn.ageInTicks;
 				float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
 				SlimeModel entitymodel = this.getParentModel();
-				VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+                VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR));
 				entitymodel.setupAnim(entitylivingbaseIn);
 				entitymodel.renderToBuffer(poseStack, ivertexbuilder, i, OverlayTexture.NO_OVERLAY);
 			}

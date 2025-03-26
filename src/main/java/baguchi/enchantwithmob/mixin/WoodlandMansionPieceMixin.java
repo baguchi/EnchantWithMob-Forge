@@ -22,7 +22,7 @@ public class WoodlandMansionPieceMixin {
 		if (p_230213_.equals("Enchanter")) {
 			Enchanter entity = ModEntities.ENCHANTER.get().create(p_230215_.getLevel(), EntitySpawnReason.STRUCTURE);
 			entity.setPersistenceRequired();
-			entity.moveTo(p_230214_, 0.0F, 0.0F);
+            entity.snapTo(p_230214_, 0.0F, 0.0F);
 			entity.finalizeSpawn(p_230215_, p_230215_.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.STRUCTURE, (SpawnGroupData) null);
 			p_230215_.addFreshEntityWithPassengers(entity);
 			p_230215_.setBlock(p_230214_, Blocks.AIR.defaultBlockState(), 2);
