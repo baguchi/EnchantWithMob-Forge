@@ -5,10 +5,6 @@
     "enchantwithmob:protection",
     "enchantwithmob:multishot",
     "enchantwithmob:thorn",
-    "enchantwithmob:strong",
-    "enchantwithmob:speedy",
-    "enchantwithmob:deflect",
-    "enchantwithmob:poison_cloud",
-    "enchantwithmob:poison"
+    "enchantwithmob:strong"
   ]
 }
