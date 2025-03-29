@@ -25,7 +25,7 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 
 	private static final Function<ResourceLocation, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {
 		RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173253_, TriState.FALSE, false);
-		return RenderType.create("enchanted_eyes", 256, false, true, RenderPipelines.BREEZE_WIND, RenderType.CompositeState.builder().setTextureState(renderstateshard$texturestateshard).createCompositeState(false));
+		return RenderType.create("enchanted_eyes", 1536, false, true, RenderPipelines.EYES, RenderType.CompositeState.builder().setTextureState(renderstateshard$texturestateshard).createCompositeState(false));
 	});
 
 	public final RenderType render_types;

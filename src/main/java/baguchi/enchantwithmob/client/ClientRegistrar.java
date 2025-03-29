@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -114,7 +113,7 @@ public class ClientRegistrar {
 			}
 
 
-			if (event.getRenderer(entityType) instanceof LivingEntityRenderer r) {
+			/*if (event.getRenderer(entityType) instanceof LivingEntityRenderer r) {
 				if (entityType == EntityType.BLAZE) {
 					r.addLayer(new EnchantedEyesLayer(r, BLAZE_EYES));
 				}
@@ -152,7 +151,7 @@ public class ClientRegistrar {
 					r.addLayer(new EnchantedEyesLayer(r, GUARDIAN_EYES));
 				}
 
-			}
+			}*/
 		});
     }
 
