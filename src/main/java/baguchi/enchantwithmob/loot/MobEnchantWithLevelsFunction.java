@@ -1,8 +1,8 @@
 package baguchi.enchantwithmob.loot;
 
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModLootItemFunctions;
-import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.serialization.MapCodec;
@@ -29,7 +29,7 @@ public class MobEnchantWithLevelsFunction extends LootItemConditionalFunction {
                     .and(
                             p_344692_.group(
                                     NumberProviders.CODEC.fieldOf("levels").forGetter(p_298844_ -> p_298844_.levels),
-                                    RegistryCodecs.homogeneousList(ModRegistries.MOB_ENCHANT).optionalFieldOf("options").forGetter(p_344691_ -> p_344691_.options)
+                                    RegistryCodecs.homogeneousList(MobEnchants.MOB_ENCHANT_REGISTRY).optionalFieldOf("options").forGetter(p_344691_ -> p_344691_.options)
                             )
                     )
                     .apply(p_344692_, MobEnchantWithLevelsFunction::new)
@@ -61,12 +61,12 @@ public class MobEnchantWithLevelsFunction extends LootItemConditionalFunction {
         RandomSource randomsource = context.getRandom();
         RegistryAccess registryaccess = context.getLevel().registryAccess();
         return MobEnchantUtils.addRandomEnchantmentToItemStack(randomsource, registryaccess, stack, this.levels.getInt(context), this.options.map(HolderSet::stream)
-                .orElseGet(() -> context.getLevel().registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).listElements().map(p_344499_ -> (Holder<MobEnchant>) p_344499_)));
+                .orElseGet(() -> context.getLevel().registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).listElements().map(p_344499_ -> (Holder<MobEnchant>) p_344499_)));
     }
 
     public static Builder enchantWithLevels(HolderLookup.Provider registries, NumberProvider levels) {
         return new Builder(levels)
-                .fromOptions(registries.lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(ModTags.MobEnchantTags.RANDOM_LOOT));
+                .fromOptions(registries.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(ModTags.MobEnchantTags.RANDOM_LOOT));
     }
 
     public static class Builder extends LootItemConditionalFunction.Builder<Builder> {

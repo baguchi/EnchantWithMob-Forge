@@ -2,7 +2,6 @@ package baguchi.enchantwithmob.entity;
 
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
-import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModSounds;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
@@ -182,7 +181,7 @@ public class Enchanter extends SpellcasterIllager {
         boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.1F;
         if (flag) {
             if (this instanceof IEnchantCap cap) {
-                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(MobEnchants.PROTECTION), 2));
+                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), 2));
             }
         }
     }

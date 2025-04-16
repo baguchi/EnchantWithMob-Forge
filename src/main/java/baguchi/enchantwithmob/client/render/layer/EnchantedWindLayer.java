@@ -43,7 +43,7 @@ public class EnchantedWindLayer<T extends LivingEntity, M extends EntityModel<T>
             float p_312531_
     ) {
         if (p_312046_ instanceof IEnchantCap cap) {
-            if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.WIND)) {
+            if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.WIND.getKey())) {
                 float f = (float) p_312046_.tickCount + p_312428_;
                 this.model.prepareMobModel(p_312046_, p_312170_, p_311773_, p_312428_);
                 VertexConsumer vertexconsumer = p_312869_.getBuffer(RenderType.breezeWind(this.getTextureLocation(p_312046_), this.xOffset(f) % 1.0F, 0.0F));

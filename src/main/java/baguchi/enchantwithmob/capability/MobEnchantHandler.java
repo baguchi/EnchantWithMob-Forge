@@ -1,7 +1,7 @@
 package baguchi.enchantwithmob.capability;
 
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +28,7 @@ public class MobEnchantHandler {
         CompoundTag nbt = new CompoundTag();
 
         if (mobEnchant != null) {
-            nbt.putString("MobEnchant", registryAccess.registryOrThrow(ModRegistries.MOB_ENCHANT).getKey(mobEnchant.value()).toString());
+            nbt.putString("MobEnchant", registryAccess.registryOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getKey(mobEnchant.value()).toString());
             nbt.putInt("EnchantLevel", enchantLevel);
         }
 

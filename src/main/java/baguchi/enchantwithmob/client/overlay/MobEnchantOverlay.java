@@ -27,7 +27,7 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
 
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                            Component s = MobEnchant.getFullname(mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
+                            Component s = mobEnchantHandler.getMobEnchant().value().getFullname(mobEnchantHandler.getEnchantLevel());
 
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
@@ -49,7 +49,7 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
 
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                            Component s = MobEnchant.getFullname(mobEnchant, mobEnchantLevel);
+                            Component s = mobEnchant.value().getFullname(mobEnchantLevel);
 
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 60;

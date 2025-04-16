@@ -10,7 +10,6 @@ import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
-import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import baguchi.enchantwithmob.utils.MobEnchantmentData;
 import com.mojang.datafixers.util.Either;
@@ -40,7 +39,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
@@ -49,7 +47,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -230,7 +227,7 @@ public class CommonEventHandler {
 
                         if (event.getSpawnType() == MobSpawnType.TRIAL_SPAWNER) {
                             if (world.getRandom().nextFloat() < 0.1F + difficultScaleOnPercent * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).getOrThrow(MobEnchants.WIND), 1));
+                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(MobEnchants.WIND.getKey()).get(), 1));
                             }
                         }
 
@@ -263,7 +260,7 @@ public class CommonEventHandler {
         if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
             for (MobEnchantHandler enchantHandler : cap.getEnchantCap().getMobEnchants()) {
                 if (livingEntity.level() instanceof ServerLevel serverLevel) {
-                    enchantHandler.getMobEnchant().value().tick(serverLevel, enchantHandler.getEnchantLevel(), livingEntity, livingEntity);
+                    enchantHandler.getMobEnchant().value().tick(livingEntity, enchantHandler.getEnchantLevel());
                 }
             }
             if (cap.getEnchantCap().hasEnchant()) {
@@ -281,29 +278,6 @@ public class CommonEventHandler {
 
 
     @SubscribeEvent
-    public static void onEntityHurt(LivingDamageEvent.Post event) {
-        LivingEntity livingEntity = event.getEntity();
-
-        if (event.getSource().getEntity() instanceof LivingEntity) {
-            LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
-
-            if (attacker instanceof IEnchantCap cap && attacker.level() instanceof ServerLevel serverLevel) {
-
-                if (cap.getEnchantCap().hasEnchant()) {
-
-                    if (event.getNewDamage() > 0) {
-                        for (MobEnchantHandler handler : cap.getEnchantCap().getMobEnchants()) {
-                            handler.getMobEnchant().value().doPostAttack(serverLevel, handler.getEnchantLevel(), attacker, EnchantmentTarget.ATTACKER, livingEntity, event.getSource());
-                        }
-                    }
-                }
-
-
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onEntityIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity livingEntity = event.getEntity();
 
@@ -313,7 +287,7 @@ public class CommonEventHandler {
                 if (attacker instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {
                         //make snowman stronger
-                        if (!livingEntity.isDamageSourceBlocked(event.getSource()) && event.getAmount() == 0) {
+                        if (event.getAmount() == 0 && event.getContainer().getBlockedDamage() <= 0) {
                             event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
 
                         } else if (event.getAmount() > 0) {
@@ -413,13 +387,13 @@ public class CommonEventHandler {
             ItemStack itemstack1 = itemstack.copy();
             ItemStack itemstack2 = event.getRight();
             ItemMobEnchantments.Mutable itemenchantments$mutable = new ItemMobEnchantments.Mutable(MobEnchantUtils.getEnchantmentsForCrafting(itemstack1));
-            j += (long) itemstack.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue()
-                    + (long) itemstack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue();
+            j += (long) itemstack.getOrDefault(DataComponents.REPAIR_COST, 0)
+                    + (long) itemstack2.getOrDefault(DataComponents.REPAIR_COST, 0);
             event.setCost(0);
             boolean flag = false;
             if (!itemstack2.isEmpty()) {
                 flag = itemstack2.has(ModDataCompnents.MOB_ENCHANTMENTS.get());
-                if (itemstack1.isDamageableItem() && itemstack.getItem().isValidRepairItem(itemstack, itemstack2)) {
+                if (itemstack1.isDamageableItem() && itemstack1.getItem().isValidRepairItem(itemstack, itemstack2)) {
                     int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
                     if (l2 <= 0) {
                         event.setOutput(ItemStack.EMPTY);
@@ -464,7 +438,7 @@ public class CommonEventHandler {
 
                     for (Object2IntMap.Entry<Holder<MobEnchant>> entry : itemenchantments.entrySet()) {
                         Holder<MobEnchant> holder = entry.getKey();
-                        int i2 = itemenchantments$mutable.getLevel(holder);
+                        int i2 = itemenchantments$mutable.getLevel(holder.value());
                         int j2 = entry.getIntValue();
                         j2 = i2 == j2 ? j2 + 1 : Math.max(j2, i2);
                         MobEnchant enchantment = holder.value();
@@ -490,7 +464,7 @@ public class CommonEventHandler {
                                 j2 = enchantment.getMaxLevel();
                             }
 
-                            itemenchantments$mutable.set(holder, j2);
+                            itemenchantments$mutable.set(holder.value(), j2);
                             int l3 = enchantment.getAnvilCost();
                             if (flag) {
                                 l3 = Math.max(1, l3 / 2);

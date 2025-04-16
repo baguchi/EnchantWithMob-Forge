@@ -3,7 +3,7 @@ package baguchi.enchantwithmob.command;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -38,7 +38,7 @@ public class MobEnchantingCommand {
 		enchantCommand.then(Commands.literal("clear").then(Commands.argument("target", EntityArgument.entity()).executes((ctx) -> {
 			return setClear(ctx.getSource(), EntityArgument.getEntity(ctx, "target"));
 		}))).then(Commands.literal("give").then(Commands.argument("target", EntityArgument.entity())
-				.then(Commands.argument("mob_enchantment", ResourceKeyArgument.key(ModRegistries.MOB_ENCHANT)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), 1))
+				.then(Commands.argument("mob_enchantment", ResourceKeyArgument.key(MobEnchants.MOB_ENCHANT_REGISTRY)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), 1))
                         .then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), IntegerArgumentType.getInteger(p_198357_0_, "level")))))));
 
 		dispatcher.register(enchantCommand);
@@ -55,7 +55,7 @@ public class MobEnchantingCommand {
 	}
 
     public static Holder.Reference<MobEnchant> getMobEnchant(CommandContext<CommandSourceStack> p_249310_, String p_250729_) throws CommandSyntaxException {
-		return resolveKey(p_249310_, p_250729_, ModRegistries.MOB_ENCHANT, ERROR_INVALID_FEATURE);
+		return resolveKey(p_249310_, p_250729_, MobEnchants.MOB_ENCHANT_REGISTRY, ERROR_INVALID_FEATURE);
     }
 
     private static <T> Registry<T> getRegistry(CommandContext<CommandSourceStack> p_212379_, ResourceKey<? extends Registry<T>> p_212380_) {
@@ -137,7 +137,7 @@ public class MobEnchantingCommand {
 							enchantCap.getEnchantCap().addMobEnchant((LivingEntity) entity, mobEnchant, level);
 						}
 
-						commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).get(mobEnchant.key()).toString()), true);
+						commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(mobEnchant.key()).toString()), true);
 						return 1;
 					}
 				} else {

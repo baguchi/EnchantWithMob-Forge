@@ -3,7 +3,6 @@ package baguchi.enchantwithmob;
 import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
 import baguchi.enchantwithmob.message.*;
-import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -19,7 +18,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,24 +41,24 @@ public class EnchantWithMob {
 		modEventBus.addListener(this::preSetup);
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::setupPackets);
-		MobEnchantLocationBasedEffects.LOCATION_BASED_EFFECT.register(modEventBus);
-		MobEnchantEntityEffects.ENTITY_EFFECT.register(modEventBus);
-		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(ModRegistries.MOB_ENCHANT, MobEnchant.DIRECT_CODEC, MobEnchant.DIRECT_CODEC));
-		ModMobEnchantDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
+
+
 		ModEntities.ENTITIES_REGISTRY.register(modEventBus);
-        ModDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
+		ModDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
 		ModItems.ITEM_REGISTRY.register(modEventBus);
-        ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
+		ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
+
 		ModLootItemFunctions.LOOT_REGISTRY.register(modEventBus);
-		ModCapability.ATTACHMENT_TYPES.register(modEventBus);
+		ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 		ModSounds.SOUND_EVENTS.register(modEventBus);
 		ModParticles.PARTICLE_TYPES.register(modEventBus);
+		MobEnchants.MOB_ENCHANT.register(modEventBus);
 
 		NeoForge.EVENT_BUS.addListener(this::registerCommands);
 
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, EnchantConfig.COMMON_SPEC);
-        modContainer.registerConfig(ModConfig.Type.CLIENT, EnchantConfig.CLIENT_SPEC);
+		modContainer.registerConfig(ModConfig.Type.COMMON, EnchantConfig.COMMON_SPEC);
+		modContainer.registerConfig(ModConfig.Type.CLIENT, EnchantConfig.CLIENT_SPEC);
 	}
 
 	private void preSetup(final FMLConstructModEvent event) {
@@ -69,19 +67,19 @@ public class EnchantWithMob {
 	private void setup(final FMLCommonSetupEvent event) {
 	}
 
-    public void setupPackets(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
-        registrar.playBidirectional(AncientMessage.TYPE, AncientMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+	public void setupPackets(RegisterPayloadHandlersEvent event) {
+		PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
+		registrar.playBidirectional(AncientMessage.TYPE, AncientMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 	}
 
-    public static ResourceLocation prefix(String path) {
+	public static ResourceLocation prefix(String path) {
 		return ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, path);
-    }
+	}
 
 
 	private void registerCommands(RegisterCommandsEvent evt) {

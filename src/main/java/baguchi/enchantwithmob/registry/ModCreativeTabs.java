@@ -20,7 +20,7 @@ public class ModCreativeTabs {
             event.accept(ModItems.ENCHANTER_CLOTHES.get());
             event.accept(ModItems.ENCHANTER_LEGGINGS.get());
             event.accept(ModItems.ENCHANTER_BOOTS.get());
-            MobEnchantBookItem.generateEnchantmentBookTypesOnlyMaxLevel(event, event.getParameters().holders().lookupOrThrow(ModRegistries.MOB_ENCHANT), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            MobEnchantBookItem.generateEnchantmentBookTypesOnlyMaxLevel(event, event.getParameters().holders().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.ENCHANATERS_BOTTLE.get());
