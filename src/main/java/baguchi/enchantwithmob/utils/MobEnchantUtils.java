@@ -5,8 +5,8 @@ import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
-import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModTags;
 import com.google.common.collect.Lists;
 import net.minecraft.Util;
@@ -75,8 +75,8 @@ public class MobEnchantUtils {
 	 * @param tag nbt tag
 	 */
 	public static Optional<Holder.Reference<MobEnchant>> getEnchantFromNBT(@Nullable CompoundTag tag, RegistryAccess registryAccess) {
-        if (tag != null && registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).containsKey(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")))) {
-            return registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).get(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")));
+		if (tag != null && registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).containsKey(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")))) {
+			return registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")));
 		} else {
 			return Optional.empty();
 		}
@@ -138,7 +138,7 @@ public class MobEnchantUtils {
 
 	//if using make mob enchant. use this
 	public static void enchant(Holder<MobEnchant> p_41664_, ItemStack stack, int p_41665_) {
-        updateEnchantments(stack, p_330091_ -> p_330091_.upgrade(p_41664_, p_41665_));
+		updateEnchantments(stack, p_330091_ -> p_330091_.upgrade(p_41664_.value(), p_41665_));
     }
 
     public static ItemMobEnchantments updateEnchantments(ItemStack p_331034_, Consumer<ItemMobEnchantments.Mutable> p_332031_) {
@@ -169,7 +169,7 @@ public class MobEnchantUtils {
 		boolean flag = false;
 
         for (Holder<MobEnchant> mobEnchant : itemMobEnchantments.keySet()) {
-			int level = itemMobEnchantments.getLevel(mobEnchant);
+			int level = itemMobEnchantments.getLevel(mobEnchant.value());
 			if (checkAllowMobEnchantFromMob(mobEnchant, entity, capability)) {
 				capability.getEnchantCap().addMobEnchant(entity, mobEnchant, level);
 				flag = true;
@@ -190,7 +190,7 @@ public class MobEnchantUtils {
 		boolean flag = false;
 
         for (Holder<MobEnchant> mobEnchant : itemMobEnchantments.keySet()) {
-			int level = itemMobEnchantments.getLevel(mobEnchant);
+			int level = itemMobEnchantments.getLevel(mobEnchant.value());
 			if (checkAllowMobEnchantFromMob(mobEnchant, entity, capability)) {
 				capability.getEnchantCap().addMobEnchantFromOwner(entity, mobEnchant, level, owner);
 				flag = true;
@@ -214,7 +214,7 @@ public class MobEnchantUtils {
 		for (MobEnchantHandler list : cap.getEnchantCap().getMobEnchants()) {
 			Holder<MobEnchant> enchantment = list.getMobEnchant();
 			int integer = list.getEnchantLevel();
-			l += enchantment.value().getMinCost(integer);
+			l += enchantment.value().getMinEnchantability(integer);
 		}
 		return l;
 	}
@@ -314,7 +314,7 @@ public class MobEnchantUtils {
 	}
 
 	public static List<MobEnchantmentData> getSpawnEnchantmentList(RegistryAccess registryAccess, RandomSource random, int cost, TagKey<MobEnchant> mobEnchantTagKey) {
-		Optional<HolderSet.Named<MobEnchant>> optional = registryAccess.lookupOrThrow(ModRegistries.MOB_ENCHANT).get(mobEnchantTagKey);
+		Optional<HolderSet.Named<MobEnchant>> optional = registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(mobEnchantTagKey);
 		if (optional.isEmpty()) {
 			return List.of();
 		} else {
@@ -368,8 +368,11 @@ public class MobEnchantUtils {
 
 
 		for (MobEnchantHandler enchantHandler : capability.getEnchantCap().getMobEnchants()) {
-			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (enchantHandler.getMobEnchant().value().exclusiveSet().contains(mobEnchant) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
+			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant.value()) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
 				return false;
+			}
+			if (mobEnchant != null && !mobEnchant.value().isCompatibleMob(livingEntity)) {
+
 			}
 		}
 
@@ -433,7 +436,7 @@ public class MobEnchantUtils {
 			MobEnchant enchantment = p_344478_.value();
 
 			for (int i = enchantment.getMaxLevel(); i >= enchantment.getMinLevel(); i--) {
-				if (level >= enchantment.getMinCost(i) && level <= enchantment.getMaxCost(i)) {
+				if (level >= enchantment.getMinEnchantability(i) && level <= enchantment.getMaxEnchantability(i)) {
 					list.add(new MobEnchantmentData(p_344478_, i));
 					break;
 				}
@@ -446,7 +449,7 @@ public class MobEnchantUtils {
 		Iterator<MobEnchantmentData> iterator = dataList.iterator();
 
 		while (iterator.hasNext()) {
-			if (data.enchantment.value().exclusiveSet().contains((iterator.next()).enchantment)) {
+			if (!data.enchantment.value().isCompatibleWith((iterator.next()).enchantment.value())) {
 				iterator.remove();
 			}
 		}

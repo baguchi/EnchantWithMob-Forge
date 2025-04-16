@@ -18,4 +18,5 @@ public class LivingEntityRenderStateMixin implements IEnchantCap {
     public void setEnchantCap(MobEnchantCapability capability) {
         enchantCap = capability;
     }
+
 }

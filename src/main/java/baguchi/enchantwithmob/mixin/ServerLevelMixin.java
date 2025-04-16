@@ -36,8 +36,8 @@ public abstract class ServerLevelMixin extends Level {
 
             ProfilerFiller profilerfiller = Profiler.get();
             //ajust time
-            int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.FAST), 0, 2);
-            int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.SLOW), 0, 2);
+            int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.HASTE.getKey()), 0, 2);
+            int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.SLOW.getKey()), 0, 2);
 
             float different = 1 + fastTime * 0.125F - slowTime * 0.125F;
 

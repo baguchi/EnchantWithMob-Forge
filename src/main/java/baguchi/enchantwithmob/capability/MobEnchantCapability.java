@@ -149,7 +149,7 @@ public class MobEnchantCapability {
 	 */
 	public void onNewEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
 		if (entity.level() instanceof ServerLevel serverLevel) {
-			enchant.value().runLocationChangedEffects(enchant.value(), serverLevel, enchantLevel, entity, entity);
+			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
 		}
 		if (EnchantConfig.COMMON.dungeonsLikeHealth.get()) {
 			AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
@@ -166,7 +166,9 @@ public class MobEnchantCapability {
 	 */
 	public void onChangedEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
 		if (entity.level() instanceof ServerLevel serverLevel) {
-			enchant.value().runLocationChangedEffects(enchant.value(), serverLevel, enchantLevel, entity, entity);
+			enchant.value().removeAttributesModifiersFromEntity(entity, entity.getAttributes());
+
+			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
 		}
 	}
 
@@ -175,7 +177,7 @@ public class MobEnchantCapability {
 	 */
 	protected void onRemoveEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
 
-		enchant.value().stopLocationBasedEffects(enchant.value(), enchantLevel, entity, entity);
+		enchant.value().removeAttributesModifiersFromEntity(entity, entity.getAttributes());
 
 		AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 		if (modifiableattributeinstance != null) {
