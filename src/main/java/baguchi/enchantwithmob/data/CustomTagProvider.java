@@ -3,7 +3,6 @@ package baguchi.enchantwithmob.data;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
-import baguchi.enchantwithmob.registry.ModRegistries;
 import baguchi.enchantwithmob.registry.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -16,20 +15,18 @@ public class CustomTagProvider {
     public static class MobEnchantTagGenerator extends TagsProvider<MobEnchant> {
 
         public MobEnchantTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-            super(output, ModRegistries.MOB_ENCHANT, provider, EnchantWithMob.MODID);
+            super(output, MobEnchants.MOB_ENCHANT_REGISTRY, provider, EnchantWithMob.MODID);
         }
 
         @Override
         protected void addTags(HolderLookup.Provider p_256380_) {
-            this.tag(ModTags.MobEnchantTags.TIME).add(MobEnchants.SLOW).add(MobEnchants.FAST);
 
-            this.tag(ModTags.MobEnchantTags.ENCHANTER_ENCHANT).add(MobEnchants.TOUGH).add(MobEnchants.HEALTH_BOOST).add(MobEnchants.PROTECTION).add(MobEnchants.MULTISHOT).add(MobEnchants.THORN).add(MobEnchants.STRONG);
-            this.tag(ModTags.MobEnchantTags.POISON).add(MobEnchants.POISON_CLOUD).add(MobEnchants.POISON);
-            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH).add(MobEnchants.HEALTH_BOOST).add(MobEnchants.PROTECTION)
-                    .add(MobEnchants.MULTISHOT).add(MobEnchants.THORN).add(MobEnchants.STRONG).add(MobEnchants.SPEEDY)
-                    .add(MobEnchants.DEFLECT).add(MobEnchants.POISON_CLOUD).add(MobEnchants.POISON).add(MobEnchants.FAST).add(MobEnchants.SLOW);
-            this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).remove(MobEnchants.FAST).remove(MobEnchants.SLOW);
-            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND).add(MobEnchants.SOUL_STEAL);
+            this.tag(ModTags.MobEnchantTags.ENCHANTER_ENCHANT).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey()).add(MobEnchants.MULTISHOT.getKey()).add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey());
+            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey())
+                    .add(MobEnchants.MULTISHOT.getKey()).add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey()).add(MobEnchants.SPEEDY.getKey())
+                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey()).add(MobEnchants.HASTE.getKey()).add(MobEnchants.SLOW.getKey());
+            this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).remove(MobEnchants.HASTE.getKey()).remove(MobEnchants.SLOW.getKey());
+            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND.getKey()).add(MobEnchants.SOUL_STEAL.getKey());
         }
     }
 }

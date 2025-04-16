@@ -17,7 +17,7 @@ public class MobEnchantmentData {
     }
 
     public int weight() {
-        return this.getEnchantment().value().getWeight();
+        return this.getEnchantment().value().getRarity().getWeight();
     }
 
 }

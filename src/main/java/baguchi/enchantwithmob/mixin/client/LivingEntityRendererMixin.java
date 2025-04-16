@@ -43,8 +43,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         if (this.getModel() instanceof IEnchantedTime enchantedTime) {
             if (p_361886_ instanceof IEnchantCap enchantCap) {
                 //ajust time
-                int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.FAST), 0, 2);
-                int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.SLOW), 0, 2);
+                int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.HASTE.getKey()), 0, 2);
+                int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), MobEnchants.SLOW.getKey()), 0, 2);
                 float different = 1 + fastTime * 0.125F - slowTime * 0.125F;
 
                 enchantedTime.enchantWithMob_Forge$setDifferentTime(different);

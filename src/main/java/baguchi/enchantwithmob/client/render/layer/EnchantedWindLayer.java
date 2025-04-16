@@ -33,7 +33,7 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
     @Override
     public void render(PoseStack p_117349_, MultiBufferSource p_117350_, int p_117351_, T p_361554_, float p_117353_, float p_117354_) {
         if (p_361554_ instanceof IEnchantCap cap) {
-            MobEnchantUtils.executeIfPresent(cap, MobEnchants.WIND, () -> {
+            MobEnchantUtils.executeIfPresent(cap, MobEnchants.WIND.getKey(), () -> {
 
                 float f = (float) p_361554_.ageInTicks;
                 VertexConsumer vertexconsumer = p_117350_.getBuffer(RenderType.breezeWind(getWindTextureLocation(), this.xOffset(f) % 1.0F, 0.0F));

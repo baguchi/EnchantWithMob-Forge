@@ -4,7 +4,7 @@ import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -77,7 +77,7 @@ public class MobEnchantedMessage implements CustomPacketPayload, IPayloadHandler
 
 
             if (entity != null && entity instanceof LivingEntity livingEntity) {
-                Optional<Holder.Reference<MobEnchant>> mobEnchant = entity.registryAccess().lookupOrThrow(ModRegistries.MOB_ENCHANT).get(message.enchantType);
+                Optional<Holder.Reference<MobEnchant>> mobEnchant = entity.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(message.enchantType);
                     if (livingEntity instanceof IEnchantCap cap) {
                         if (!MobEnchantUtils.findMobEnchantHandler(cap.getEnchantCap().getMobEnchants(), mobEnchant.get())) {
                             cap.getEnchantCap().addMobEnchant((LivingEntity) entity, mobEnchant.get(), message.level);

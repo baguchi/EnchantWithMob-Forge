@@ -1,32 +1,37 @@
 package baguchi.enchantwithmob.item.mobenchant;
 
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import baguchi.enchantwithmob.registry.ModRegistries;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModTags;
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.TooltipProvider;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -61,6 +66,81 @@ public class ItemMobEnchantments implements TooltipProvider {
         String var10002 = String.valueOf(entry.getKey());
         throw new IllegalArgumentException("Enchantment " + var10002 + " has invalid level " + i);
     }
+
+    public int getLevel(MobEnchant p_330552_) {
+        return this.enchantments.getInt(getHolder(p_330552_));
+    }
+
+
+    @Override
+    public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
+        List<Pair<Holder<Attribute>, AttributeModifier>> list = Lists.newArrayList();
+
+        if (this.showInTooltip) {
+
+            HolderLookup.Provider holderlookup$provider = tooltipContext.registries();
+            HolderSet<MobEnchant> holderset = getTagOrEmpty(holderlookup$provider, MobEnchants.MOB_ENCHANT_REGISTRY, ModTags.MobEnchantTags.TOOLTIP_ORDER);
+            Iterator var6 = holderset.iterator();
+
+            while (var6.hasNext()) {
+                Holder<MobEnchant> holder = (Holder) var6.next();
+                int i = this.enchantments.getInt(holder);
+                if (i > 0) {
+                    holder.value().createModifiers(i, (p_331556_, p_330860_) -> list.add(new Pair<>(p_331556_, p_330860_)));
+
+                    consumer.accept(((MobEnchant) holder.value()).getFullname(i));
+                }
+            }
+
+            ObjectIterator var9 = this.enchantments.object2IntEntrySet().iterator();
+
+            while (var9.hasNext()) {
+                Object2IntMap.Entry<Holder<MobEnchant>> entry = (Object2IntMap.Entry) var9.next();
+                Holder<MobEnchant> holder1 = (Holder) entry.getKey();
+                if (!holderset.contains(holder1)) {
+                    consumer.accept(((MobEnchant) holder1.value()).getFullname(entry.getIntValue()));
+                }
+            }
+        }
+        if (!list.isEmpty()) {
+            consumer.accept(CommonComponents.EMPTY);
+            consumer.accept(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
+
+            for (Pair<Holder<Attribute>, AttributeModifier> pair : list) {
+                AttributeModifier attributemodifier = pair.getSecond();
+                double d1 = attributemodifier.amount();
+                double d0;
+                if (attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                        && attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
+                    d0 = attributemodifier.amount();
+                } else {
+                    d0 = attributemodifier.amount() * 100.0;
+                }
+
+                if (d1 > 0.0) {
+                    consumer.accept(
+                            Component.translatable(
+                                            "attribute.modifier.plus." + attributemodifier.operation().id(),
+                                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0),
+                                            Component.translatable(pair.getFirst().value().getDescriptionId())
+                                    )
+                                    .withStyle(ChatFormatting.BLUE)
+                    );
+                } else if (d1 < 0.0) {
+                    d0 *= -1.0;
+                    consumer.accept(
+                            Component.translatable(
+                                            "attribute.modifier.take." + attributemodifier.operation().id(),
+                                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0),
+                                            Component.translatable(pair.getFirst().value().getDescriptionId())
+                                    )
+                                    .withStyle(ChatFormatting.RED)
+                    );
+                }
+            }
+        }
+    }
+
 
     private static <T> HolderSet<T> getTagOrEmpty(@Nullable HolderLookup.Provider p_341186_, ResourceKey<Registry<T>> p_341113_, TagKey<T> p_341409_) {
         if (p_341186_ != null) {
@@ -120,7 +200,7 @@ public class ItemMobEnchantments implements TooltipProvider {
     }
 
     static {
-        LEVELS_CODEC = Codec.unboundedMap(MobEnchant.CODEC, LEVEL_CODEC).xmap(Object2IntOpenHashMap::new, Function.identity());
+        LEVELS_CODEC = Codec.unboundedMap(MobEnchants.getRegistry().holderByNameCodec(), LEVEL_CODEC).xmap(Object2IntOpenHashMap::new, Function.identity());
         FULL_CODEC = RecordCodecBuilder.create((p_337961_) -> {
             return p_337961_.group(LEVELS_CODEC.fieldOf("levels").forGetter((p_340785_) -> {
                 return p_340785_.enchantments;
@@ -131,37 +211,15 @@ public class ItemMobEnchantments implements TooltipProvider {
         CODEC = Codec.withAlternative(FULL_CODEC, LEVELS_CODEC, (p_340783_) -> {
             return new ItemMobEnchantments(p_340783_, true);
         });
-        STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.map(Object2IntOpenHashMap::new, MobEnchant.STREAM_CODEC, ByteBufCodecs.VAR_INT), (p_340784_) -> {
+        STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.map(Object2IntOpenHashMap::new, ByteBufCodecs.holderRegistry(MobEnchants.MOB_ENCHANT_REGISTRY), ByteBufCodecs.VAR_INT), (p_340784_) -> {
             return p_340784_.enchantments;
         }, ByteBufCodecs.BOOL, (p_330450_) -> {
             return p_330450_.showInTooltip;
         }, ItemMobEnchantments::new);
     }
 
-    public int getLevel(Holder<MobEnchant> enchantment) {
-        return this.enchantments.getInt(enchantment);
-    }
-
-    @Override
-    public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
-        if (this.showInTooltip) {
-            HolderLookup.Provider holderlookup$provider = tooltipContext.registries();
-            HolderSet<MobEnchant> holderset = getTagOrEmpty(holderlookup$provider, ModRegistries.MOB_ENCHANT, ModTags.MobEnchantTags.TOOLTIP_ORDER);
-
-            for (Holder<MobEnchant> holder : holderset) {
-                int i = this.enchantments.getInt(holder);
-                if (i > 0) {
-                    consumer.accept(MobEnchant.getFullname(holder, i));
-                }
-            }
-
-            for (Object2IntMap.Entry<Holder<MobEnchant>> entry : this.enchantments.object2IntEntrySet()) {
-                Holder<MobEnchant> holder1 = entry.getKey();
-                if (!holderset.contains(holder1)) {
-                    consumer.accept(MobEnchant.getFullname(entry.getKey(), entry.getIntValue()));
-                }
-            }
-        }
+    public static Holder<MobEnchant> getHolder(MobEnchant mobEnchant) {
+        return MobEnchants.getRegistry().wrapAsHolder(mobEnchant);
     }
 
 
@@ -174,18 +232,18 @@ public class ItemMobEnchantments implements TooltipProvider {
             this.showInTooltip = p_330722_.showInTooltip;
         }
 
-        public void set(Holder<MobEnchant> enchantment, int p_330832_) {
+        public void set(MobEnchant p_331872_, int p_330832_) {
             if (p_330832_ <= 0) {
-                this.enchantments.removeInt(getLevel(enchantment));
+                this.enchantments.removeInt(getHolder(p_331872_));
             } else {
-                this.enchantments.put(enchantment, Math.min(p_330832_, 255));
+                this.enchantments.put(getHolder(p_331872_), Math.min(p_330832_, 255));
             }
 
         }
 
-        public void upgrade(Holder<MobEnchant> enchantment, int p_331153_) {
+        public void upgrade(MobEnchant p_330536_, int p_331153_) {
             if (p_331153_ > 0) {
-                this.enchantments.merge(enchantment, Math.min(p_331153_, 255), Integer::max);
+                this.enchantments.merge(getHolder(p_330536_), Math.min(p_331153_, 255), Integer::max);
             }
 
         }
@@ -194,8 +252,8 @@ public class ItemMobEnchantments implements TooltipProvider {
             this.enchantments.keySet().removeIf(p_332079_);
         }
 
-        public int getLevel(Holder<MobEnchant> p_331330_) {
-            return this.enchantments.getOrDefault(p_331330_, 0);
+        public int getLevel(MobEnchant p_331330_) {
+            return this.enchantments.getOrDefault(getHolder(p_331330_), 0);
         }
 
         public Set<Holder<MobEnchant>> keySet() {
