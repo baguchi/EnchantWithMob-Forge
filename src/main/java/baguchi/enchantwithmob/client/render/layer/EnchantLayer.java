@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.client.render.layer;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -55,7 +56,8 @@ public class EnchantLayer<T extends LivingEntity, M extends EntityModel<T>> exte
 
     public void render(PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float tick = (float) entitylivingbaseIn.tickCount + partialTicks;
-        if (entitylivingbaseIn instanceof IEnchantCap cap) {
+        if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
+
             if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible()) {
                 float f = (float) entitylivingbaseIn.tickCount + partialTicks;
                 float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
