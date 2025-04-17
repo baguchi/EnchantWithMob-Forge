@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.client.render.layer;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
@@ -40,7 +41,7 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T entitylivingbaseIn, float v, float v1) {
         float tick = (float) entitylivingbaseIn.ageInTicks;
-        if (entitylivingbaseIn instanceof IEnchantCap cap) {
+        if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible) {
                 float f = (float) entitylivingbaseIn.ageInTicks;
                 float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;

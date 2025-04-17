@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.client.render.layer;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -38,7 +39,7 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 
 	@Override
 	public void render(PoseStack p_116983_, MultiBufferSource p_116984_, int p_116985_, T p_363277_, float p_116987_, float p_116988_) {
-		if (p_116983_ instanceof IEnchantCap cap) {
+		if (p_116983_ instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
 			if (cap.getEnchantCap().hasEnchant()) {
 				VertexConsumer ivertexbuilder = p_116984_.getBuffer(this.renderType());
 				this.getParentModel().renderToBuffer(p_116983_, ivertexbuilder, p_116985_, OverlayTexture.NO_OVERLAY);
