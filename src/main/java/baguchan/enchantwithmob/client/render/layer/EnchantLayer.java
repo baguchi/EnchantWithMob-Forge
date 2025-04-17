@@ -1,5 +1,6 @@
 package baguchan.enchantwithmob.client.render.layer;
 
+import baguchan.enchantwithmob.EnchantConfig;
 import baguchan.enchantwithmob.EnchantWithMob;
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.client.ModRenderTypes;
@@ -55,7 +56,7 @@ public class EnchantLayer<T extends LivingEntity, M extends EntityModel<T>> exte
 
     public void render(PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float tick = (float) entitylivingbaseIn.tickCount + partialTicks;
-        if (entitylivingbaseIn instanceof IEnchantCap cap) {
+        if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible()) {
                 float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
 
