@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -48,6 +49,7 @@ public class MultiShotMobEnchant extends MobEnchant {
 						isAdding = false;
 					}
 				});
+
 			}
 		}
 	}
@@ -70,6 +72,15 @@ public class MultiShotMobEnchant extends MobEnchant {
 			Vec3 newPower = new Vec3(newDamagingProjectile.getDeltaMovement().x, newDamagingProjectile.getDeltaMovement().y, newDamagingProjectile.getDeltaMovement().z).yRot((float) (Math.PI / rotation));
 
 			newDamagingProjectile.setDeltaMovement(newPower);
+		}
+
+		if (newProjectile instanceof AbstractHurtingProjectile abstractHurtingProjectile) {
+			Projectile newDamagingProjectile = (Projectile) newProjectile;
+			Vec3 newPower = new Vec3(abstractHurtingProjectile.xPower, abstractHurtingProjectile.yPower, abstractHurtingProjectile.zPower).yRot((float) (Math.PI / rotation));
+
+			abstractHurtingProjectile.xPower = newPower.x;
+			abstractHurtingProjectile.yPower = newPower.y;
+			abstractHurtingProjectile.zPower = newPower.z;
 		}
 
 		if (newProjectile instanceof AbstractArrow) {
