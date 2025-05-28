@@ -30,8 +30,8 @@ public class MobEnchants {
 	public static final RegistryObject<MobEnchant> SOUL_STEAL = MOB_ENCHANT.register("soul_steal", () -> new SoulStealMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2)));
 	public static final RegistryObject<MobEnchant> DEFLECT = MOB_ENCHANT.register("deflect", () -> new DeflectMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 1)));
 	public static final RegistryObject<MobEnchant> SMALL = MOB_ENCHANT.register("small", () -> new SmallMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2)).addAttributesModifier(Attributes.MAX_HEALTH, "b4170c63-d50b-a0ee-15b7-9156c6e41940", -0.1D, AttributeModifier.Operation.MULTIPLY_TOTAL));
-	public static final RegistryObject<MobEnchant> FAST = MOB_ENCHANT.register("fast", () -> new FastMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2)));
-	public static final RegistryObject<MobEnchant> SLOW = MOB_ENCHANT.register("slow", () -> new SlowMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2)));
+	public static final RegistryObject<MobEnchant> FAST = MOB_ENCHANT.register("fast", () -> new FastMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 4)));
+	public static final RegistryObject<MobEnchant> SLOW = MOB_ENCHANT.register("slow", () -> new SlowMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 3)));
 
 	private static Supplier<IForgeRegistry<MobEnchant>> registry;
 

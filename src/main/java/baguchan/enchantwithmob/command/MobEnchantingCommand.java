@@ -96,7 +96,7 @@ public class MobEnchantingCommand {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
 				if (mobEnchant != null) {
-					if (level > mobEnchant.getMaxLevel()) {
+					if (level > 255) {
 						commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.too_high"));
 						return 0;
 					} else {
