@@ -10,11 +10,11 @@ public class SlowMobEnchant extends MobEnchant {
     }
 
     public int getMinEnchantability(int enchantmentLevel) {
-        return 10 + (enchantmentLevel - 1) * 10;
+        return 10 + (enchantmentLevel - 1) * 15;
     }
 
     public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 20;
+        return this.getMinEnchantability(enchantmentLevel) + 60;
     }
 
     @Override

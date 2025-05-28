@@ -12,6 +12,7 @@ import baguchi.enchantwithmob.client.render.layer.SlimeEnchantLayer;
 import baguchi.enchantwithmob.registry.ModEntities;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -45,6 +46,7 @@ public class ClientRegistrar {
 					.withUniform("TextureMat", UniformType.MATRIX4X4)
 					.withBlend(BlendFunction.ADDITIVE)
 					.withCull(true)
+					.withDepthTestFunction(DepthTestFunction.EQUAL_DEPTH_TEST)
 					.withVertexFormat(DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS)
 					.build();
 	public static final RenderPipeline MOB_ENCHANT_NO_CULL =
