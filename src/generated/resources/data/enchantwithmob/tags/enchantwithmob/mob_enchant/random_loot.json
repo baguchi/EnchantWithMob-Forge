@@ -1,8 +1,4 @@
 {
-  "remove": [
-    "enchantwithmob:fast",
-    "enchantwithmob:slow"
-  ],
   "values": [
     "#enchantwithmob:random_spawn"
   ]

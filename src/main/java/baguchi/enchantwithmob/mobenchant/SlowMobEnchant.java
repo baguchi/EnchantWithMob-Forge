@@ -33,6 +33,6 @@ public class SlowMobEnchant extends MobEnchant {
 
     @Override
     protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != MobEnchants.SPEEDY.get() && ench != MobEnchants.HASTE.get();
+        return super.canApplyTogether(ench) && ench != MobEnchants.SPEEDY.get();
     }
 }

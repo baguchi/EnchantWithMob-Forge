@@ -389,7 +389,7 @@ public class CommonEventHandler {
             ItemMobEnchantments.Mutable itemenchantments$mutable = new ItemMobEnchantments.Mutable(MobEnchantUtils.getEnchantmentsForCrafting(itemstack1));
             j += (long) itemstack.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue()
                     + (long) itemstack2.getOrDefault(DataComponents.REPAIR_COST, Integer.valueOf(0)).intValue();
-            event.setCost(0);
+            event.setXpCost(0);
             boolean flag = false;
             if (!itemstack2.isEmpty()) {
                 flag = itemstack2.has(ModDataCompnents.MOB_ENCHANTMENTS.get());
@@ -397,7 +397,7 @@ public class CommonEventHandler {
                     int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
                     if (l2 <= 0) {
                         event.setOutput(ItemStack.EMPTY);
-                        event.setCost(0);
+                        event.setXpCost(0);
                         return;
                     }
 
@@ -408,11 +408,11 @@ public class CommonEventHandler {
                         i++;
                         l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
                     }
-                    event.setCost(j3);
+                    event.setXpCost(j3);
                 } else {
                     if (!flag && (!itemstack1.is(itemstack2.getItem()) || !itemstack1.isDamageableItem())) {
                         event.setOutput(ItemStack.EMPTY);
-                        event.setCost(0);
+                        event.setXpCost(0);
                         return;
                     }
 
@@ -479,7 +479,7 @@ public class CommonEventHandler {
 
                     if (flag3 && !flag2) {
                         event.setOutput(ItemStack.EMPTY);
-                        event.setCost(0);
+                        event.setXpCost(0);
                         return;
                     }
                 }
@@ -497,19 +497,19 @@ public class CommonEventHandler {
                 itemstack1.remove(DataComponents.CUSTOM_NAME);
             }
             int k2 = i <= 0 ? 0 : (int) Mth.clamp(j + (long) i, 0L, 2147483647L);
-            event.setCost(k2);
+            event.setXpCost(k2);
             if (i <= 0) {
                 itemstack1 = ItemStack.EMPTY;
             }
 
             if (k == i && k > 0) {
-                if (event.getCost() >= 40) {
-                    event.setCost(39);
+                if (event.getXpCost() >= 40) {
+                    event.setXpCost(39);
                 }
 
             }
 
-            if (event.getCost() >= 40 && !event.getPlayer().getAbilities().instabuild) {
+            if (event.getXpCost() >= 40 && !event.getPlayer().getAbilities().instabuild) {
                 itemstack1 = ItemStack.EMPTY;
             }
 

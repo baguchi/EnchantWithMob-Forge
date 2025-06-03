@@ -28,7 +28,7 @@ public class DataGenerators {
         BlockTagGenerator blockTagsProvider = new BlockTagGenerator(packOutput, lookupProvider);
 
         generator.addProvider(true, blockTagsProvider);
-        generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider, blockTagsProvider.contentsGetter()));
+        generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new EntityTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new CustomTagProvider.MobEnchantTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new Runner(packOutput, lookupProvider));

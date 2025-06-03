@@ -8,11 +8,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-public class MobEnchantOverlay implements LayeredDraw.Layer {
+public class MobEnchantOverlay implements GuiLayer {
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker partialTick) {
         Minecraft mc = Minecraft.getInstance();

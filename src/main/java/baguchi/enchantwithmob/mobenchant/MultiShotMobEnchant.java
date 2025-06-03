@@ -4,9 +4,9 @@ import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModAttachments;
+import baguchi.enchantwithmob.utils.EntityUtils;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -63,10 +63,8 @@ public class MultiShotMobEnchant extends MobEnchant {
                 MobEnchantUtils.executeIfPresent(owner, MobEnchants.MULTISHOT.getKey(), () -> {
                     if (!level.isClientSide && projectile.tickCount == 0 && !isAdding) {
                         isAdding = true;
-                        CompoundTag compoundNBT = new CompoundTag();
-                        compoundNBT = projectile.saveWithoutId(compoundNBT);
-                        addProjectile(projectile, compoundNBT, level, 15.0F);
-                        addProjectile(projectile, compoundNBT, level, -15.0F);
+                        addProjectile(projectile, level, 15.0F);
+                        addProjectile(projectile, level, -15.0F);
                         isAdding = false;
                     }
                 });
@@ -74,10 +72,10 @@ public class MultiShotMobEnchant extends MobEnchant {
         }
     }
 
-    private static void addProjectile(Projectile projectile, CompoundTag compoundNBT, Level level, float rotation) {
+    private static void addProjectile(Projectile projectile, Level level, float rotation) {
         Projectile newProjectile = (Projectile) projectile.getType().create(level, EntitySpawnReason.EVENT);
         UUID uuid = newProjectile.getUUID();
-        newProjectile.load(compoundNBT);
+        EntityUtils.loadFrom(newProjectile, projectile);
         newProjectile.setUUID(uuid);
         Vec3 vector3d = newProjectile.getDeltaMovement().yRot((float) (Math.PI / rotation));
 

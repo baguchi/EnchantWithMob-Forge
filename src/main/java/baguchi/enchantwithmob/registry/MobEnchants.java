@@ -37,10 +37,6 @@ public class MobEnchants {
     public static final DeferredHolder<MobEnchant, MobEnchant> SMALL = MOB_ENCHANT.register("small", () -> new SmallMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2, 4)).addAttributesModifier(Attributes.MAX_HEALTH, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant.small.health"), -0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributesModifier(Attributes.SCALE, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant.small.scale"), -0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredHolder<MobEnchant, MobEnchant> HUGE = MOB_ENCHANT.register("huge", () -> new HugeMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 2, 4)).addAttributesModifier(Attributes.MAX_HEALTH, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant.huge.health"), 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributesModifier(Attributes.SCALE, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant.huge.scale"), 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
-    public static final DeferredHolder<MobEnchant, MobEnchant> HASTE = MOB_ENCHANT.register("fast", () -> new FastMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 4, 4)));
-    public static final DeferredHolder<MobEnchant, MobEnchant> SLOW = MOB_ENCHANT.register("slow", () -> new SlowMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 3, 4)));
-
-
     private static Registry<MobEnchant> registry;
 
     @SubscribeEvent
