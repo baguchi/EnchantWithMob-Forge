@@ -32,7 +32,7 @@ public class MobEnchantOverlay implements GuiLayer {
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
-                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, 0xe0e0e0);
+                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, -1);
                         }
                     }
                 }
@@ -54,7 +54,7 @@ public class MobEnchantOverlay implements GuiLayer {
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 60;
 
-                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, 0xe0e0e0);
+                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, -1);
                         }
                     }
                 }
