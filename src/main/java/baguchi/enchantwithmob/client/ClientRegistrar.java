@@ -13,14 +13,15 @@ import baguchi.enchantwithmob.registry.ModEntities;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,42 +30,24 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
+import static net.minecraft.client.renderer.RenderPipelines.*;
+
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientRegistrar {
 	public static final RenderPipeline MOB_ENCHANT =
-			RenderPipeline.builder(RenderPipelines.FOG_NO_COLOR_SNIPPET)
+			RenderPipeline.builder(new RenderPipeline.Snippet[]{MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET})
 					.withLocation(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant"))
-					.withVertexShader("core/entity")
-					.withFragmentShader("core/entity")
-					.withShaderDefine("ALPHA_CUTOUT", 0.1F)
-					.withShaderDefine("EMISSIVE")
-					.withShaderDefine("NO_OVERLAY")
-					.withShaderDefine("NO_CARDINAL_LIGHTING")
-					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-					.withSampler("Sampler0")
-					.withUniform("TextureMat", UniformType.MATRIX4X4)
-					.withBlend(BlendFunction.ADDITIVE)
-					.withCull(true)
-					.withDepthTestFunction(DepthTestFunction.EQUAL_DEPTH_TEST)
-					.withVertexFormat(DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS)
-					.build();
-	public static final RenderPipeline MOB_ENCHANT_NO_CULL =
-			RenderPipeline.builder(RenderPipelines.FOG_NO_COLOR_SNIPPET)
+					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withDepthWrite(false).withCull(false).withDepthTestFunction(DepthTestFunction.EQUAL_DEPTH_TEST).withBlend(BlendFunction.ADDITIVE).withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
+	public static final RenderPipeline MOB_ENCHANT_BEAM =
+			RenderPipeline.builder(new RenderPipeline.Snippet[]{MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET})
 					.withLocation(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_no_cull"))
-					.withVertexShader("core/entity")
-					.withFragmentShader("core/entity")
-					.withShaderDefine("ALPHA_CUTOUT", 0.1F)
-					.withShaderDefine("EMISSIVE")
-					.withShaderDefine("NO_OVERLAY")
-					.withShaderDefine("NO_CARDINAL_LIGHTING")
-					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-					.withSampler("Sampler0")
-					.withUniform("TextureMat", UniformType.MATRIX4X4)
-					.withBlend(BlendFunction.ADDITIVE)
-					.withCull(false)
-					.withVertexFormat(DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS)
-					.build();
+					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withDepthWrite(false).withCull(false).withBlend(BlendFunction.ADDITIVE).withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
+	public static final RenderPipeline MOB_ENCHANT_EYE =
+			RenderPipeline.builder(new RenderPipeline.Snippet[]{MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET})
+					.withLocation(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_eye"))
+					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withDepthWrite(false).withCull(false).withBlend(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA)).withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
+
 
 	private static final RenderType BLAZE_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_blaze_eyes.png"));
 	private static final RenderType CREEPER_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_creeper_eyes.png"));
@@ -115,7 +98,7 @@ public class ClientRegistrar {
 			}
 
 
-			/*if (event.getRenderer(entityType) instanceof LivingEntityRenderer r) {
+			if (event.getRenderer(entityType) instanceof LivingEntityRenderer r) {
 				if (entityType == EntityType.BLAZE) {
 					r.addLayer(new EnchantedEyesLayer(r, BLAZE_EYES));
 				}
@@ -153,7 +136,7 @@ public class ClientRegistrar {
 					r.addLayer(new EnchantedEyesLayer(r, GUARDIAN_EYES));
 				}
 
-			}*/
+			}
 		});
     }
 
@@ -165,6 +148,7 @@ public class ClientRegistrar {
 	@SubscribeEvent
 	public static void registerPipelines(RegisterRenderPipelinesEvent event) {
 		event.registerPipeline(MOB_ENCHANT);
-		event.registerPipeline(MOB_ENCHANT_NO_CULL);
+		event.registerPipeline(MOB_ENCHANT_BEAM);
+		event.registerPipeline(MOB_ENCHANT_EYE);
 	}
 }

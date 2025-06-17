@@ -1,11 +1,13 @@
 package baguchi.enchantwithmob.client.model;
 
+import baguchi.bagus_lib.client.layer.IArmor;
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.client.animation.EnchanterAnimation;
 import baguchi.enchantwithmob.client.animation.NormalAnimation;
 import baguchi.enchantwithmob.client.render.state.EnchanterRenderState;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -15,7 +17,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<T> implements baguchi.bagus_lib.client.layer.IArmor {
+public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<T> implements IArmor {
 	private final ModelPart realRoot;
 	private final ModelPart everything;
 	private final ModelPart left_leg;
@@ -33,6 +35,15 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 	private final ModelPart leftHand;
 	private final ModelPart right_arm;
 	private final ModelPart rightHand;
+
+    private final KeyframeAnimation walkAnimation;
+    private final KeyframeAnimation walkStopAnimation;
+    private final KeyframeAnimation castingAnimation;
+    private final KeyframeAnimation oldCastingAnimation;
+    private final KeyframeAnimation attackAnimation;
+    private final KeyframeAnimation oldAttackAnimation;
+    private final KeyframeAnimation idleAnimation;
+    private final KeyframeAnimation sitAnimation;
 	public EnchanterModel(ModelPart root) {
 		super(root);
 		this.realRoot = root;
@@ -52,7 +63,15 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 		this.leftHand = this.left_arm.getChild("leftHand");
 		this.right_arm = this.body.getChild("right_arm");
 		this.rightHand = this.right_arm.getChild("rightHand");
-	}
+        walkAnimation = EnchanterAnimation.WALK.bake(root);
+        walkStopAnimation = NormalAnimation.WALK_STOP.bake(root);
+        castingAnimation = EnchanterAnimation.ENCHANCE.bake(root);
+        oldCastingAnimation = EnchanterAnimation.old_enchant.bake(root);
+        attackAnimation = EnchanterAnimation.ATTACK.bake(root);
+        oldAttackAnimation = EnchanterAnimation.old_attack.bake(root);
+        idleAnimation = EnchanterAnimation.IDLE.bake(root);
+        sitAnimation = NormalAnimation.SIT.bake(root);
+    }
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
@@ -127,17 +146,17 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 		this.Cape.xRot = 0.1F + entity.walkAnimationSpeed * 0.6F;
 
 		if (entity.isRiding) {
-			this.applyStatic(NormalAnimation.SIT);
+            sitAnimation.applyStatic();
 		}
 
 		if (EnchantConfig.CLIENT.oldStyleAnimation.get()) {
 			if (entity.castingAnimationState.isStarted()) {
-				this.animate(entity.castingAnimationState, EnchanterAnimation.old_enchant, entity.ageInTicks);
+                oldCastingAnimation.apply(entity.castingAnimationState, entity.ageInTicks);
 				this.arms.visible = false;
 				this.right_arm.visible = true;
 				this.left_arm.visible = true;
 			} else if (entity.attackAnimationState.isStarted()) {
-				this.animate(entity.attackAnimationState, EnchanterAnimation.old_attack, entity.ageInTicks);
+                oldAttackAnimation.apply(entity.attackAnimationState, entity.ageInTicks);
 
 				this.arms.visible = true;
 				this.right_arm.visible = false;
@@ -155,15 +174,15 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 			this.right_arm.visible = true;
 			this.left_arm.visible = true;
 			if (entity.castingAnimationState.isStarted()) {
-				this.animate(entity.castingAnimationState, EnchanterAnimation.ENCHANCE, entity.ageInTicks);
+                castingAnimation.apply(entity.castingAnimationState, entity.ageInTicks);
 			} else if (entity.attackAnimationState.isStarted()) {
-				this.animate(entity.attackAnimationState, EnchanterAnimation.ATTACK, entity.ageInTicks);
+                attackAnimation.apply(entity.attackAnimationState, entity.ageInTicks);
 			} else if (!entity.castingAnimationState.isStarted() && !entity.attackAnimationState.isStarted()) {
 				if (entity.idleAnimationState.isStarted()) {
-					this.animate(entity.idleAnimationState, EnchanterAnimation.IDLE, entity.ageInTicks, 1.0F);
+                    idleAnimation.apply(entity.idleAnimationState, entity.ageInTicks, 1.0F);
 				} else {
-					this.animateWalk(EnchanterAnimation.WALK, entity.walkAnimationPos, entity.walkAnimationSpeed, 3.0F, 4.5F);
-					this.applyStatic(NormalAnimation.WALK_STOP);
+                    walkAnimation.applyWalk(entity.walkAnimationPos, entity.walkAnimationSpeed, 3.0F, 4.5F);
+                    walkStopAnimation.applyStatic();
 				}
 			}
 		}

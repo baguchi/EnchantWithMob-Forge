@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.TriState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
@@ -54,11 +53,11 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
     }
 
     public static RenderType enchantSwirl(ResourceLocation resourceLocation) {
-        return RenderType.create("enchant_effect", 256, false, true, ClientRegistrar.MOB_ENCHANT, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.FALSE, false)).setTexturingState(ENTITY_GLINT_TEXTURING).createCompositeState(false));
+        return RenderType.create("enchant_effect", 256, false, true, ClientRegistrar.MOB_ENCHANT, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false)).setTexturingState(ENTITY_GLINT_TEXTURING).createCompositeState(false));
     }
 
     public static RenderType enchantBeamSwirl(ResourceLocation resourceLocation) {
-        return RenderType.create("enchant_beam_effect", 256, false, true, ClientRegistrar.MOB_ENCHANT_NO_CULL, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.FALSE, false)).setTexturingState(ENTITY_GLINT_TEXTURING).createCompositeState(false));
+        return RenderType.create("enchant_beam_effect", 256, false, true, ClientRegistrar.MOB_ENCHANT_BEAM, RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false)).setTexturingState(ENTITY_GLINT_TEXTURING).createCompositeState(false));
     }
 
     private static void setupGlintTexturing(float p_110187_) {

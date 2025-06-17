@@ -1,11 +1,10 @@
 package baguchi.enchantwithmob.capability;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.UnknownNullability;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public class ItemMobEnchantCapability implements INBTSerializable<CompoundTag> {
+public class ItemMobEnchantCapability implements ValueIOSerializable {
 	private boolean hasEnchant;
 
 	public boolean hasEnchant() {
@@ -18,16 +17,12 @@ public class ItemMobEnchantCapability implements INBTSerializable<CompoundTag> {
 
 
 	@Override
-	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-		CompoundTag nbt = new CompoundTag();
-
-		nbt.putBoolean("HasEnchant", hasEnchant);
-
-		return nbt;
+	public void serialize(ValueOutput output) {
+		output.putBoolean("HasEnchant", hasEnchant);
 	}
 
 	@Override
-	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        hasEnchant = compoundTag.getBooleanOr("HasEnchant", false);
+	public void deserialize(ValueInput valueInput) {
+		hasEnchant = valueInput.getBooleanOr("HasEnchant", false);
 	}
 }

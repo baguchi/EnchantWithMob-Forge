@@ -2,12 +2,12 @@ package baguchi.enchantwithmob.client.render.layer;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.TriState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -25,8 +24,8 @@ import java.util.function.Function;
 public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends EyesLayer<T, M> {
 
 	private static final Function<ResourceLocation, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {
-		RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173253_, TriState.FALSE, false);
-		return RenderType.create("enchanted_eyes", 1536, false, true, RenderPipelines.EYES, RenderType.CompositeState.builder().setTextureState(renderstateshard$texturestateshard).createCompositeState(false));
+        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173253_, false);
+        return RenderType.create("enchanted_eyes", 1536, false, true, ClientRegistrar.MOB_ENCHANT_EYE, RenderType.CompositeState.builder().setTextureState(renderstateshard$texturestateshard).createCompositeState(false));
 	});
 
 	public final RenderType render_types;

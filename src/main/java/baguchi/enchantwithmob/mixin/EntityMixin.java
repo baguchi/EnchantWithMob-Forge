@@ -2,7 +2,6 @@ package baguchi.enchantwithmob.mixin;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
-import baguchi.enchantwithmob.api.IEnchantedTime;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,24 +11,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Entity.class, remap = false)
-public abstract class EntityMixin implements IEnchantedTime {
+public abstract class EntityMixin {
 
     @Shadow
     private EntityDimensions dimensions;
     @Shadow
     private float eyeHeight;
-    private float differentTime = 1.0F;
-
-    @Override
-    public float enchantWithMob_Forge$getDifferentTime() {
-        return differentTime;
-    }
-
-    @Override
-    public void enchantWithMob_Forge$setDifferentTime(float time) {
-        differentTime = time;
-    }
-
 
     @Inject(method = "refreshDimensions", at = @At("RETURN"))
     public void refreshDimensions(CallbackInfo callbackInfo) {
