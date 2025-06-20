@@ -13,7 +13,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = EnchantWithMob.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EnchantWithMob.MODID)
 public class DataGenerators {
 
     @SubscribeEvent

@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import static net.minecraft.resources.ResourceKey.createRegistryKey;
 
-@EventBusSubscriber(modid = EnchantWithMob.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EnchantWithMob.MODID)
 public class MobEnchants {
     public static final ResourceKey<Registry<MobEnchant>> MOB_ENCHANT_REGISTRY = createRegistryKey(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant"));
 

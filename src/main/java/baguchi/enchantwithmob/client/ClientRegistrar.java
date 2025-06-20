@@ -33,7 +33,7 @@ import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import static net.minecraft.client.renderer.RenderPipelines.*;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientRegistrar {
 	public static final RenderPipeline MOB_ENCHANT =
 			RenderPipeline.builder(new RenderPipeline.Snippet[]{MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET})
