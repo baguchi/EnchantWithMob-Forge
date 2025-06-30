@@ -67,12 +67,12 @@ public class EnchantWithMob {
 
     public void setupPackets(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
-        registrar.playBidirectional(AncientMessage.TYPE, AncientMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playBidirectional(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(AncientMessage.TYPE, AncientMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToServer(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 	}
 
     public static ResourceLocation prefix(String path) {
