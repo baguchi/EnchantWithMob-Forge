@@ -23,5 +23,6 @@ public class StrongMobEnchant extends MobEnchant {
     }
 
     public void modifyDamage(ServerLevel level, int p344526, Entity entity, DamageSource damageSource, MutableFloat mutablefloat) {
+        mutablefloat.setValue(mutablefloat.getValue() + (p344526 - 1) * 0.5F + 1);
     }
 }
