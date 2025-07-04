@@ -14,14 +14,11 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.ANCIENT_GLINT;
 import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.enchantSwirl;
 
 
-@OnlyIn(Dist.CLIENT)
 public class SlimeEnchantLayer<T extends LivingEntityRenderState> extends RenderLayer<T, SlimeModel> {
 	private final SlimeModel model;
 

@@ -15,12 +15,10 @@ import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
 
-@OnlyIn(Dist.CLIENT)
+
 public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends EyesLayer<T, M> {
 
 	private static final Function<ResourceLocation, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {

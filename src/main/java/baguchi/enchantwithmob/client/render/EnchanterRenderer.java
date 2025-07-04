@@ -13,10 +13,8 @@ import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.item.CrossbowItem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+
 public class EnchanterRenderer extends MobRenderer<Enchanter, EnchanterRenderState, EnchanterModel<EnchanterRenderState>> {
     private static final ResourceLocation ILLAGER = ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchanter_clothed.png");
 

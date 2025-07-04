@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
@@ -39,7 +38,7 @@ import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.enchantBea
  * Base from Bumble Zone Lazer Layer
  * https://github.com/TelepathicGrunt/Bumblezone/blob/1.20-Arch/common/src/main/java/com/telepathicgrunt/the_bumblezone/client/rendering/cosmiccrystal/CosmicCrystalRenderer.java
  */
-@OnlyIn(Dist.CLIENT)
+
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
 

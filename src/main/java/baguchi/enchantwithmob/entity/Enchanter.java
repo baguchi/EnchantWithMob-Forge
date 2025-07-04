@@ -30,8 +30,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -187,7 +185,7 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+
     @Override
     public AbstractIllager.IllagerArmPose getArmPose() {
         if (this.isCastingSpell()) {
