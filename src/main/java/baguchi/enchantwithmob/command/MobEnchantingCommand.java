@@ -137,7 +137,7 @@ public class MobEnchantingCommand {
 							enchantCap.getEnchantCap().addMobEnchant((LivingEntity) entity, mobEnchant, level);
 						}
 
-						commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(mobEnchant.key()).toString()), true);
+						commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(mobEnchant.key()).get().key().location().toString()), true);
 						return 1;
 					}
 				} else {
