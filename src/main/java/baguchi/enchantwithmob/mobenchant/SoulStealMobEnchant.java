@@ -46,7 +46,6 @@ public class SoulStealMobEnchant extends MobEnchant {
                     }
                 }
             }
-            ;
         }
     }
 
