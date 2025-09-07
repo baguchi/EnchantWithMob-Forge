@@ -7,7 +7,6 @@ import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -36,17 +35,14 @@ public class SoulStealMobEnchant extends MobEnchant {
             LivingEntity attacker = (LivingEntity) damageSource.getDirectEntity();
             if (attacker instanceof IEnchantCap cap) {
                 int enchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.SOUL_STEAL.getKey());
-                if (cap.getEnchantCap().hasEnchant() && enchantLevel > 0 && !attacker.hasEffect(MobEffects.ABSORPTION)) {
-                    if (attacker.getAbsorptionAmount() < 6) {
-                        attacker.setAbsorptionAmount(Mth.clamp(attacker.getAbsorptionAmount() + enchantLevel, 0, 6));
-                    }
+                if (cap.getEnchantCap().hasEnchant() && enchantLevel > 0) {
+                    attacker.heal(Mth.clamp(enchantLevel, 0, entity.getMaxHealth()));
                     if (!entity.level().isClientSide()) {
                         SoulParticleMessage message = new SoulParticleMessage(entity);
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
                     }
                 }
             }
-            ;
         }
     }
 
