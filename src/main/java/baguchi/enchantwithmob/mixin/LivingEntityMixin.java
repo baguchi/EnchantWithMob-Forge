@@ -56,7 +56,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Override
     public void resync(Entity entity) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, message);

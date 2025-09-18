@@ -178,7 +178,7 @@ public class MobEnchantUtils {
 		}
 		if (flag) {
 			if (!user.level().isClientSide()) {
-				itemIn.hurtAndBreak(1, user, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+                itemIn.hurtAndBreak(1, user, InteractionHand.MAIN_HAND);
 
 			}
 		}
@@ -199,7 +199,7 @@ public class MobEnchantUtils {
 
 		if (flag) {
 			if (!owner.level().isClientSide()) {
-				itemIn.hurtAndBreak(1, owner, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+                itemIn.hurtAndBreak(1, owner, InteractionHand.MAIN_HAND);
 
 			}
 		}

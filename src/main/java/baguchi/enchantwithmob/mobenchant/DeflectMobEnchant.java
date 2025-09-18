@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.mobenchant;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.phys.EntityHitResult;
@@ -34,7 +35,7 @@ public class DeflectMobEnchant extends MobEnchant {
             MobEnchantUtils.executeIfPresent(entityHitResult.getEntity(), MobEnchants.DEFLECT.getKey(), () -> {
                 event.setCanceled(true);
                 Vec3 vec3 = projectile.getDeltaMovement();
-                projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityHitResult.getEntity(), projectile.getOwner(), false);
+                projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityHitResult.getEntity(), EntityReference.of(projectile.getOwner()), false);
             });
         }
     }

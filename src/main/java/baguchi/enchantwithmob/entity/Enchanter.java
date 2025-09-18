@@ -79,7 +79,7 @@ public class Enchanter extends SpellcasterIllager {
     @Override
     public void baseTick() {
         super.baseTick();
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (this.attackAnimationTick < this.attackAnimationLength) {
                 this.attackAnimationTick++;
             }
@@ -122,7 +122,7 @@ public class Enchanter extends SpellcasterIllager {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.setupAnimationStates();
         }
     }

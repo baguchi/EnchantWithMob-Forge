@@ -6,11 +6,10 @@ import baguchi.enchantwithmob.client.model.EnchantedWindModel;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -31,26 +30,13 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
     }
 
     @Override
-    public void render(PoseStack p_117349_, MultiBufferSource p_117350_, int p_117351_, T p_361554_, float p_117353_, float p_117354_) {
-        if (p_361554_ instanceof IEnchantCap cap) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int p_117351_, T entity, float p_117353_, float p_117354_) {
+        if (entity instanceof IEnchantCap cap) {
             MobEnchantUtils.executeIfPresent(cap, MobEnchants.WIND.getKey(), () -> {
 
-                float f = (float) p_361554_.ageInTicks;
-                VertexConsumer vertexconsumer = p_117350_.getBuffer(RenderType.breezeWind(getWindTextureLocation(), this.xOffset(f) % 1.0F, 0.0F));
-                this.model.setupAnim(p_361554_);
-                this.model.windTop().skipDraw = true;
-                this.model.windMiddle().skipDraw = true;
-                this.model.windBottom().skipDraw = false;
-                this.model.root().render(p_117349_, vertexconsumer, p_117351_, OverlayTexture.NO_OVERLAY);
-                this.model.windTop().skipDraw = true;
-                this.model.windMiddle().skipDraw = false;
-                this.model.windBottom().skipDraw = true;
-                this.model.root().render(p_117349_, vertexconsumer, p_117351_, OverlayTexture.NO_OVERLAY);
-                this.model.windTop().skipDraw = false;
-                this.model.windMiddle().skipDraw = true;
-                this.model.windBottom().skipDraw = true;
-                this.model.root().render(p_117349_, vertexconsumer, p_117351_, OverlayTexture.NO_OVERLAY);
-
+                float f = entity.ageInTicks;
+                RenderType rendertype = RenderType.breezeWind(WIND_TEXTURE_LOCATION, this.xOffset(entity.ageInTicks) % 1.0F, 0.0F);
+                submitNodeCollector.order(1).submitModel(this.model, entity, poseStack, rendertype, p_117351_, OverlayTexture.NO_OVERLAY, -1, null, entity.outlineColor, null);
             });
         }
     }
