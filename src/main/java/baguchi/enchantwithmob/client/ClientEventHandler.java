@@ -27,7 +27,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
@@ -59,7 +58,6 @@ public class ClientEventHandler {
     }
 
     private static void renderBeam(@NotNull MobEnchantCapability cap, LivingEntityRenderState p_229118_1_, float p_229118_2_, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, Entity level, LivingEntityRenderer<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer) {
-		float tick = (float) p_229118_1_.ageInTicks;
         poseStack.pushPose();
         Vec3 vector3d = level.getRopeHoldPosition(p_229118_2_);
 		double d0 = p_229118_1_.bodyRot * ((float) Math.PI / 180F) + (Math.PI / 2D);
@@ -74,8 +72,6 @@ public class ClientEventHandler {
 		float f1 = (float) (vector3d.y - d4);
 		float f2 = (float) (vector3d.z - d5);
 		float f3 = 0.1F;
-        Matrix4f matrix4f = poseStack.last().pose();
-        Matrix3f matrix3f = poseStack.last().normal();
 		float f4 = Mth.fastInvCubeRoot(f * f + f2 * f2) * 0.1F / 2.0F;
 		float f5 = f2 * f4;
 		float f6 = f * f4;
@@ -87,8 +83,8 @@ public class ClientEventHandler {
         int l = level.level().getBrightness(LightLayer.SKY, blockpos1);
 
         submitNodeCollector.submitCustomGeometry(poseStack, enchantBeamSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), (pose, vertexConsumer) -> {
-            renderSide(vertexConsumer, matrix4f, pose, f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
-            renderSide(vertexConsumer, matrix4f, pose, f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
+            renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
+            renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
         });
         poseStack.popPose();
 	}
