@@ -17,11 +17,6 @@ public class SlowMobEnchant extends MobEnchant {
         return this.getMinEnchantability(enchantmentLevel) + 60;
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
     public boolean isCursedEnchant() {
         return true;
     }

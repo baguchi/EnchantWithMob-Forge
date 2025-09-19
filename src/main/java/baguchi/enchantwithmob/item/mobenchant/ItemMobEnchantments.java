@@ -27,7 +27,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.TooltipProvider;
 
 import javax.annotation.Nullable;
@@ -106,38 +105,7 @@ public class ItemMobEnchantments implements TooltipProvider {
             consumer.accept(CommonComponents.EMPTY);
             consumer.accept(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
 
-            for (Pair<Holder<Attribute>, AttributeModifier> pair : list) {
-                AttributeModifier attributemodifier = pair.getSecond();
-                double d1 = attributemodifier.amount();
-                double d0;
-                if (attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                        && attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
-                    d0 = attributemodifier.amount();
-                } else {
-                    d0 = attributemodifier.amount() * 100.0;
-                }
-
-                if (d1 > 0.0) {
-                    consumer.accept(
-                            Component.translatable(
-                                            "attribute.modifier.plus." + attributemodifier.operation().id(),
-                                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0),
-                                            Component.translatable(pair.getFirst().value().getDescriptionId())
-                                    )
-                                    .withStyle(ChatFormatting.BLUE)
-                    );
-                } else if (d1 < 0.0) {
-                    d0 *= -1.0;
-                    consumer.accept(
-                            Component.translatable(
-                                            "attribute.modifier.take." + attributemodifier.operation().id(),
-                                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0),
-                                            Component.translatable(pair.getFirst().value().getDescriptionId())
-                                    )
-                                    .withStyle(ChatFormatting.RED)
-                    );
-                }
-            }
+            net.neoforged.neoforge.common.util.AttributeUtil.addPotionTooltip(list, consumer);
         }
     }
 

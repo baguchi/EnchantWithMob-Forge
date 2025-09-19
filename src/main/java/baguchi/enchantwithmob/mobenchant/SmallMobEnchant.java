@@ -39,7 +39,6 @@ public class SmallMobEnchant extends MobEnchant {
                     }
                 }
             }
-            ;
         }
     }
 
@@ -49,11 +48,6 @@ public class SmallMobEnchant extends MobEnchant {
             damage /= 1.0F + level * 0.15F;
         }
         return damage;
-    }
-
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
     }
 
     public boolean isCursedEnchant() {

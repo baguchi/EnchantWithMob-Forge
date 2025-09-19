@@ -46,11 +46,6 @@ public class PoisonCloudMobEnchant extends MobEnchant {
         return ench != MobEnchants.POISON.get() && super.canApplyTogether(ench);
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
     @SubscribeEvent
     public static void onImpact(ProjectileImpactEvent event) {
         Projectile projectile = event.getProjectile();

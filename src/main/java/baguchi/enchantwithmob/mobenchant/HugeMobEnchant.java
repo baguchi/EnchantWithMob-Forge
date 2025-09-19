@@ -51,11 +51,6 @@ public class HugeMobEnchant extends MobEnchant {
     }
 
     @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
-    @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {
         return super.isCompatibleMob(livingEntity) || EnchantConfig.COMMON.bigYourSelf.get();
     }
