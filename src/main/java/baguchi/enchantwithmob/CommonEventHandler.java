@@ -369,7 +369,7 @@ public class CommonEventHandler {
                             if (flag) {
                                 player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
-                                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
+                                stack.hurtAndBreak(1, player, event.getHand());
 
                                 player.getCooldowns().addCooldown(stack, 60);
 

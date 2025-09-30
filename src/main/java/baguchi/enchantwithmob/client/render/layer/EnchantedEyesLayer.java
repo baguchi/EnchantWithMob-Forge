@@ -4,12 +4,11 @@ import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -35,12 +34,14 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 	}
 
 	@Override
-	public void render(PoseStack p_116983_, MultiBufferSource p_116984_, int p_116985_, T p_363277_, float p_116987_, float p_116988_) {
+    public void submit(PoseStack p_116983_, SubmitNodeCollector submitNodeCollector, int p_116985_, T entity, float p_116987_, float p_116988_) {
 		if (p_116983_ instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
 			if (cap.getEnchantCap().hasEnchant()) {
-				VertexConsumer ivertexbuilder = p_116984_.getBuffer(this.renderType());
-				this.getParentModel().renderToBuffer(p_116983_, ivertexbuilder, p_116985_, OverlayTexture.NO_OVERLAY);
-			}
+                submitNodeCollector.submitModel(this.getParentModel(), entity, p_116983_, this.renderType(), p_116985_, OverlayTexture.NO_OVERLAY, -1,
+                        null,
+                        entity.outlineColor,
+                        null);
+            }
 		}
 	}
 

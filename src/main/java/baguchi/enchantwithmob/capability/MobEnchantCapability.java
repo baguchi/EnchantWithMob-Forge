@@ -46,7 +46,7 @@ public class MobEnchantCapability {
 	public void addMobEnchant(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel) {
 
 		this.mobEnchants.add(new MobEnchantHandler(mobEnchant, enchantLevel));
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			MobEnchantedMessage message = new MobEnchantedMessage(entity, mobEnchant, enchantLevel);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
@@ -63,7 +63,7 @@ public class MobEnchantCapability {
 
 	public void setEnchantType(LivingEntity entity, EnchantType enchantType) {
 		this.enchantType = enchantType;
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			AncientMessage message = new AncientMessage(entity, enchantType == EnchantType.ANCIENT);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
@@ -80,7 +80,7 @@ public class MobEnchantCapability {
 	public void addMobEnchantFromOwner(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel, LivingEntity owner) {
 
 		this.mobEnchants.add(new MobEnchantHandler(mobEnchant, enchantLevel));
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			MobEnchantedMessage message = new MobEnchantedMessage(entity, mobEnchant, enchantLevel);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
@@ -92,7 +92,7 @@ public class MobEnchantCapability {
 	public void addOwner(LivingEntity entity, LivingEntity owner) {
 		this.fromOwner = true;
 		this.enchantOwner = owner;
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			MobEnchantFromOwnerMessage message = new MobEnchantFromOwnerMessage(entity, owner);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
@@ -101,7 +101,7 @@ public class MobEnchantCapability {
 		this.fromOwner = false;
 		this.enchantOwner = null;
 		//Sync Client Enchant
-		if (!livingEntity.level().isClientSide) {
+        if (!livingEntity.level().isClientSide()) {
 			RemoveMobEnchantOwnerMessage message = new RemoveMobEnchantOwnerMessage(livingEntity);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(livingEntity, message);
 		}
@@ -116,7 +116,7 @@ public class MobEnchantCapability {
 			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant(), mobEnchants.get(i).getEnchantLevel());
 		}
 		//Sync Client Enchant
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			RemoveAllMobEnchantMessage message = new RemoveAllMobEnchantMessage(entity);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
@@ -133,7 +133,7 @@ public class MobEnchantCapability {
 			this.onRemoveEnchantEffect(entity, mobEnchants.get(i).getMobEnchant(), mobEnchants.get(i).getEnchantLevel());
 		}
 		//Sync Client Enchant
-		if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
 			RemoveAllMobEnchantMessage message = new RemoveAllMobEnchantMessage(entity);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}

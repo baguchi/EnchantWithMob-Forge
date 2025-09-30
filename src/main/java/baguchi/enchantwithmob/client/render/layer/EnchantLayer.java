@@ -6,12 +6,11 @@ import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -36,16 +35,18 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T entitylivingbaseIn, float v, float v1) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, T entitylivingbaseIn, float v, float v1) {
         float tick = (float) entitylivingbaseIn.ageInTicks;
         if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible) {
                 float f = (float) entitylivingbaseIn.ageInTicks;
                 float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
-                EntityModel<T> entitymodel = this.getParentModel();
-                VertexConsumer ivertexbuilder = multiBufferSource.getBuffer(enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR));
+                M entitymodel = this.getParentModel();
                 entitymodel.setupAnim(entitylivingbaseIn);
-                entitymodel.renderToBuffer(poseStack, ivertexbuilder, i, OverlayTexture.NO_OVERLAY);
+                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                        null,
+                        entitylivingbaseIn.outlineColor,
+                        null);
             }
         }
     }

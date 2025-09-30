@@ -38,7 +38,7 @@ public class MultiShotMobEnchant extends MobEnchant {
             return;
         LivingEntity owner = (LivingEntity) projectile.getOwner();
         MobEnchantUtils.executeIfPresent(owner, MobEnchants.MULTISHOT.getKey(), () -> {
-            if (!projectile.level().isClientSide) {
+            if (!projectile.level().isClientSide()) {
                 if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
                     if (entityHitResult.getEntity() instanceof Projectile projectile2) {
                         if (shooterIsLiving(projectile2) && projectile2.getOwner() == projectile.getOwner()) {
@@ -61,7 +61,7 @@ public class MultiShotMobEnchant extends MobEnchant {
                     return;
                 LivingEntity owner = (LivingEntity) projectile.getOwner();
                 MobEnchantUtils.executeIfPresent(owner, MobEnchants.MULTISHOT.getKey(), () -> {
-                    if (!level.isClientSide && projectile.tickCount == 0 && !isAdding) {
+                    if (!level.isClientSide() && projectile.tickCount == 0 && !isAdding) {
                         isAdding = true;
                         addProjectile(projectile, level, 15.0F);
                         addProjectile(projectile, level, -15.0F);

@@ -39,6 +39,7 @@ public class EnchanterRenderer extends MobRenderer<Enchanter, EnchanterRenderSta
         return new EnchanterRenderState();
     }
 
+    @Override
     public void extractRenderState(Enchanter p_365030_, EnchanterRenderState p_364586_, float p_360560_) {
         super.extractRenderState(p_365030_, p_364586_, p_360560_);
         p_364586_.isRiding = p_365030_.isPassenger();

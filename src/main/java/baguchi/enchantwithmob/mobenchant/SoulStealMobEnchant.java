@@ -45,14 +45,4 @@ public class SoulStealMobEnchant extends MobEnchant {
             }
         }
     }
-
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
-    @Override
-    public boolean isDiscoverable() {
-        return false;
-    }
 }

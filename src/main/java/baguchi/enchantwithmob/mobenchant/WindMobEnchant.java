@@ -33,16 +33,6 @@ public class WindMobEnchant extends MobEnchant {
     }
 
     @Override
-    public boolean isDiscoverable() {
-        return false;
-    }
-
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
-    @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {
         return super.isCompatibleMob(livingEntity) && !(livingEntity instanceof Breeze);
     }

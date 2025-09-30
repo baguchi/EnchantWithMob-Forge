@@ -95,15 +95,6 @@ public class MobEnchant implements FeatureElement {
         return this.canApplyTogether(enchantmentIn) && enchantmentIn.canApplyTogether(this);
     }
 
-    public boolean isTresureEnchant() {
-        return false;
-    }
-
-    public boolean isDiscoverable() {
-        return true;
-    }
-
-
     public boolean isCompatibleMob(LivingEntity livingEntity) {
         return !(livingEntity instanceof Player) || MobEnchantConfigUtils.isPlayerEnchantable(this);
     }

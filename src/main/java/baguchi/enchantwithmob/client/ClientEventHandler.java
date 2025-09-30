@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -27,7 +27,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
@@ -45,7 +44,7 @@ public class ClientEventHandler {
 	@SubscribeEvent
 	public static void renderEnchantBeam(RenderLivingEvent.Post<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> event) {
         PoseStack matrixStack = event.getPoseStack();
-        MultiBufferSource bufferBuilder = event.getMultiBufferSource();
+        SubmitNodeCollector bufferBuilder = event.getSubmitNodeCollector();
         float particalTick = event.getPartialTick();
 		if (event.getRenderState() instanceof IEnchantCap cap) {
 			if (cap.getEnchantCap().hasOwner() && cap.getEnchantCap().hasEnchant()) {
@@ -58,10 +57,9 @@ public class ClientEventHandler {
         }
     }
 
-	private static void renderBeam(@NotNull MobEnchantCapability cap, LivingEntityRenderState p_229118_1_, float p_229118_2_, PoseStack p_229118_3_, MultiBufferSource p_229118_4_, Entity p_229118_5_, LivingEntityRenderer<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer) {
-		float tick = (float) p_229118_1_.ageInTicks;
-		p_229118_3_.pushPose();
-		Vec3 vector3d = p_229118_5_.getRopeHoldPosition(p_229118_2_);
+    private static void renderBeam(@NotNull MobEnchantCapability cap, LivingEntityRenderState p_229118_1_, float p_229118_2_, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, Entity level, LivingEntityRenderer<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer) {
+        poseStack.pushPose();
+        Vec3 vector3d = level.getRopeHoldPosition(p_229118_2_);
 		double d0 = p_229118_1_.bodyRot * ((float) Math.PI / 180F) + (Math.PI / 2D);
 		Vector3d vector3d1 = new Vector3d(0.0D, (double) p_229118_1_.eyeHeight / 2, 0.0F);
 		double d1 = Math.cos(d0) * vector3d1.z + Math.sin(d0) * vector3d1.x;
@@ -69,26 +67,26 @@ public class ClientEventHandler {
 		double d3 = p_229118_1_.x + d1;
 		double d4 = p_229118_1_.y + vector3d1.y;
 		double d5 = p_229118_1_.z + d2;
-		p_229118_3_.translate(d1, vector3d1.y, d2);
+        poseStack.translate(d1, vector3d1.y, d2);
 		float f = (float) (vector3d.x - d3);
 		float f1 = (float) (vector3d.y - d4);
 		float f2 = (float) (vector3d.z - d5);
 		float f3 = 0.1F;
-        VertexConsumer ivertexbuilder = p_229118_4_.getBuffer(enchantBeamSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR));
-		Matrix4f matrix4f = p_229118_3_.last().pose();
-		Matrix3f matrix3f = p_229118_3_.last().normal();
 		float f4 = Mth.fastInvCubeRoot(f * f + f2 * f2) * 0.1F / 2.0F;
 		float f5 = f2 * f4;
 		float f6 = f * f4;
 		BlockPos blockpos = new BlockPos((int) p_229118_1_.x, (int) (p_229118_1_.eyeHeight + p_229118_1_.y), (int) p_229118_1_.z);
-		BlockPos blockpos1 = new BlockPos((int) p_229118_5_.getX(), (int) (p_229118_1_.eyeHeight + p_229118_5_.getY()), (int) p_229118_5_.getZ());
-		int i = getBlockLightLevel(p_229118_5_.level(), p_229118_1_, blockpos);
-		int j = getBlockLightLevel(p_229118_5_, blockpos1);
-		int k = p_229118_5_.level().getBrightness(LightLayer.SKY, blockpos);
-		int l = p_229118_5_.level().getBrightness(LightLayer.SKY, blockpos1);
-		renderSide(ivertexbuilder, matrix4f, p_229118_3_.last(), f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
-		renderSide(ivertexbuilder, matrix4f, p_229118_3_.last(), f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
-		p_229118_3_.popPose();
+        BlockPos blockpos1 = new BlockPos((int) level.getX(), (int) (p_229118_1_.eyeHeight + level.getY()), (int) level.getZ());
+        int i = getBlockLightLevel(level.level(), p_229118_1_, blockpos);
+        int j = getBlockLightLevel(level, blockpos1);
+        int k = level.level().getBrightness(LightLayer.SKY, blockpos);
+        int l = level.level().getBrightness(LightLayer.SKY, blockpos1);
+
+        submitNodeCollector.submitCustomGeometry(poseStack, enchantBeamSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), (pose, vertexConsumer) -> {
+            renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
+            renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
+        });
+        poseStack.popPose();
 	}
 
 

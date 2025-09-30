@@ -13,8 +13,4 @@ public class HealthBoostMobEnchant extends MobEnchant {
         return this.getMinEnchantability(enchantmentLevel) + 50;
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
 }
