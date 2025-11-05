@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -280,9 +281,9 @@ public class CommonEventHandler {
         if (livingEntity instanceof IEnchantCap cap) {
             if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && cap.getEnchantCap().hasEnchant()) {
                 int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.PROTECTION.get());
-                int mobEnchantSize = cap.getEnchantCap().getMobEnchants().size();
 
-                event.setAmount(MobEnchantCombatRules.getDamageReduction(event.getAmount(), mobEnchantLevel, mobEnchantSize));
+                float f = CombatRules.getDamageAfterMagicAbsorb(event.getAmount(), Mth.floor((float) ((6 + mobEnchantLevel) * 1.5F) / 3));
+                event.setAmount(f);
             }
             if (event.getSource().getDirectEntity() != null) {
                if (cap.getEnchantCap().hasEnchant()) {
