@@ -91,6 +91,10 @@ public class MobEnchant implements FeatureElement {
 
     }
 
+    public void afterEnchanted(LivingEntity entity, int level) {
+
+    }
+
     public final boolean isCompatibleWith(MobEnchant enchantmentIn) {
         return this.canApplyTogether(enchantmentIn) && enchantmentIn.canApplyTogether(this);
     }

@@ -151,6 +151,8 @@ public class MobEnchantCapability {
 		if (entity.level() instanceof ServerLevel serverLevel) {
 			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
 		}
+        enchant.value().afterEnchanted(entity, enchantLevel);
+
 		if (EnchantConfig.COMMON.dungeonsLikeHealth.get()) {
 			AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 			if (modifiableattributeinstance != null && !modifiableattributeinstance.hasModifier(HEALTH_MODIFIER_NAME)) {
