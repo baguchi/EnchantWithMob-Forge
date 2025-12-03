@@ -11,7 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -28,28 +28,28 @@ public class MobEnchantedMessage implements CustomPacketPayload, IPayloadHandler
 
 
     private int entityId;
-    private ResourceLocation enchantType;
+    private Identifier enchantType;
     private int level;
 
     public MobEnchantedMessage(Entity entity, MobEnchantHandler enchantType) {
         this.entityId = entity.getId();
-        this.enchantType = enchantType.getMobEnchant().getKey().location();
+        this.enchantType = enchantType.getMobEnchant().getKey().identifier();
         this.level = enchantType.getEnchantLevel();
     }
 
     public MobEnchantedMessage(int id, MobEnchantHandler enchantType) {
         this.entityId = id;
-        this.enchantType = enchantType.getMobEnchant().getKey().location();
+        this.enchantType = enchantType.getMobEnchant().getKey().identifier();
         this.level = enchantType.getEnchantLevel();
     }
 
     public MobEnchantedMessage(Entity entity, Holder<MobEnchant> enchantType, int level) {
         this.entityId = entity.getId();
-        this.enchantType = enchantType.getKey().location();
+        this.enchantType = enchantType.getKey().identifier();
         this.level = level;
     }
 
-    public MobEnchantedMessage(int entity, ResourceLocation enchantType, int level) {
+    public MobEnchantedMessage(int entity, Identifier enchantType, int level) {
         this.entityId = entity;
         this.enchantType = enchantType;
         this.level = level;
@@ -57,7 +57,7 @@ public class MobEnchantedMessage implements CustomPacketPayload, IPayloadHandler
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeInt(this.entityId);
-        buffer.writeResourceLocation(this.enchantType);
+        buffer.writeIdentifier(this.enchantType);
         buffer.writeInt(this.level);
     }
 
@@ -67,7 +67,7 @@ public class MobEnchantedMessage implements CustomPacketPayload, IPayloadHandler
     }
 
     public MobEnchantedMessage(FriendlyByteBuf buffer) {
-        this(buffer.readInt(), buffer.readResourceLocation(), buffer.readInt());
+        this(buffer.readInt(), buffer.readIdentifier(), buffer.readInt());
     }
 
     @Override

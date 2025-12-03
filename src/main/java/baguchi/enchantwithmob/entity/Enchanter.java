@@ -20,12 +20,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.AbstractIllager;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.monster.creaking.Creaking;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.monster.illager.AbstractIllager;
+import net.minecraft.world.entity.monster.illager.SpellcasterIllager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
@@ -274,7 +274,7 @@ public class Enchanter extends SpellcasterIllager {
             LivingEntity entity = Enchanter.this.getEnchantTarget();
             if (entity != null && entity.isAlive()) {
                 if (entity instanceof IEnchantCap cap) {
-                    float difficulty = entity.level().getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
+                    float difficulty = getServerLevel(entity.level()).getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
                     MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2), ModTags.MobEnchantTags.ENCHANTER_ENCHANT);
                 }
             }

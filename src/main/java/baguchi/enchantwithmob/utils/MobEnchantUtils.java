@@ -9,15 +9,14 @@ import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModTags;
 import com.google.common.collect.Lists;
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -75,8 +74,8 @@ public class MobEnchantUtils {
 	 * @param tag nbt tag
 	 */
 	public static Optional<Holder.Reference<MobEnchant>> getEnchantFromNBT(@Nullable CompoundTag tag, RegistryAccess registryAccess) {
-		if (tag != null && registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).containsKey(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")))) {
-			return registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(ResourceLocation.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")));
+        if (tag != null && registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).containsKey(Identifier.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")))) {
+            return registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(Identifier.tryParse(tag.getStringOr(TAG_MOBENCHANT, "")));
 		} else {
 			return Optional.empty();
 		}
@@ -409,7 +408,7 @@ public class MobEnchantUtils {
 
 				while (randomIn.nextInt(50) <= level) {
 					if (!list.isEmpty()) {
-						removeIncompatible(list1, Util.lastOf(list));
+                        removeIncompatible(list1, list.getLast());
 					}
 					if (list1.isEmpty()) {
 						break;

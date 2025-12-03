@@ -6,20 +6,21 @@ import baguchi.enchantwithmob.client.ModModelLayers;
 import baguchi.enchantwithmob.client.model.EnchanterModel;
 import baguchi.enchantwithmob.client.render.state.EnchanterRenderState;
 import baguchi.enchantwithmob.entity.Enchanter;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.monster.AbstractIllager;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import net.minecraft.world.item.CrossbowItem;
 
 
 public class EnchanterRenderer extends MobRenderer<Enchanter, EnchanterRenderState, EnchanterModel<EnchanterRenderState>> {
-    private static final ResourceLocation ILLAGER = ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchanter_clothed.png");
+    private static final Identifier ILLAGER = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchanter_clothed.png");
 
-    private static final ResourceLocation GLOW = ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchanter_clothed_glow.png");
-    private static final RenderType GLOW_TYPE = RenderType.eyes(GLOW);
+    private static final Identifier GLOW = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchanter_clothed_glow.png");
+    private static final RenderType GLOW_TYPE = RenderTypes.eyes(GLOW);
 
 
     public EnchanterRenderer(EntityRendererProvider.Context p_173952_) {
@@ -57,7 +58,7 @@ public class EnchanterRenderer extends MobRenderer<Enchanter, EnchanterRenderSta
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EnchanterRenderState p_110775_1_) {
+    public Identifier getTextureLocation(EnchanterRenderState p_110775_1_) {
         return ILLAGER;
     }
 }

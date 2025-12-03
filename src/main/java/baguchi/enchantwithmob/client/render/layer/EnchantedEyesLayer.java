@@ -4,26 +4,26 @@ import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 import java.util.function.Function;
 
 
 public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends EyesLayer<T, M> {
 
-	private static final Function<ResourceLocation, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {
-        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173253_, false);
-        return RenderType.create("enchanted_eyes", 1536, false, true, ClientRegistrar.MOB_ENCHANT_EYE, RenderType.CompositeState.builder().setTextureState(renderstateshard$texturestateshard).createCompositeState(false));
-	});
+    private static final Function<Identifier, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {
+        return RenderType.create("enchanted_eye", RenderSetup.builder(ClientRegistrar.MOB_ENCHANT_EYE)
+                .withTexture("Sampler0", p_173253_).createRenderSetup());
+    });
 
 	public final RenderType render_types;
 
@@ -45,7 +45,7 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 		}
 	}
 
-	public static RenderType enchantedEyes(ResourceLocation p_110455_) {
+    public static RenderType enchantedEyes(Identifier p_110455_) {
 		return ENCHANTED_EYES.apply(p_110455_);
 	}
 

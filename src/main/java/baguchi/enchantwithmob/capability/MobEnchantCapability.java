@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -24,9 +24,9 @@ import java.util.Optional;
 
 
 public class MobEnchantCapability {
-	private static final ResourceLocation HEALTH_MODIFIER_NAME = ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost");
+    private static final Identifier HEALTH_MODIFIER_NAME = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost");
 
-	private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost"), 0.5D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost"), 0.5D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
 
 	private List<MobEnchantHandler> mobEnchants = Lists.newArrayList();

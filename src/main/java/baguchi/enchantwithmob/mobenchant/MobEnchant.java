@@ -5,13 +5,13 @@ import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantConfigUtils;
 import com.google.common.collect.Maps;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -106,7 +106,7 @@ public class MobEnchant implements FeatureElement {
         return this != ench;
     }
 
-    public MobEnchant addAttributesModifier(Holder<Attribute> p_316656_, ResourceLocation p_350368_, double p_19475_, AttributeModifier.Operation p_19476_) {
+    public MobEnchant addAttributesModifier(Holder<Attribute> p_316656_, Identifier p_350368_, double p_19475_, AttributeModifier.Operation p_19476_) {
         this.attributeModifierMap.put(p_316656_, new AttributeTemplate(p_350368_, p_19475_, p_19476_));
         return this;
     }
@@ -249,8 +249,8 @@ public class MobEnchant implements FeatureElement {
 
     }
 
-    static record AttributeTemplate(ResourceLocation id, double amount, AttributeModifier.Operation operation) {
-        AttributeTemplate(ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+    static record AttributeTemplate(Identifier id, double amount, AttributeModifier.Operation operation) {
+        AttributeTemplate(Identifier id, double amount, AttributeModifier.Operation operation) {
             this.id = id;
             this.amount = amount;
             this.operation = operation;
@@ -260,7 +260,7 @@ public class MobEnchant implements FeatureElement {
             return new AttributeModifier(this.id, this.amount * (double) (p_316614_ + 1), this.operation);
         }
 
-        public ResourceLocation id() {
+        public Identifier id() {
             return this.id;
         }
 

@@ -35,12 +35,12 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.vehicle.boat.Boat;
+import net.minecraft.world.entity.vehicle.minecart.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,11 +82,11 @@ public class CommonEventHandler {
     public static void onEnderDragonSpawn(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof IEnchantCap cap && event.getEntity() instanceof EnderDragon livingEntity) {
             LevelAccessor world = event.getLevel();
-            if (!world.isClientSide()) {
+            if (!world.isClientSide() && world instanceof ServerLevel serverLevel) {
                 if (!cap.getEnchantCap().hasEnchant()) {
                     if (isSpawnAlwayEnchantableAncientEntity(livingEntity)) {
                         int i = 0;
-                        float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
+                        float difficultScale = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
                         switch (world.getDifficulty()) {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
@@ -110,7 +110,7 @@ public class CommonEventHandler {
                     // On add MobEnchant Alway Enchantable Mob
                     if (isSpawnAlwayEnchantableEntity(livingEntity)) {
                         int i = 0;
-                        float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
+                        float difficultScale = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
                         switch (world.getDifficulty()) {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
@@ -143,10 +143,10 @@ public class CommonEventHandler {
     public static void onSpawnEntity(FinalizeSpawnEvent event) {
         if (event.getEntity() instanceof IEnchantCap cap) {
             LevelAccessor world = event.getLevel();
-            if (!world.isClientSide()) {
+            if (!world.isClientSide() && world instanceof ServerLevel serverLevel) {
                 LivingEntity livingEntity = event.getEntity();
-                float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
-                float difficultScaleOnPercent = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty();
+                float difficultScale = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
+                float difficultScaleOnPercent = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty();
 
                 if (isSpawnAlwayEnchantableAncientEntity(livingEntity)) {
                     int i = 0;

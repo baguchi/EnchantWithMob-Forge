@@ -2,7 +2,7 @@ package baguchi.enchantwithmob.registry;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
 public class ModTags {
@@ -15,7 +15,7 @@ public class ModTags {
         public static final TagKey<MobEnchant> ENCHANTER_ENCHANT = create("enchanter_enchant");
 
         private static TagKey<MobEnchant> create(String p_341202_) {
-            return TagKey.create(MobEnchants.MOB_ENCHANT_REGISTRY, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, p_341202_));
+            return TagKey.create(MobEnchants.MOB_ENCHANT_REGISTRY, Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, p_341202_));
         }
     }
 }

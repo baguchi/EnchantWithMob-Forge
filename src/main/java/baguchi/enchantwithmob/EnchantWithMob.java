@@ -4,7 +4,7 @@ import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
 import baguchi.enchantwithmob.message.*;
 import baguchi.enchantwithmob.registry.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -75,8 +75,8 @@ public class EnchantWithMob {
         registrar.playToClient(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 	}
 
-    public static ResourceLocation prefix(String path) {
-		return ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, path);
+    public static Identifier prefix(String path) {
+        return Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, path);
     }
 
 

@@ -5,8 +5,8 @@ import baguchi.enchantwithmob.registry.MobEnchants;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Bee;
-import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.entity.animal.bee.Bee;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
 
 public class PoisonMobEnchant extends MobEnchant {
     public PoisonMobEnchant(Properties properties) {

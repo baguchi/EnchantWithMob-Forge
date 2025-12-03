@@ -8,16 +8,17 @@ import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends EntityModel<LivingEntityRenderState>> extends RenderLayer<T, M> {
-    private static final ResourceLocation WIND_TEXTURE_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/breeze/breeze_wind.png");
+    private static final Identifier WIND_TEXTURE_LOCATION = Identifier.withDefaultNamespace("textures/entity/breeze/breeze_wind.png");
 
     private static final float TOP_PART_ALPHA = 1.0F;
     private static final float MIDDLE_PART_ALPHA = 1.0F;
@@ -35,7 +36,7 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
             MobEnchantUtils.executeIfPresent(cap, MobEnchants.WIND.getKey(), () -> {
 
                 float f = entity.ageInTicks;
-                RenderType rendertype = RenderType.breezeWind(WIND_TEXTURE_LOCATION, this.xOffset(entity.ageInTicks) % 1.0F, 0.0F);
+                RenderType rendertype = RenderTypes.breezeWind(WIND_TEXTURE_LOCATION, this.xOffset(entity.ageInTicks) % 1.0F, 0.0F);
                 submitNodeCollector.order(1).submitModel(this.model, entity, poseStack, rendertype, p_117351_, OverlayTexture.NO_OVERLAY, -1, null, entity.outlineColor, null);
             });
         }
@@ -46,7 +47,7 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
     }
 
 
-    public ResourceLocation getWindTextureLocation() {
+    public Identifier getWindTextureLocation() {
         return WIND_TEXTURE_LOCATION;
     }
 }

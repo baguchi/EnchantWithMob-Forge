@@ -3,10 +3,8 @@ package baguchi.enchantwithmob.client;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -132,14 +130,6 @@ public class ClientEventHandler {
 		return p_225624_1_.isOnFire() ? 15 : p_225624_1_.level().getBrightness(LightLayer.BLOCK, p_225624_2_);
 	}
 
-	private static void setupGlintTexturing(float p_110187_) {
-		long i = Util.getMillis() * 8L;
-		float f = (float) (i % 110000L) / 110000.0F;
-		float f1 = (float) (i % 30000L) / 30000.0F;
-		Matrix4f matrix4f = (new Matrix4f()).translation(-f, f1, 0.0F);
-		matrix4f.rotateZ(0.17453292F).scale(p_110187_);
-		RenderSystem.setTextureMatrix(matrix4f);
-	}
 
 	public static Vec3 getPosition(Entity p_114803_, double p_114804_, float p_114805_) {
 		double d0 = Mth.lerp(p_114805_, p_114803_.xOld, p_114803_.getX());

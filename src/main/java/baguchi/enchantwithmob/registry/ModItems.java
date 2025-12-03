@@ -6,8 +6,8 @@ import baguchi.enchantwithmob.item.EnchanterExperienceBottleItem;
 import baguchi.enchantwithmob.item.EnchantersBookItem;
 import baguchi.enchantwithmob.item.MobEnchantBookItem;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -23,6 +23,6 @@ public class ModItems {
     public static final DeferredItem<Item> ENCHANTER_SPAWNEGG = ITEM_REGISTRY.register("enchanter_spawn_egg", () -> new SpawnEggItem((new Item.Properties().spawnEgg(ModEntities.ENCHANTER.get()).setId(prefix("enchanter_spawn_egg")))));
 
     private static ResourceKey<Item> prefix(String path) {
-        return ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, path));
+        return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, path));
     }
 }

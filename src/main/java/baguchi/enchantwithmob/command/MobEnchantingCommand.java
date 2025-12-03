@@ -34,7 +34,7 @@ public class MobEnchantingCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
 		LiteralArgumentBuilder<CommandSourceStack> enchantCommand = Commands.literal("mob_enchanting")
-				.requires(player -> player.hasPermission(2));
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
 		enchantCommand.then(Commands.literal("clear").then(Commands.argument("target", EntityArgument.entity()).executes((ctx) -> {
 			return setClear(ctx.getSource(), EntityArgument.getEntity(ctx, "target"));
 		}))).then(Commands.literal("give").then(Commands.argument("target", EntityArgument.entity())
@@ -44,7 +44,7 @@ public class MobEnchantingCommand {
 		dispatcher.register(enchantCommand);
 
 		LiteralArgumentBuilder<CommandSourceStack> ancientEnchantCommand = Commands.literal("ancient_mob")
-				.requires(player -> player.hasPermission(2));
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
 
 
 		ancientEnchantCommand.then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("ancient", BoolArgumentType.bool()).executes((ctx) -> {
@@ -74,7 +74,7 @@ public class MobEnchantingCommand {
             CommandContext<CommandSourceStack> p_248662_, String p_252172_, ResourceKey<Registry<T>> p_249701_, DynamicCommandExceptionType p_249790_
     ) throws CommandSyntaxException {
         ResourceKey<T> resourcekey = getRegistryKey(p_248662_, p_252172_, p_249701_, p_249790_);
-		return getRegistry(p_248662_, p_249701_).get(resourcekey).orElseThrow(() -> p_249790_.create(resourcekey.location()));
+        return getRegistry(p_248662_, p_249701_).get(resourcekey).orElseThrow(() -> p_249790_.create(resourcekey.identifier()));
     }
 
 	private static int setClear(CommandSourceStack commandStack, Entity entity) {

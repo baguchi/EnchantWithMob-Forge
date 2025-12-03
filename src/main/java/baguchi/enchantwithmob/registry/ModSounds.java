@@ -2,7 +2,7 @@ package baguchi.enchantwithmob.registry;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -19,7 +19,7 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ENCHANTER_BEAM_LOOP = createEvent("entity.enchanter.beam_loop");
 
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {
-        ResourceLocation name = ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, sound);
+        Identifier name = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, sound);
         return SOUND_EVENTS.register(sound, () -> SoundEvent.createVariableRangeEvent(name));
     }
 
