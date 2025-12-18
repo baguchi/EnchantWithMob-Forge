@@ -1,6 +1,7 @@
 package baguchi.enchantwithmob.client;
 
 import baguchi.enchantwithmob.EnchantWithMob;
+import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.model.EnchantedWindModel;
 import baguchi.enchantwithmob.client.model.EnchanterModel;
 import baguchi.enchantwithmob.client.overlay.MobEnchantOverlay;
@@ -9,7 +10,10 @@ import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import baguchi.enchantwithmob.client.render.layer.EnchantedEyesLayer;
 import baguchi.enchantwithmob.client.render.layer.EnchantedWindLayer;
 import baguchi.enchantwithmob.client.render.layer.SlimeEnchantLayer;
+import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModEntities;
+import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import com.google.common.reflect.TypeToken;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
@@ -19,15 +23,18 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 
 import static net.minecraft.client.renderer.RenderPipelines.*;
 
@@ -137,6 +144,24 @@ public class ClientRegistrar {
 
 			}
 		});
+    }
+
+    @SubscribeEvent
+    public static void registerRenderState(RegisterRenderStateModifiersEvent event) {
+        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>(LivingEntityRenderer.class) {
+        }, (entity, state) -> {
+            if (entity instanceof IEnchantCap cap) {
+                state.setRenderData(EnchantLayer.ENCHANTED, cap.getEnchantCap().hasEnchant());
+                state.setRenderData(EnchantLayer.ANCIENT, cap.getEnchantCap().isAncient());
+                //reset
+                state.setRenderData(EnchantedWindLayer.WIND, false);
+
+                MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
+                    state.setRenderData(EnchantedWindLayer.WIND, true);
+                });
+
+            }
+        });
     }
 
     @SubscribeEvent

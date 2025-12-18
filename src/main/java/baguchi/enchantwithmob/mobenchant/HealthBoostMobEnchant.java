@@ -3,6 +3,8 @@ package baguchi.enchantwithmob.mobenchant;
 import net.minecraft.world.entity.LivingEntity;
 
 public class HealthBoostMobEnchant extends MobEnchant {
+    public static final int DEFAULT_HEALTH = 2;
+
     public HealthBoostMobEnchant(Properties properties) {
         super(properties);
     }
@@ -19,6 +21,6 @@ public class HealthBoostMobEnchant extends MobEnchant {
 
     @Override
     public void afterEnchanted(LivingEntity entity, int level) {
-        entity.setHealth(Math.clamp(entity.getHealth() + level * 2F, 0, entity.getMaxHealth()));
+        entity.setHealth(Math.clamp(entity.getHealth() + level * DEFAULT_HEALTH, 0, entity.getMaxHealth()));
     }
 }

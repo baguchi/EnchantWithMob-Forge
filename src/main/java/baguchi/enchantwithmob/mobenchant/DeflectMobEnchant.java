@@ -7,7 +7,6 @@ import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -34,7 +33,6 @@ public class DeflectMobEnchant extends MobEnchant {
             EntityHitResult entityHitResult = (EntityHitResult) event.getRayTraceResult();
             MobEnchantUtils.executeIfPresent(entityHitResult.getEntity(), MobEnchants.DEFLECT.getKey(), () -> {
                 event.setCanceled(true);
-                Vec3 vec3 = projectile.getDeltaMovement();
                 projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityHitResult.getEntity(), EntityReference.of(projectile.getOwner()), false);
             });
         }

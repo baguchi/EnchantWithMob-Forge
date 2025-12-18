@@ -2,7 +2,6 @@ package baguchi.enchantwithmob.client.render.layer;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
@@ -16,11 +15,14 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.TextureTransform;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextKey;
 
 
 public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
     public static final Identifier ANCIENT_GLINT = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/ancient_glint.png");
+    public static final ContextKey<Boolean> ANCIENT = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "ancient"));
+    public static final ContextKey<Boolean> ENCHANTED = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "enchanted"));
 
     public EnchantLayer(RenderLayerParent<T, M> p_i50947_1_) {
         super(p_i50947_1_);
@@ -28,14 +30,13 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
 
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, T entitylivingbaseIn, float v, float v1) {
-        float tick = (float) entitylivingbaseIn.ageInTicks;
-        if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
-            if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible) {
-                float f = (float) entitylivingbaseIn.ageInTicks;
-                float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
+        boolean enchanted = entitylivingbaseIn.getRenderDataOrDefault(EnchantLayer.ENCHANTED, false);
+        boolean ancient = entitylivingbaseIn.getRenderDataOrDefault(EnchantLayer.ANCIENT, false);
+        if (!EnchantConfig.CLIENT.disableAuraRender.get()) {
+            if (enchanted && !entitylivingbaseIn.isInvisible) {
                 M entitymodel = this.getParentModel();
                 entitymodel.setupAnim(entitylivingbaseIn);
-                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ancient ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
                         null,
                         entitylivingbaseIn.outlineColor,
                         null);

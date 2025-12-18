@@ -1,7 +1,6 @@
 package baguchi.enchantwithmob.client.render.layer;
 
 import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
@@ -35,13 +34,13 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 
 	@Override
     public void submit(PoseStack p_116983_, SubmitNodeCollector submitNodeCollector, int p_116985_, T entity, float p_116987_, float p_116988_) {
-		if (p_116983_ instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
-			if (cap.getEnchantCap().hasEnchant()) {
-                submitNodeCollector.submitModel(this.getParentModel(), entity, p_116983_, this.renderType(), p_116985_, OverlayTexture.NO_OVERLAY, -1,
+        boolean enchanted = entity.getRenderDataOrDefault(EnchantLayer.ENCHANTED, false);
+
+        if (enchanted && !EnchantConfig.CLIENT.disableAuraRender.get()) {
+            submitNodeCollector.submitModel(this.getParentModel(), entity, p_116983_, this.renderType(), p_116985_, OverlayTexture.NO_OVERLAY, -1,
                         null,
                         entity.outlineColor,
                         null);
-            }
 		}
 	}
 
