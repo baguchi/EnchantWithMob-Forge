@@ -3,6 +3,7 @@ package baguchi.enchantwithmob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
@@ -104,6 +105,7 @@ public class CommonEventHandler {
                                 break;
                         }
                         livingEntity.setHealth(livingEntity.getMaxHealth());
+                        cap.getEnchantCap().setEnchantType(livingEntity, MobEnchantTypes.ANCIENT);
                     }
 
                     // On add MobEnchant Alway Enchantable Mob
@@ -168,6 +170,7 @@ public class CommonEventHandler {
                     }
 
                     livingEntity.setHealth(livingEntity.getMaxHealth());
+                    cap.getEnchantCap().setEnchantType(livingEntity, MobEnchantTypes.ANCIENT);
                 }
 
                 // On add MobEnchant Alway Enchantable Mob

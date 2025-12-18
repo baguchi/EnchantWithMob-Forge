@@ -228,16 +228,7 @@ public class MobEnchantUtils {
 	public static boolean addEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, MobEnchantmentData data) {
 		boolean flag = false;
 		if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, capability)) {
-			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel, false);
-			flag = true;
-		}
-		return flag;
-	}
-
-	public static boolean addEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, MobEnchantmentData data, boolean ancient) {
-		boolean flag = false;
-		if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, capability)) {
-			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel, ancient);
+			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel);
 			flag = true;
 		}
 		return flag;
@@ -258,7 +249,7 @@ public class MobEnchantUtils {
 		boolean flag = false;
 		for (MobEnchantmentData enchantmentdata : list) {
 			if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, capability)) {
-				capability.getEnchantCap().addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel, ancient);
+				capability.getEnchantCap().addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
 				flag = true;
 			}
 		}

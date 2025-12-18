@@ -68,11 +68,6 @@ public class MobEnchantCapability {
 		entity.refreshDimensions();
 	}
 
-	public void addMobEnchant(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel, boolean ancient) {
-		this.addMobEnchant(entity, mobEnchant, enchantLevel);
-        this.setEnchantType(entity, ancient ? MobEnchantTypes.ANCIENT : MobEnchantTypes.NORMAL);
-	}
-
     public void setEnchantType(LivingEntity entity, ResourceKey<MobEnchantType> enchantType) {
         this.mobEnchantType = registryAccess.getOrThrow(enchantType);
         if (!entity.level().isClientSide()) {
