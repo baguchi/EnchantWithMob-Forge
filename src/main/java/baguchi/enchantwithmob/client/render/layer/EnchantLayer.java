@@ -2,11 +2,11 @@ package baguchi.enchantwithmob.client.render.layer;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
+import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -21,7 +21,7 @@ import net.minecraft.util.context.ContextKey;
 public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
     public static final Identifier ANCIENT_GLINT = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/ancient_glint.png");
-    public static final ContextKey<Boolean> ANCIENT = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "ancient"));
+    public static final ContextKey<MobEnchantType> MOB_ENCHANT_TYPE = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant_type"));
     public static final ContextKey<Boolean> ENCHANTED = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "enchanted"));
 
     public EnchantLayer(RenderLayerParent<T, M> p_i50947_1_) {
@@ -31,12 +31,12 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, T entitylivingbaseIn, float v, float v1) {
         boolean enchanted = entitylivingbaseIn.getRenderDataOrDefault(EnchantLayer.ENCHANTED, false);
-        boolean ancient = entitylivingbaseIn.getRenderDataOrDefault(EnchantLayer.ANCIENT, false);
+        MobEnchantType mobEnchantType = entitylivingbaseIn.getRenderDataOrThrow(EnchantLayer.MOB_ENCHANT_TYPE);
         if (!EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (enchanted && !entitylivingbaseIn.isInvisible) {
                 M entitymodel = this.getParentModel();
                 entitymodel.setupAnim(entitylivingbaseIn);
-                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ancient ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
                         null,
                         entitylivingbaseIn.outlineColor,
                         null);

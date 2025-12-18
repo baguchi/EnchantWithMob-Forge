@@ -2,8 +2,11 @@ package baguchi.enchantwithmob.capability;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
+import baguchi.enchantwithmob.api.MobEnchantType;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.message.*;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;
@@ -11,12 +14,14 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,7 +38,14 @@ public class MobEnchantCapability {
 	@Nullable
 	private LivingEntity enchantOwner;
 	private boolean fromOwner;
-	private EnchantType enchantType = EnchantType.NORMAL;
+    private Holder<MobEnchantType> mobEnchantType;
+
+    private final RegistryAccess registryAccess;
+
+    public MobEnchantCapability(RegistryAccess registryAccess) {
+        this.registryAccess = registryAccess;
+        this.mobEnchantType = registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getOrThrow(MobEnchantTypes.NORMAL);
+    }
 
 
 	/**
@@ -58,13 +70,13 @@ public class MobEnchantCapability {
 
 	public void addMobEnchant(LivingEntity entity, Holder<MobEnchant> mobEnchant, int enchantLevel, boolean ancient) {
 		this.addMobEnchant(entity, mobEnchant, enchantLevel);
-		this.setEnchantType(entity, ancient ? EnchantType.ANCIENT : EnchantType.NORMAL);
+        this.setEnchantType(entity, ancient ? MobEnchantTypes.ANCIENT : MobEnchantTypes.NORMAL);
 	}
 
-	public void setEnchantType(LivingEntity entity, EnchantType enchantType) {
-		this.enchantType = enchantType;
+    public void setEnchantType(LivingEntity entity, ResourceKey<MobEnchantType> enchantType) {
+        this.mobEnchantType = registryAccess.getOrThrow(enchantType);
         if (!entity.level().isClientSide()) {
-			AncientMessage message = new AncientMessage(entity, enchantType == EnchantType.ANCIENT);
+            MobEnchantTypeMessage message = new MobEnchantTypeMessage(entity, enchantType);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
 	}
@@ -212,12 +224,12 @@ public class MobEnchantCapability {
 		return this.fromOwner;
 	}
 
-	public EnchantType getEnchantType() {
-		return enchantType;
+    public Holder<@NotNull MobEnchantType> getMobEnchantType() {
+        return mobEnchantType;
 	}
 
-	public boolean isAncient() {
-		return enchantType == EnchantType.ANCIENT;
+    public boolean isPreventRemoveSelf() {
+        return mobEnchantType.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
 	}
 
 	public CompoundTag serializeNBT(RegistryAccess registryAccess) {
@@ -232,7 +244,7 @@ public class MobEnchantCapability {
 		nbt.put("StoredMobEnchants", listnbt);
 		nbt.putBoolean("FromOwner", fromOwner);
 
-		nbt.putString("EnchantType", enchantType.name());
+        nbt.putString("EnchantType", mobEnchantType.unwrapKey().get().identifier().toString());
 
 		return nbt;
 	}
@@ -247,25 +259,12 @@ public class MobEnchantCapability {
 
 			Optional<Holder.Reference<MobEnchant>> mobEnchant = MobEnchantUtils.getEnchantFromNBT(compoundnbt, registryAccess);
 			//check mob enchant is not null
-			if (mobEnchant.isPresent()) {
-				mobEnchants.add(new MobEnchantHandler(mobEnchant.get(), MobEnchantUtils.getEnchantLevelFromNBT(compoundnbt)));
-			}
+            mobEnchant.ifPresent(mobEnchantReference -> mobEnchants.add(new MobEnchantHandler(mobEnchantReference, MobEnchantUtils.getEnchantLevelFromNBT(compoundnbt))));
 		}
 
         fromOwner = nbt.getBooleanOr("FromOwner", false);
-        enchantType = EnchantType.get(nbt.getStringOr("EnchantType", EnchantType.NORMAL.name()));
-	}
+        Optional<Holder.Reference<MobEnchantType>> optional = registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).get(Identifier.parse(nbt.getStringOr("EnchantType", MobEnchantTypes.NORMAL.identifier().toString())));
 
-	public enum EnchantType {
-		NORMAL,
-		ANCIENT;
-
-		public static EnchantType get(String nameIn) {
-			for (EnchantType enchantType : values()) {
-				if (enchantType.name().equals(nameIn))
-					return enchantType;
-			}
-			return NORMAL;
-		}
+        optional.ifPresent(mobEnchantTypeReference -> mobEnchantType = mobEnchantTypeReference);
 	}
 }

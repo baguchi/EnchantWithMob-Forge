@@ -13,8 +13,6 @@
     "client.EnderDragonRendererMixin",
     "client.EntityRendererMixin",
     "client.EvokerFangsRendererMixin",
-    "client.LivingEntityRendererMixin",
-    "client.LivingEntityRenderStateMixin",
     "client.WitherSkullRendererMixin"
   ],
   "injectors": {

@@ -152,7 +152,7 @@ public class ClientRegistrar {
         }, (entity, state) -> {
             if (entity instanceof IEnchantCap cap) {
                 state.setRenderData(EnchantLayer.ENCHANTED, cap.getEnchantCap().hasEnchant());
-                state.setRenderData(EnchantLayer.ANCIENT, cap.getEnchantCap().isAncient());
+                state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
                 //reset
                 state.setRenderData(EnchantedWindLayer.WIND, false);
 

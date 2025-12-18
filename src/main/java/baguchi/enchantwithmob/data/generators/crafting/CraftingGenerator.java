@@ -1,4 +1,4 @@
-package baguchi.enchantwithmob.data;
+package baguchi.enchantwithmob.data.generators.crafting;
 
 import baguchi.enchantwithmob.registry.ModItems;
 import net.minecraft.core.HolderLookup;

@@ -1,6 +1,11 @@
 package baguchi.enchantwithmob.data;
 
 import baguchi.enchantwithmob.EnchantWithMob;
+import baguchi.enchantwithmob.data.generators.BlockTagGenerator;
+import baguchi.enchantwithmob.data.generators.CustomTagProvider;
+import baguchi.enchantwithmob.data.generators.EntityTagGenerator;
+import baguchi.enchantwithmob.data.generators.ItemTagGenerator;
+import baguchi.enchantwithmob.data.generators.crafting.CraftingGenerator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -31,6 +36,7 @@ public class DataGenerators {
         generator.addProvider(true, new ItemTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new EntityTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new CustomTagProvider.MobEnchantTagGenerator(packOutput, lookupProvider));
+        generator.addProvider(true, new CustomTagProvider.MobEnchantTypeTagGenerator(packOutput, lookupProvider));
         generator.addProvider(true, new Runner(packOutput, lookupProvider));
     }
 

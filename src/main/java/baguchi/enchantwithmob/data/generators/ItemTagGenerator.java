@@ -1,4 +1,4 @@
-package baguchi.enchantwithmob.data;
+package baguchi.enchantwithmob.data.generators;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.registry.ModItems;

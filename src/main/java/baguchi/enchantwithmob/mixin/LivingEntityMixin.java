@@ -22,9 +22,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = LivingEntity.class, remap = false)
 public abstract class LivingEntityMixin extends Entity implements IEnchantCap, IBaguPacket {
 
-    public MobEnchantCapability capability = new MobEnchantCapability();
+    public MobEnchantCapability capability;
     public LivingEntityMixin(EntityType<?> entityType, Level world) {
         super(entityType, world);
+    }
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    public void init(EntityType p_20966_, Level p_20967_, CallbackInfo ci) {
+        capability = new MobEnchantCapability(p_20967_.registryAccess());
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
@@ -34,7 +39,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readAdditionalSaveData(ValueInput p_422570_, CallbackInfo ci) {
-        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
+        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability(this.registryAccess());
         mobEnchantCapability.deserializeNBT(p_422570_.read("MobEnchantData", CompoundTag.CODEC).orElse(new CompoundTag()), this.registryAccess());
         this.setEnchantCap(mobEnchantCapability);
     }
@@ -79,5 +84,4 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
     public boolean isBaby() {
         return false;
     }
-
 }

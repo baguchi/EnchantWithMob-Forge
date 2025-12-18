@@ -1,6 +1,7 @@
 package baguchi.enchantwithmob.data;
 
 import baguchi.enchantwithmob.EnchantWithMob;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.PackOutput;
@@ -11,7 +12,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
 
-    public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder();
+    public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+            .add(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantTypes::bootstrap);
 
 
     public RegistryDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

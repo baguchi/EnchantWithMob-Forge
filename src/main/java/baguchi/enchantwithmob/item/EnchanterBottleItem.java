@@ -38,7 +38,7 @@ public class EnchanterBottleItem extends Item {
 
 		if (entity instanceof IEnchantCap cap) {
 			int xp = 0;
-			if (!cap.getEnchantCap().isAncient() && cap.getEnchantCap().hasEnchant()) {
+            if (!cap.getEnchantCap().isPreventRemoveSelf() && cap.getEnchantCap().hasEnchant()) {
 				xp += MobEnchantUtils.getExperienceFromMob(cap);
 
 				if (xp > 0) {

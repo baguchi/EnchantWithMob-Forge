@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.mixin.client;
 
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.monster.dragon.EnderDragonModel;
@@ -39,7 +40,7 @@ public class EnderDragonRendererMixin {
                 poseStack.translate(0.0F, -1.501F, 0.0F);
                 this.model.setupAnim(renderState);
                 if (renderState.deathTime <= 0) {
-                    submitNodeCollector.submitModel(this.model, renderState, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);
+                    submitNodeCollector.submitModel(this.model, renderState, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);
                 }
 
                 poseStack.popPose();

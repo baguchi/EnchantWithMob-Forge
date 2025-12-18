@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.mixin.client;
 
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.object.skull.SkullModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -37,7 +38,7 @@ public abstract class WitherSkullRendererMixin {
                     poseStack.pushPose();
                     poseStack.scale(-1.0F, -1.0F, 1.0F);
                     this.model.setupAnim(witherSkullRenderState.modelState);
-                    p_433466_.submitModel(this.model, witherSkullRenderState.modelState, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), witherSkullRenderState.lightCoords, OverlayTexture.NO_OVERLAY, witherSkullRenderState.outlineColor, (ModelFeatureRenderer.CrumblingOverlay) null);
+                    p_433466_.submitModel(this.model, witherSkullRenderState.modelState, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), witherSkullRenderState.lightCoords, OverlayTexture.NO_OVERLAY, witherSkullRenderState.outlineColor, (ModelFeatureRenderer.CrumblingOverlay) null);
                     poseStack.popPose();
 				}
 			}

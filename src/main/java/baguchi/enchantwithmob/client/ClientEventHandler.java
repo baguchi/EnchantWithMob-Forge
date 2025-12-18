@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.client;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -80,7 +81,7 @@ public class ClientEventHandler {
         int k = level.level().getBrightness(LightLayer.SKY, blockpos);
         int l = level.level().getBrightness(LightLayer.SKY, blockpos1);
 
-        submitNodeCollector.submitCustomGeometry(poseStack, enchantBeamSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), (pose, vertexConsumer) -> {
+        submitNodeCollector.submitCustomGeometry(poseStack, enchantBeamSwirl(cap.getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), (pose, vertexConsumer) -> {
             renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
             renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
         });

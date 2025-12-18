@@ -1,11 +1,11 @@
 package baguchi.enchantwithmob.command;
 
 import baguchi.enchantwithmob.api.IEnchantCap;
-import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.api.MobEnchantType;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -43,19 +43,23 @@ public class MobEnchantingCommand {
 
 		dispatcher.register(enchantCommand);
 
-		LiteralArgumentBuilder<CommandSourceStack> ancientEnchantCommand = Commands.literal("ancient_mob")
+        LiteralArgumentBuilder<CommandSourceStack> mobEnchantType = Commands.literal("mob_enchant_type")
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
 
 
-		ancientEnchantCommand.then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("ancient", BoolArgumentType.bool()).executes((ctx) -> {
-			return setAncientMob(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), BoolArgumentType.getBool(ctx, "ancient"));
+        mobEnchantType.then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("mob_enchant_type", ResourceKeyArgument.key(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY)).executes((ctx) -> {
+            return setMobEnchantType(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), getMobEnchantType(ctx, "mob_enchant_type"));
 		})));
 
-		dispatcher.register(ancientEnchantCommand);
+        dispatcher.register(mobEnchantType);
 	}
 
     public static Holder.Reference<MobEnchant> getMobEnchant(CommandContext<CommandSourceStack> p_249310_, String p_250729_) throws CommandSyntaxException {
 		return resolveKey(p_249310_, p_250729_, MobEnchants.MOB_ENCHANT_REGISTRY, ERROR_INVALID_FEATURE);
+    }
+
+    public static Holder.Reference<MobEnchantType> getMobEnchantType(CommandContext<CommandSourceStack> p_249310_, String p_250729_) throws CommandSyntaxException {
+        return resolveKey(p_249310_, p_250729_, MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, ERROR_INVALID_FEATURE);
     }
 
     private static <T> Registry<T> getRegistry(CommandContext<CommandSourceStack> p_212379_, ResourceKey<? extends Registry<T>> p_212380_) {
@@ -83,7 +87,7 @@ public class MobEnchantingCommand {
 			if (entity instanceof LivingEntity) {
 				if (entity instanceof IEnchantCap enchantCap) {
 					enchantCap.getEnchantCap().removeAllMobEnchant((LivingEntity) entity);
-					enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, MobEnchantCapability.EnchantType.NORMAL);
+                    enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, MobEnchantTypes.NORMAL);
 				}
 
 				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.clear", entity.getDisplayName()), true);
@@ -100,12 +104,12 @@ public class MobEnchantingCommand {
 		}
 	}
 
-	private static int setAncientMob(CommandSourceStack commandStack, Entity entity, boolean ancientMob) {
+    private static int setMobEnchantType(CommandSourceStack commandStack, Entity entity, Holder.Reference<MobEnchantType> holder) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
 
 				if (entity instanceof IEnchantCap enchantCap) {
-					enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, ancientMob ? MobEnchantCapability.EnchantType.ANCIENT : MobEnchantCapability.EnchantType.NORMAL);
+                    enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, holder.getKey());
 				}
 
 				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.ancient_mob.set_ancient", entity.getDisplayName()), true);

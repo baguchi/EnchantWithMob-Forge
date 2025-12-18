@@ -4,6 +4,7 @@ import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
 import baguchi.enchantwithmob.client.ModParticles;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
@@ -271,7 +272,7 @@ public class CommonEventHandler {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
                         if (entity.getRandom().nextFloat() < 0.45F) {
-                            entity.level().addParticle(cap.getEnchantCap().isAncient() ? ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER : ModParticles.ENCHANT.get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
+                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER : ModParticles.ENCHANT.get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
                         }
 
                     }
@@ -392,7 +393,7 @@ public class CommonEventHandler {
                     ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
 
                     if (target instanceof IEnchantCap cap) {
-                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isAncient()) {
+                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isPreventRemoveSelf()) {
                             int xp = MobEnchantUtils.getExperienceFromMob(cap);
 
                             if (xp > 0) {
@@ -578,11 +579,7 @@ public class CommonEventHandler {
         LivingEntity entity = event.getEntity();
         if (entity instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
-                if (cap.getEnchantCap().isAncient()) {
-                    event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap) * 5);
-                } else {
-                    event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap));
-                }
+                event.setDroppedExperience((int) (event.getDroppedExperience() + (MobEnchantUtils.getExperienceFromMob(cap) * cap.getEnchantCap().getMobEnchantType().value().expGainScale())));
             }
         }
     }
