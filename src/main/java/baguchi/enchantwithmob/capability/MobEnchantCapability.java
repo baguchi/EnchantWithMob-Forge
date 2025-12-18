@@ -161,7 +161,7 @@ public class MobEnchantCapability {
 	 */
 	public void onNewEnchantEffect(LivingEntity entity, Holder<MobEnchant> enchant, int enchantLevel) {
 		if (entity.level() instanceof ServerLevel serverLevel) {
-			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
+			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel - 1);
 		}
         enchant.value().afterEnchanted(entity, enchantLevel);
 
@@ -182,7 +182,7 @@ public class MobEnchantCapability {
 		if (entity.level() instanceof ServerLevel serverLevel) {
 			enchant.value().removeAttributesModifiersFromEntity(entity, entity.getAttributes());
 
-			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
+			enchant.value().applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel - 1);
 		}
 	}
 

@@ -144,10 +144,6 @@ public class MobEnchant implements FeatureElement {
         }
     }
 
-    public double getAttributeModifierAmount(int amplifier, AttributeTemplate modifier) {
-        return modifier.amount * (double) (amplifier);
-    }
-
     public boolean isDisabled() {
         return EnchantConfig.COMMON.DISABLE_ENCHANTS.get().contains(MobEnchants.getRegistry().getKey(this).toString());
     }

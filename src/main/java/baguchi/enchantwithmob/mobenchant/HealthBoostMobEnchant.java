@@ -21,6 +21,6 @@ public class HealthBoostMobEnchant extends MobEnchant {
 
     @Override
     public void afterEnchanted(LivingEntity entity, int level) {
-        entity.setHealth(Math.clamp(entity.getHealth() + level * DEFAULT_HEALTH + DEFAULT_HEALTH, 0, entity.getMaxHealth()));
+        entity.setHealth(Math.clamp(entity.getHealth() + level * DEFAULT_HEALTH, 0, entity.getMaxHealth()));
     }
 }
