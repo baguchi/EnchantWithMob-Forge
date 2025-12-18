@@ -1,4 +1,7 @@
 {
   "exp_gain_scale": 3.0,
+  "particle": {
+    "type": "minecraft:trial_spawner_detection"
+  },
   "texture": "enchantwithmob:textures/entity/ancient_glint.png"
 }

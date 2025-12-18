@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.mixin;
 import baguchi.bagus_lib.api.IBaguPacket;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -66,6 +67,8 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, message);
             }
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new MobEnchantTypeMessage(this, this.getEnchantCap().getMobEnchantType().getKey()));
+
         }
     }
 

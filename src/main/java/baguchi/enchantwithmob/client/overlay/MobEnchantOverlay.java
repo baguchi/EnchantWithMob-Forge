@@ -17,7 +17,7 @@ public class MobEnchantOverlay implements GuiLayer {
     public void render(GuiGraphics guiGraphics, DeltaTracker partialTick) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.options.getCameraType().isMirrored()) {
+        if (mc.options.getCameraType().isMirrored() && !mc.options.hideGui) {
             if (EnchantConfig.CLIENT.showEnchantedMobHud.get() && mc.player != null) {
                 if (mc.player instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {

@@ -3,9 +3,8 @@ package baguchi.enchantwithmob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
-import baguchi.enchantwithmob.client.ModParticles;
-import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
+import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
@@ -17,7 +16,6 @@ import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -271,8 +269,8 @@ public class CommonEventHandler {
             if (cap.getEnchantCap().hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
-                        if (entity.getRandom().nextFloat() < 0.45F) {
-                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER : ModParticles.ENCHANT.get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
+                        if (cap.getEnchantCap().getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.45F) {
+                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().value().particle().get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
                         }
 
                     }
@@ -590,26 +588,27 @@ public class CommonEventHandler {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
             if (player instanceof IEnchantCap cap) {
-
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
                     cap.getEnchantCap().onNewEnchantEffect(serverPlayer, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
                     PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
 
                 }
+                PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantTypeMessage(player, cap.getEnchantCap().getMobEnchantType().getKey()));
             }
         }
     }
 
     @SubscribeEvent
     public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        Player playerEntity = event.getEntity();
-        if (playerEntity instanceof IEnchantCap cap) {
-            if (!playerEntity.level().isClientSide()) {
+        Player player = event.getEntity();
+        if (player instanceof IEnchantCap cap) {
+            if (!player.level().isClientSide()) {
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                    cap.getEnchantCap().onNewEnchantEffect(playerEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+                    cap.getEnchantCap().onNewEnchantEffect(player, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
 
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(playerEntity, new MobEnchantedMessage(playerEntity, cap.getEnchantCap().getMobEnchants().get(i)));
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
                 }
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new MobEnchantTypeMessage(player, cap.getEnchantCap().getMobEnchantType().getKey()));
             }
         }
     }
@@ -624,6 +623,7 @@ public class CommonEventHandler {
 
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantedMessage(entity, cap.getEnchantCap().getMobEnchants().get(i)));
                 }
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantTypeMessage(entity, cap.getEnchantCap().getMobEnchantType().getKey()));
             }
         }
     }

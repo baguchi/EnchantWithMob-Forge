@@ -244,7 +244,7 @@ public class MobEnchantCapability {
 		nbt.put("StoredMobEnchants", listnbt);
 		nbt.putBoolean("FromOwner", fromOwner);
 
-        nbt.putString("EnchantType", mobEnchantType.unwrapKey().get().identifier().toString());
+        nbt.putString("EnchantType", registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getKey(mobEnchantType.value()).toString());
 
 		return nbt;
 	}
