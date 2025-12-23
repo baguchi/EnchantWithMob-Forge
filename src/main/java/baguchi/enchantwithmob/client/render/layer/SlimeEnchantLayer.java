@@ -7,6 +7,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.slime.SlimeModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -29,11 +30,19 @@ public class SlimeEnchantLayer<T extends LivingEntityRenderState> extends Render
         MobEnchantType mobEnchantType = entitylivingbaseIn.getRenderDataOrThrow(EnchantLayer.MOB_ENCHANT_TYPE);
         if (!EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (enchanted && !entitylivingbaseIn.isInvisible) {
-                this.model.setupAnim(entitylivingbaseIn);
-                submitNodeCollector.submitModel(this.model, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
-                        null,
-                        entitylivingbaseIn.outlineColor,
-                        null);
+                if (mobEnchantType != null) {
+                    this.model.setupAnim(entitylivingbaseIn);
+                    submitNodeCollector.submitModel(this.model, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
+                            null,
+                            entitylivingbaseIn.outlineColor,
+                            null);
+                } else {
+                    this.model.setupAnim(entitylivingbaseIn);
+                    submitNodeCollector.submitModel(this.model, entitylivingbaseIn, poseStack, enchantSwirl(ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                            null,
+                            entitylivingbaseIn.outlineColor,
+                            null);
+                }
             }
         }
 	}

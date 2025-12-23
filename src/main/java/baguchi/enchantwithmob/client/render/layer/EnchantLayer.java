@@ -7,6 +7,7 @@ import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -31,15 +32,24 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, T entitylivingbaseIn, float v, float v1) {
         boolean enchanted = entitylivingbaseIn.getRenderDataOrDefault(EnchantLayer.ENCHANTED, false);
-        MobEnchantType mobEnchantType = entitylivingbaseIn.getRenderDataOrThrow(EnchantLayer.MOB_ENCHANT_TYPE);
+        MobEnchantType mobEnchantType = entitylivingbaseIn.getRenderData(EnchantLayer.MOB_ENCHANT_TYPE);
         if (!EnchantConfig.CLIENT.disableAuraRender.get()) {
             if (enchanted && !entitylivingbaseIn.isInvisible) {
-                M entitymodel = this.getParentModel();
-                entitymodel.setupAnim(entitylivingbaseIn);
-                submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
-                        null,
-                        entitylivingbaseIn.outlineColor,
-                        null);
+                if (mobEnchantType != null) {
+                    M entitymodel = this.getParentModel();
+                    entitymodel.setupAnim(entitylivingbaseIn);
+                    submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
+                            null,
+                            entitylivingbaseIn.outlineColor,
+                            null);
+                } else {
+                    M entitymodel = this.getParentModel();
+                    entitymodel.setupAnim(entitylivingbaseIn);
+                    submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                            null,
+                            entitylivingbaseIn.outlineColor,
+                            null);
+                }
             }
         }
     }
