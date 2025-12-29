@@ -3,7 +3,6 @@ package baguchi.enchantwithmob.loot;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModItems;
-import baguchi.enchantwithmob.registry.ModLootItemFunctions;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.logging.LogUtils;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.slf4j.Logger;
 
@@ -53,8 +51,8 @@ public class MobEnchantRandomlyFunction extends LootItemConditionalFunction {
 	}
 
 	@Override
-	public LootItemFunctionType<MobEnchantRandomlyFunction> getType() {
-		return ModLootItemFunctions.MOB_ENCHANT_RANDOMLY_FUNCTION.get();
+    public MapCodec<? extends LootItemConditionalFunction> codec() {
+        return CODEC;
 	}
 
 	/**

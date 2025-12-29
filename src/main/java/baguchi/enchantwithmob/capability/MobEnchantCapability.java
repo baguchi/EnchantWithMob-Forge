@@ -127,7 +127,7 @@ public class MobEnchantCapability {
 			RemoveAllMobEnchantMessage message = new RemoveAllMobEnchantMessage(entity);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
-		this.mobEnchants.removeAll(mobEnchants);
+        this.mobEnchants.clear();
 		//size changed like minecraft dungeons
 		entity.refreshDimensions();
 	}
@@ -144,7 +144,7 @@ public class MobEnchantCapability {
 			RemoveAllMobEnchantMessage message = new RemoveAllMobEnchantMessage(entity);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
-		this.mobEnchants.removeAll(mobEnchants);
+        this.mobEnchants.clear();
 		this.removeOwner(entity);
 		//size changed like minecraft dungeons
 		entity.refreshDimensions();

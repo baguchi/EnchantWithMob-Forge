@@ -2,7 +2,6 @@ package baguchi.enchantwithmob.loot;
 
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
-import baguchi.enchantwithmob.registry.ModLootItemFunctions;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.mojang.serialization.MapCodec;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
@@ -43,9 +41,10 @@ public class MobEnchantWithLevelsFunction extends LootItemConditionalFunction {
 		this.options = options;
 	}
 
+
 	@Override
-	public LootItemFunctionType<MobEnchantWithLevelsFunction> getType() {
-		return ModLootItemFunctions.MOB_ENCHANT_WITH_LEVELS.get();
+    public MapCodec<? extends LootItemConditionalFunction> codec() {
+        return CODEC;
 	}
 
 	@Override
