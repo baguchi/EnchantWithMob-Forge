@@ -78,7 +78,7 @@ public class CommonEventHandler {
      * this event handle the Alway Enchant System
      */
     @SubscribeEvent
-    public static void onEnderDragonSpawn(EntityJoinLevelEvent event) {
+    public static void onMobSpawn(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof IEnchantCap cap && !event.loadedFromDisk()) {
             LevelAccessor world = event.getLevel();
             if (!world.isClientSide() && world instanceof ServerLevel serverLevel && event.getEntity() instanceof LivingEntity living) {
