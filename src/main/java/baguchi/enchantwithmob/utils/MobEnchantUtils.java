@@ -242,7 +242,7 @@ public class MobEnchantUtils {
 	 * @param random       Random
 	 * @param level        max limit level MobEnchant
 	 */
-	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, boolean ancient, TagKey<MobEnchant> mobEnchantTagKey) {
+	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
 		List<MobEnchantmentData> list = getSpawnEnchantmentList(livingEntity.registryAccess(), random, level, mobEnchantTagKey);
 		;
 
@@ -264,9 +264,9 @@ public class MobEnchantUtils {
 	 * @param random       Random
 	 * @param level        max limit level MobEnchant
 	 */
-	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, boolean ancient) {
+	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level) {
 
-		return addRandomEnchantmentToEntity(livingEntity, capability, random, level, ancient, ModTags.MobEnchantTags.RANDOM_SPAWN);
+		return addRandomEnchantmentToEntity(livingEntity, capability, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
 	}
 
 	/**

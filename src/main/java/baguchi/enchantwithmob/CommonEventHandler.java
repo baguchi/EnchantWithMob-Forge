@@ -90,17 +90,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                         }
                         living.setHealth(living.getMaxHealth());
@@ -115,17 +115,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                         }
 
@@ -163,17 +163,17 @@ public class CommonEventHandler {
                                         case EASY:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 20);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                         case NORMAL:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 40);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                         case HARD:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale * scale, 1, 50);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                     }
 
