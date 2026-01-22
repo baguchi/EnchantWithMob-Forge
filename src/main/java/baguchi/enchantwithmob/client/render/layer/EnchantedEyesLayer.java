@@ -36,8 +36,8 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
     public void submit(PoseStack p_116983_, SubmitNodeCollector submitNodeCollector, int p_116985_, T entity, float p_116987_, float p_116988_) {
         boolean enchanted = entity.getRenderDataOrDefault(EnchantLayer.ENCHANTED, false);
 
-        if (enchanted && !EnchantConfig.CLIENT.disableAuraRender.get()) {
-            submitNodeCollector.submitModel(this.getParentModel(), entity, p_116983_, this.renderType(), p_116985_, OverlayTexture.NO_OVERLAY, -1,
+		if (enchanted && !EnchantConfig.CLIENT.disableEyeRender.get()) {
+			submitNodeCollector.submitModel(this.getParentModel(), entity, p_116983_, this.renderType(), p_116985_, OverlayTexture.NO_OVERLAY, -1,
                         null,
                         entity.outlineColor,
                         null);
