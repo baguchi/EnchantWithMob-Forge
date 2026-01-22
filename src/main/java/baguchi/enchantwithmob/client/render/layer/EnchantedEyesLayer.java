@@ -51,7 +51,7 @@ public class EnchantedEyesLayer<T extends LivingEntity, M extends EntityModel<T>
 	@Override
 	public void render(PoseStack p_116983_, MultiBufferSource p_116984_, int p_116985_, T p_116986_, float p_116987_, float p_116988_, float p_116989_, float p_116990_, float p_116991_, float p_116992_) {
 		if (p_116986_ instanceof IEnchantCap cap) {
-			if (cap.getEnchantCap().hasEnchant() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
+			if (cap.getEnchantCap().hasEnchant() && !EnchantConfig.CLIENT.disableEyeRender.get()) {
 				VertexConsumer ivertexbuilder = p_116984_.getBuffer(this.renderType());
 				this.getParentModel().renderToBuffer(p_116983_, ivertexbuilder, p_116985_, OverlayTexture.NO_OVERLAY);
 			}

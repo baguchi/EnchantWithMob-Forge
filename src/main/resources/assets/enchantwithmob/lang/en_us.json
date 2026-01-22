@@ -65,6 +65,7 @@
   "enchantwithmob.config.showEnchantedMobHude": "Disable Poison Particle",
   "enchantwithmob.config.disablePoisonParticle": "Disable Poison Particle",
   "enchantwithmob.config.disableAuraRender": "Disable Aura Render",
+  "enchantwithmob.config.disableEyeRender": "Disable Eye Render",
   "enchantwithmob.config.OldStyleAnimation": "Enable Old Style Animation",
   "death.attack.enchantwithmob.indirectVoid": "%1$s was wrapped in void by %2$s",
   "commands.enchantwithmob.mob_enchanting.set_enchant": "Success MobEnchant %1$s For %2$s",
