@@ -27,6 +27,7 @@ public class EnchantConfig {
 
         public final ModConfigSpec.BooleanValue disablePoisonParticle;
         public final ModConfigSpec.BooleanValue disableAuraRender;
+        public final ModConfigSpec.BooleanValue disableEyeRender;
 
         public final ModConfigSpec.BooleanValue oldStyleAnimation;
 
@@ -48,6 +49,10 @@ public class EnchantConfig {
                     .comment("Disable Aura Render. [true / false]")
                     .translation(EnchantWithMob.MODID + ".config.disableAuraRender")
                     .define("Disable Aura Render", false);
+            disableEyeRender = builder
+                    .comment("Disable Eye Render. [true / false]")
+                    .translation(EnchantWithMob.MODID + ".config.disableEyeRender")
+                    .define("Disable Eye Render", false);
             oldStyleAnimation = builder
                     .comment("Enable Old Style Animation. [true / false]")
                     .translation(EnchantWithMob.MODID + ".config.OldStyleAnimation")

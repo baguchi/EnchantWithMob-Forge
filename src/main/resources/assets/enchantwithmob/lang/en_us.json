@@ -65,6 +65,7 @@
   "enchantwithmob.config.showEnchantedMobHude": "Disable Poison Particle",
   "enchantwithmob.config.disablePoisonParticle": "Disable Poison Particle",
   "enchantwithmob.config.disableAuraRender": "Disable Aura Render",
+  "enchantwithmob.config.disableEyeRender": "Disable Eye Render",
   "enchantwithmob.config.OldStyleAnimation": "Enable Old Style Animation",
   "enchantwithmob.config.hudXPosition": "Set Hud X Position When Enabled",
   "enchantwithmob.config.hudYPosition": "Set Hud Y Position When Enabled",
