@@ -155,8 +155,13 @@ public class ClientRegistrar {
                 state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
                 //reset
                 state.setRenderData(EnchantedWindLayer.WIND, false);
+				if (cap.getEnchantCap().getEnchantOwner() != null) {
+					state.setRenderData(ClientEventHandler.ENCHANTER_POS, cap.getEnchantCap().getEnchantOwner().position());
+				} else {
+					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);
+				}
 
-                MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
+				MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
                     state.setRenderData(EnchantedWindLayer.WIND, true);
                 });
 
