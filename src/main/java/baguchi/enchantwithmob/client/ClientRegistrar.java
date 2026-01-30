@@ -146,23 +146,28 @@ public class ClientRegistrar {
 		});
     }
 
-    @SubscribeEvent
-    public static void registerRenderState(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>(LivingEntityRenderer.class) {
-        }, (entity, state) -> {
-            if (entity instanceof IEnchantCap cap) {
-                state.setRenderData(EnchantLayer.ENCHANTED, cap.getEnchantCap().hasEnchant());
-                state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
-                //reset
-                state.setRenderData(EnchantedWindLayer.WIND, false);
+	@SubscribeEvent
+	public static void registerRenderState(RegisterRenderStateModifiersEvent event) {
+		event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>(LivingEntityRenderer.class) {
+		}, (entity, state) -> {
+			if (entity instanceof IEnchantCap cap) {
+				state.setRenderData(EnchantLayer.ENCHANTED, cap.getEnchantCap().hasEnchant());
+				state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
+				//reset
+				state.setRenderData(EnchantedWindLayer.WIND, false);
+				if (cap.getEnchantCap().getEnchantOwner() != null) {
+					state.setRenderData(ClientEventHandler.ENCHANTER_POS, cap.getEnchantCap().getEnchantOwner().position());
+				} else {
+					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);
+				}
 
-                MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
-                    state.setRenderData(EnchantedWindLayer.WIND, true);
-                });
+				MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
+					state.setRenderData(EnchantedWindLayer.WIND, true);
+				});
 
-            }
-        });
-    }
+			}
+		});
+	}
 
     @SubscribeEvent
 	public static void registerOverlay(RegisterGuiLayersEvent event) {
