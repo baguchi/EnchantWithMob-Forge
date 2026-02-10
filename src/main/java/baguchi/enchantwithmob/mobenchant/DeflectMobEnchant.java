@@ -44,8 +44,4 @@ public class DeflectMobEnchant extends MobEnchant {
         return super.canApplyTogether(ench) && ench != MobEnchants.THORN.get();
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
 }

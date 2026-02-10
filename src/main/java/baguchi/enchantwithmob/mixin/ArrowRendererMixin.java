@@ -48,7 +48,7 @@ public class ArrowRendererMixin<T extends AbstractArrow> {
 					p_113842_.mulPose(Axis.XP.rotationDegrees(45.0F));
 					p_113842_.scale(0.05625F, 0.05625F, 0.05625F);
 					p_113842_.translate(-4.0F, 0.0F, 0.0F);
-                    VertexConsumer vertexconsumer = p_113843_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+					VertexConsumer vertexconsumer = p_113843_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isPreventRemoveSelf() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
 					PoseStack.Pose posestack$pose = p_113842_.last();
 					Matrix4f matrix4f = posestack$pose.pose();
 					Matrix3f matrix3f = posestack$pose.normal();

@@ -233,21 +233,11 @@ public class MobEnchantUtils {
 	public static boolean addEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, MobEnchantmentData data) {
 		boolean flag = false;
 		if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, capability)) {
-			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel, false);
+			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel);
 			flag = true;
 		}
 		return flag;
 	}
-
-	public static boolean addEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, MobEnchantmentData data, boolean ancient) {
-		boolean flag = false;
-		if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, capability)) {
-			capability.getEnchantCap().addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel, ancient);
-			flag = true;
-		}
-		return flag;
-	}
-
 	/**
 	 * add Mob Enchantments To Entity
 	 *
@@ -256,14 +246,14 @@ public class MobEnchantUtils {
 	 * @param random       Random
 	 * @param level        max limit level MobEnchant
 	 */
-	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, boolean ancient, TagKey<MobEnchant> mobEnchantTagKey) {
+	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
 		List<MobEnchantmentData> list = getSpawnEnchantmentList(livingEntity.registryAccess(), random, level, mobEnchantTagKey);
 		;
 
 		boolean flag = false;
 		for (MobEnchantmentData enchantmentdata : list) {
 			if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, capability)) {
-				capability.getEnchantCap().addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel, ancient);
+				capability.getEnchantCap().addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
 				flag = true;
 			}
 		}
@@ -278,9 +268,9 @@ public class MobEnchantUtils {
 	 * @param random       Random
 	 * @param level        max limit level MobEnchant
 	 */
-	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level, boolean ancient) {
+	public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, IEnchantCap capability, RandomSource random, int level) {
 
-		return addRandomEnchantmentToEntity(livingEntity, capability, random, level, ancient, ModTags.MobEnchantTags.RANDOM_SPAWN);
+		return addRandomEnchantmentToEntity(livingEntity, capability, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
 	}
 
 	/**

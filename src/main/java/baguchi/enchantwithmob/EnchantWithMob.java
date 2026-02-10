@@ -1,7 +1,11 @@
 package baguchi.enchantwithmob;
 
+import baguchi.enchantwithmob.api.MobEnchantEye;
+import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantEyes;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.message.*;
 import baguchi.enchantwithmob.registry.*;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +22,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +46,9 @@ public class EnchantWithMob {
 		modEventBus.addListener(this::preSetup);
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::setupPackets);
+
+		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantEyes.MOB_ENCHANT_EYE_REGISTRY_KEY, MobEnchantEye.DIRECT_CODEC, MobEnchantEye.DIRECT_CODEC));
+		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantType.DIRECT_CODEC, MobEnchantType.DIRECT_CODEC));
 
 
 		ModEntities.ENTITIES_REGISTRY.register(modEventBus);
@@ -69,9 +77,9 @@ public class EnchantWithMob {
 
 	public void setupPackets(RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
-		registrar.playBidirectional(AncientMessage.TYPE, AncientMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 		registrar.playBidirectional(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 		registrar.playBidirectional(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playBidirectional(MobEnchantTypeMessage.TYPE, MobEnchantTypeMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 		registrar.playBidirectional(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 		registrar.playBidirectional(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 		registrar.playBidirectional(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));

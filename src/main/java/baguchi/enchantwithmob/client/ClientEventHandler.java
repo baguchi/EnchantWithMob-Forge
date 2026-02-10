@@ -10,7 +10,6 @@ import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -29,7 +28,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
-import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.ANCIENT_GLINT;
 import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.enchantBeamSwirl;
 
 /*
@@ -46,7 +44,7 @@ public class ClientEventHandler {
         MultiBufferSource bufferBuilder = event.getMultiBufferSource();
         float particalTick = event.getPartialTick();
         if (event.getEntity() instanceof IEnchantCap cap) {
-			if (cap.getEnchantCap().hasOwner() && cap.getEnchantCap().hasEnchant()) {
+			if (cap.getEnchantCap().hasOwner() && cap.getEnchantCap().hasEnchant() && cap.getEnchantCap().getMobEnchantType() != null) {
 
 				LivingEntity entity = cap.getEnchantCap().getEnchantOwner();
                 if (entity != null) {
@@ -72,7 +70,7 @@ public class ClientEventHandler {
 		float f1 = (float) (vector3d.y - d4);
 		float f2 = (float) (vector3d.z - d5);
 		float f3 = 0.1F;
-		VertexConsumer ivertexbuilder = p_229118_4_.getBuffer(enchantBeamSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+		VertexConsumer ivertexbuilder = p_229118_4_.getBuffer(enchantBeamSwirl(cap.getMobEnchantType().value().texture()));
 		Matrix4f matrix4f = p_229118_3_.last().pose();
 		Matrix3f matrix3f = p_229118_3_.last().normal();
 		float f4 = Mth.fastInvCubeRoot(f * f + f2 * f2) * 0.1F / 2.0F;

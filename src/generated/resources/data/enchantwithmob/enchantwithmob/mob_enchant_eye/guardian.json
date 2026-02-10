@@ -1,0 +1,7 @@
+{
+  "entity_type": [
+    "minecraft:guardian",
+    "minecraft:elder_guardian"
+  ],
+  "texture": "enchantwithmob:textures/entity/enchant_eye/enchanted_guardian_eyes.png"
+}

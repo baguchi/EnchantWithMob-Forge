@@ -1,0 +1,7 @@
+{
+  "entity_type": [
+    "minecraft:zombie",
+    "minecraft:husk"
+  ],
+  "texture": "enchantwithmob:textures/entity/enchant_eye/enchanted_zombie_eyes.png"
+}

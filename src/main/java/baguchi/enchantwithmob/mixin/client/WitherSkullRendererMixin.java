@@ -34,7 +34,7 @@ public class WitherSkullRendererMixin {
                     p_116487_.scale(-1.0F, -1.0F, 1.0F);
                     float f = Mth.rotLerp(p_116484_.yRotO, p_116484_.getYRot(), p_116486_);
                     float f1 = Mth.lerp(p_116486_, p_116484_.xRotO, p_116484_.getXRot());
-                    VertexConsumer vertexconsumer = p_116488_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+                    VertexConsumer vertexconsumer = p_116488_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isPreventRemoveSelf() ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
                     this.model.setupAnim(0.0F, f, f1);
                     this.model.renderToBuffer(p_116487_, vertexconsumer, p_116489_, OverlayTexture.NO_OVERLAY);
                     p_116487_.popPose();

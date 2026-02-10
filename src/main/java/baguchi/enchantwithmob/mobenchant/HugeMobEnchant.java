@@ -50,10 +50,6 @@ public class HugeMobEnchant extends MobEnchant {
         return damage;
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
 
     @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {

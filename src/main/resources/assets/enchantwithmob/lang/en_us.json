@@ -75,8 +75,8 @@
   "commands.enchantwithmob.mob_enchanting.clear": "Success Remove MobEnchant For %1$s",
   "commands.enchantwithmob.mob_enchanting.clear.fail.no_living_entity": "%1$s is not Living Entity. you cannot mob enchanting for non Living Entity",
   "commands.enchantwithmob.mob_enchanting.clear.fail.no_entity": "target entity does not exist",
-  "commands.enchantwithmob.ancient_mob.set_ancient": "Success Set Ancient For %1$s (when glow layer cannot see. you need to mob enchant first)",
-  "commands.enchantwithmob.ancient_mob.clear.fail.no_living_entity": "%1$s is not Living Entity. you cannot set Ancient Mob for non Living Entity",
-  "commands.enchantwithmob.ancient_mob.clear.fail.no_entity": "target entity does not exist",
+  "commands.enchantwithmob.mob_enchant_type.set": "Success Set Ancient For %1$s (when glow layer cannot see. you need to mob enchant first)",
+  "commands.enchantwithmob.mob_enchant_type.fail.no_living_entity": "%1$s is not Living Entity. you cannot set Mob EnchantType for non Living Entity",
+  "commands.enchantwithmob.mob_enchant_type.fail.no_entity": "target entity does not exist",
   "commands.enchantwithmob.mob_enchanting.set_enchant.fail.too_high": "granted Mob Enchant Level is too high"
 }

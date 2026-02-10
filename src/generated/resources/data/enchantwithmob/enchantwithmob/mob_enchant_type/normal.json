@@ -1,0 +1,7 @@
+{
+  "exp_gain_scale": 1.0,
+  "particle": {
+    "type": "enchantwithmob:enchant"
+  },
+  "texture": "minecraft:textures/misc/enchanted_glint_entity.png"
+}

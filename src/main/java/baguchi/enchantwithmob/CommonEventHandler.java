@@ -4,6 +4,7 @@ import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
 import baguchi.enchantwithmob.client.ModParticles;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
@@ -90,20 +91,21 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, true);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                         }
                         living.setHealth(living.getMaxHealth());
+                        cap.getEnchantCap().setEnchantType(living, MobEnchantTypes.ANCIENT);
                     }
 
                     // On add MobEnchant Alway Enchantable Mob
@@ -114,17 +116,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i, false);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
                                 break;
                         }
 
@@ -162,17 +164,17 @@ public class CommonEventHandler {
                                         case EASY:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 20);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                         case NORMAL:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 40);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                         case HARD:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale * scale, 1, 50);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, false);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
                                             break;
                                     }
 
@@ -223,7 +225,7 @@ public class CommonEventHandler {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
                         if (entity.getRandom().nextFloat() < 0.45F) {
-                            entity.level().addParticle(cap.getEnchantCap().isAncient() ? ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER : ModParticles.ENCHANT.get(), entity.getRandomX(entity.getBbWidth()), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth()), 0, 0, 0);
+                            entity.level().addParticle(cap.getEnchantCap().isPreventRemoveSelf() ? ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER : ModParticles.ENCHANT.get(), entity.getRandomX(entity.getBbWidth()), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth()), 0, 0, 0);
                         }
 
                     }
@@ -343,7 +345,7 @@ public class CommonEventHandler {
                     ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
 
                     if (target instanceof IEnchantCap cap) {
-                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isAncient()) {
+                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isPreventRemoveSelf()) {
                             int xp = MobEnchantUtils.getExperienceFromMob(cap);
 
                             if (xp > 0) {
@@ -529,7 +531,7 @@ public class CommonEventHandler {
         LivingEntity entity = event.getEntity();
         if (entity instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
-                if (cap.getEnchantCap().isAncient()) {
+                if (cap.getEnchantCap().isPreventRemoveSelf()) {
                     event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap) * 5);
                 } else {
                     event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap));

@@ -9,7 +9,6 @@ import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -17,8 +16,6 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
-import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.ANCIENT_GLINT;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -33,11 +30,11 @@ public class SlimeEnchantLayer<T extends LivingEntity> extends RenderLayer<T, Sl
 	public void render(PoseStack p_117470_, MultiBufferSource p_117471_, int p_117472_, T p_117473_, float p_117474_, float p_117475_, float p_117476_, float p_117477_, float p_117478_, float p_117479_) {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (p_117473_ instanceof IEnchantCap cap) {
-			if (cap.getEnchantCap().hasEnchant()) {
+			if (cap.getEnchantCap().hasEnchant() && cap.getEnchantCap().getMobEnchantType() != null) {
 				if (!p_117473_.isInvisible()) {
 					float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
 
-					VertexConsumer vertexconsumer = p_117471_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ENTITY));
+					VertexConsumer vertexconsumer = p_117471_.getBuffer(EnchantLayer.enchantSwirl(cap.getEnchantCap().getMobEnchantType().value().texture()));
 
 					this.getParentModel().copyPropertiesTo(this.model);
 					this.model.prepareMobModel(p_117473_, p_117474_, p_117475_, p_117476_);

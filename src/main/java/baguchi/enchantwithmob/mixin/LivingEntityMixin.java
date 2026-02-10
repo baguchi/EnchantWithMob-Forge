@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.mixin;
 import bagu_chan.bagus_lib.api.IBaguPacket;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -20,11 +21,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = LivingEntity.class, remap = false)
 public abstract class LivingEntityMixin extends Entity implements IEnchantCap, IBaguPacket {
 
-    public MobEnchantCapability capability = new MobEnchantCapability();
+    public MobEnchantCapability capability;
     public LivingEntityMixin(EntityType<?> entityType, Level world) {
         super(entityType, world);
     }
 
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    public void init(EntityType p_20966_, Level p_20967_, CallbackInfo ci) {
+        capability = new MobEnchantCapability(p_20967_.registryAccess());
+    }
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         nbt.put("MobEnchantData", this.getEnchantCap().serializeNBT(this.registryAccess()));
@@ -32,7 +38,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
-        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
+        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability(this.registryAccess());
         mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"), this.registryAccess());
         this.setEnchantCap(mobEnchantCapability);
     }
@@ -54,11 +60,13 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Override
     public void resync(Entity entity) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, message);
             }
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new MobEnchantTypeMessage(this, this.getEnchantCap().getMobEnchantType().getKey()));
+
         }
     }
 

@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -80,43 +79,7 @@ public class ClientRegistrar {
 
 
 			if (event.getRenderer(entityType) instanceof LivingEntityRenderer r) {
-				if (entityType == EntityType.BLAZE) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), BLAZE_EYES));
-				}
-				if (entityType == EntityType.CREEPER) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), CREEPER_EYES));
-				}
-				if (entityType == EntityType.EVOKER) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), EVOKER_EYES));
-				}
-				if (entityType == EntityType.PILLAGER) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), PILLAGER_EYES));
-				}
-				if (entityType == EntityType.STRAY || entityType == EntityType.WITHER || entityType == EntityType.SKELETON || entityType == EntityType.BOGGED) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), SKELETON_EYES));
-				}
-				if (entityType == EntityType.SLIME) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), SLIME_EYES));
-				}
-				if (entityType == EntityType.SPIDER || entityType == EntityType.CAVE_SPIDER) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), SPIDER_EYES));
-				}
-				if (entityType == EntityType.VINDICATOR) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), VINDICATOR_EYES));
-				}
-				if (entityType == EntityType.WITCH) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), WITCH_EYES));
-				}
-				if (entityType == EntityType.WOLF) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), WOLF_EYES));
-				}
-				if (entityType == EntityType.ZOMBIE || entityType == EntityType.HUSK) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), ZOMBIE_EYES));
-				}
-				if (entityType == EntityType.GUARDIAN || entityType == EntityType.ELDER_GUARDIAN) {
-					((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), GUARDIAN_EYES));
-				}
-
+				((LivingEntityRenderer<?, ?>) r).addLayer(new EnchantedEyesLayer(((LivingEntityRenderer<?, ?>) r), entityType));
 			}
 		});
     }

@@ -51,11 +51,6 @@ public class SmallMobEnchant extends MobEnchant {
         return damage;
     }
 
-    @Override
-    public boolean isTresureEnchant() {
-        return true;
-    }
-
     public boolean isCursedEnchant() {
         return true;
     }

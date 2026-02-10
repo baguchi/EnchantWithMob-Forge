@@ -29,6 +29,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new ItemTagGenerator(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new EntityTagGenerator(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new CustomTagProvider.MobEnchantTagGenerator(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new CustomTagProvider.MobEnchantTypeTagGenerator(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new CraftingGenerator(packOutput, lookupProvider));
     }
 }

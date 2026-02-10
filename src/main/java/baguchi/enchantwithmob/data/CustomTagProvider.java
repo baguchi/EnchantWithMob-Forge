@@ -1,5 +1,7 @@
 package baguchi.enchantwithmob.data;
 
+import baguchi.enchantwithmob.api.MobEnchantType;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModTags;
@@ -26,6 +28,18 @@ public class CustomTagProvider {
                     .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey());
             this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN);
             this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND.getKey()).add(MobEnchants.SOUL_STEAL.getKey());
+        }
+    }
+
+    public static class MobEnchantTypeTagGenerator extends TagsProvider<MobEnchantType> {
+
+        public MobEnchantTypeTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+            super(output, MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, provider);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.Provider p_256380_) {
+            this.tag(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF).add(MobEnchantTypes.ANCIENT);
         }
     }
 }
