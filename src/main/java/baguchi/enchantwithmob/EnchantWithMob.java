@@ -1,8 +1,10 @@
 package baguchi.enchantwithmob;
 
+import baguchi.enchantwithmob.api.MobEnchantEye;
 import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantEyes;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.message.*;
 import baguchi.enchantwithmob.registry.*;
@@ -42,10 +44,11 @@ public class EnchantWithMob {
 		// Register the setup method for modloading
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::setupPackets);
-        modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantType.DIRECT_CODEC, MobEnchantType.DIRECT_CODEC));
+		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantEyes.MOB_ENCHANT_EYE_REGISTRY_KEY, MobEnchantEye.DIRECT_CODEC, MobEnchantEye.DIRECT_CODEC));
+		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantType.DIRECT_CODEC, MobEnchantType.DIRECT_CODEC));
 
 
-        ModEntities.ENTITIES_REGISTRY.register(modEventBus);
+		ModEntities.ENTITIES_REGISTRY.register(modEventBus);
         ModDataCompnents.DATA_COMPONENT_TYPES.register(modEventBus);
 		ModItems.ITEM_REGISTRY.register(modEventBus);
 		ModLootItemFunctions.LOOT_REGISTRY.register(modEventBus);
