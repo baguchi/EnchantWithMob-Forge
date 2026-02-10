@@ -27,6 +27,7 @@ public class MobEnchantEyes {
     public static final ResourceKey<MobEnchantEye> ZOMBIE = createKey("zombie");
 
     public static final ResourceKey<MobEnchantEye> SKELETON = createKey("skeleton");
+    public static final ResourceKey<MobEnchantEye> PARCHED = createKey("parched");
 
     private static ResourceKey<MobEnchantEye> createKey(String name) {
         return ResourceKey.create(MobEnchantEyes.MOB_ENCHANT_EYE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, name));
@@ -58,7 +59,7 @@ public class MobEnchantEyes {
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_slime_eyes.png")
         ));
         context.register(SPIDER, new MobEnchantEye(
-                HolderSet.direct(EntityType.SPIDER.builtInRegistryHolder()),
+                HolderSet.direct(EntityType.SPIDER.builtInRegistryHolder(), EntityType.CAVE_SPIDER.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_spider_eyes.png")
         ));
         context.register(VINDICATOR, new MobEnchantEye(
@@ -71,12 +72,16 @@ public class MobEnchantEyes {
         ));
 
         context.register(ZOMBIE, new MobEnchantEye(
-                HolderSet.direct(EntityType.ZOMBIE.builtInRegistryHolder()),
+                HolderSet.direct(EntityType.ZOMBIE.builtInRegistryHolder(), EntityType.HUSK.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_zombie_eyes.png")
         ));
         context.register(SKELETON, new MobEnchantEye(
-                HolderSet.direct(EntityType.SKELETON.builtInRegistryHolder()),
+                HolderSet.direct(EntityType.SKELETON.builtInRegistryHolder(), EntityType.STRAY.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_skeleton_eyes.png")
+        ));
+        context.register(PARCHED, new MobEnchantEye(
+                HolderSet.direct(EntityType.PARCHED.builtInRegistryHolder()),
+                Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_parched_eyes.png")
         ));
     }
 
