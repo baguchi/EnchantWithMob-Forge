@@ -112,15 +112,15 @@ public class MobEnchantingCommand {
                     enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, holder.getKey());
 				}
 
-				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.ancient_mob.set_ancient", entity.getDisplayName()), true);
+				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchant_type.set", entity.getDisplayName()), true);
 				return 1;
 			} else {
-				commandStack.sendFailure(Component.translatable("commands.enchantwithmob.ancient_mobb.fail.no_living_entity", entity.getDisplayName()));
+				commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_living_entity", entity.getDisplayName()));
 
 				return 0;
 			}
 		} else {
-			commandStack.sendFailure(Component.translatable("commands.enchantwithmob.ancient_mob.fail.no_entity"));
+			commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_entity"));
 
 			return 0;
 		}
