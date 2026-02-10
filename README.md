@@ -11,3 +11,11 @@ Add Enchant For Mob(unlike vannila's enchant, support mobs themselves)
 Add Enchanter From MinecraftDungeons. This mob can "Enchant" and strengthen monsters
 difficulty based enchanted entity spawn(It can changed for config)
 Enchanter join the raid
+
+## Wiki
+
+customizable eye texture with Datapack!
+
+more infomation about customize. you can check wiki!
+
+https://github.com/baguchi/EnchantWithMob-Forge/wiki/Customizable-Glow-Eye-Texture-For-Enchanted
