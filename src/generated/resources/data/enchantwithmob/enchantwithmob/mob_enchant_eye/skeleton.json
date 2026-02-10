@@ -1,4 +1,9 @@
 {
-  "entity_type": "minecraft:skeleton",
+  "entity_type": [
+    "minecraft:skeleton",
+    "minecraft:stray",
+    "minecraft:bogged",
+    "minecraft:parched"
+  ],
   "texture": "enchantwithmob:textures/entity/enchant_eye/enchanted_skeleton_eyes.png"
 }
