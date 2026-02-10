@@ -75,8 +75,8 @@
   "commands.enchantwithmob.mob_enchanting.clear": "%1$sにあるモブエンチャントの消去が成功しました。",
   "commands.enchantwithmob.mob_enchanting.clear.fail.no_living_entity": "%1$sは、生き物ではないので付与できません",
   "commands.enchantwithmob.mob_enchanting.clear.fail.no_entity": "ターゲットのエンティティは存在しません",
-  "commands.enchantwithmob.ancient_mob.set_ancient": "%1$sへの古代エンチャントの付与が成功しました。 (モブエンチャントをしてない場合は、モブエンチャントをしてからこのエンチャントをしてください。)",
-  "commands.enchantwithmob.ancient_mob.clear.fail.no_living_entity": "%1$sは、生き物ではないので付与できません",
-  "commands.enchantwithmob.ancient_mob.clear.fail.no_entity": "ターゲットのエンティティは存在しません",
+  "commands.enchantwithmob.mob_enchant_type.set": "%1$sへのエンチャントタイプの付与が成功しました。 (モブエンチャントをしてない場合は、モブエンチャントをしてからこのエンチャントをしてください。)",
+  "commands.enchantwithmob.mob_enchant_type.fail.no_living_entity": "%1$sは、生き物ではないので付与できません",
+  "commands.enchantwithmob.mob_enchant_type.fail.no_entity": "ターゲットのエンティティは存在しません",
   "commands.enchantwithmob.mob_enchanting.set_enchant.fail.too_high": "モブエンチャントのレベルが最大値より高いので、付与できません"
 }
