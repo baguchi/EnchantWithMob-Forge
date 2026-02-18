@@ -1,4 +1,7 @@
 {
-  "entity_type": "minecraft:spider",
+  "entity_type": [
+    "minecraft:spider",
+    "minecraft:cave_spider"
+  ],
   "texture": "enchantwithmob:textures/entity/enchant_eye/enchanted_spider_eyes.png"
 }

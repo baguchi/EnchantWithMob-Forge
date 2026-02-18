@@ -7,7 +7,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 
 public class CraftingGenerator extends RecipeProvider {
@@ -17,7 +17,7 @@ public class CraftingGenerator extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
-        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, new ItemStack(ModItems.ENCHANATERS_BOTTLE.get(), 3))
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, new ItemStackTemplate(ModItems.ENCHANATERS_BOTTLE.get(), 3))
                 .pattern(" G ")
                 .pattern("ALA")
                 .pattern(" A ")

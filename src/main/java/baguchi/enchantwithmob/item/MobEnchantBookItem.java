@@ -72,7 +72,7 @@ public class MobEnchantBookItem extends Item {
 
 						return InteractionResult.SUCCESS;
 					} else {
-						playerIn.displayClientMessage(Component.translatable("enchantwithmob.cannot.enchant_yourself"), true);
+						playerIn.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.enchant_yourself"));
 
 						playerIn.getCooldowns().addCooldown(stack, 20);
 

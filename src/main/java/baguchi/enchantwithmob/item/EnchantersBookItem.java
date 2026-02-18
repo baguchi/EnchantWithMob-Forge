@@ -81,14 +81,14 @@ public class EnchantersBookItem extends Item {
 							return InteractionResult.SUCCESS;
 						}
 					} else {
-						playerIn.displayClientMessage(Component.translatable("enchantwithmob.cannot.no_enchantable_ally"), true);
+						playerIn.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.no_enchantable_ally"));
 
 						playerIn.getCooldowns().addCooldown(stack, 20);
 
 						return InteractionResult.FAIL;
 					}
 				} else {
-					playerIn.displayClientMessage(Component.translatable("enchantwithmob.cannot.no_enchantable_ally"), true);
+					playerIn.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.no_enchantable_ally"));
 
 					playerIn.getCooldowns().addCooldown(stack, 20);
 

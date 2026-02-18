@@ -329,7 +329,7 @@ public class CommonEventHandler {
                                 event.setCancellationResult(InteractionResult.SUCCESS);
                                 event.setCanceled(true);
                             } else {
-                                player.displayClientMessage(Component.translatable("enchantwithmob.cannot.enchant"), true);
+                                player.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.enchant"));
                                 player.getCooldowns().addCooldown(stack, 20);
                                 event.setCancellationResult(InteractionResult.FAIL);
                                 event.setCanceled(true);
