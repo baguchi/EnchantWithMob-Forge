@@ -1,6 +1,6 @@
 package baguchi.enchantwithmob.client.model;
 
-import baguchi.bagus_lib.client.layer.IArmor;
+import baguchi.bagus_lib.client.layer.CustomArmorRender;
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.client.animation.EnchanterAnimation;
 import baguchi.enchantwithmob.client.animation.NormalAnimation;
@@ -15,7 +15,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
 
 
-public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<T> implements IArmor {
+public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<T> implements CustomArmorRender<T> {
 	private final ModelPart realRoot;
 	private final ModelPart everything;
 	private final ModelPart left_leg;
@@ -187,7 +187,7 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 	}
 
 	@Override
-	public void translateToHead(ModelPart modelPart, PoseStack poseStack) {
+	public void translateToHead(T entity, ModelPart modelPart, PoseStack poseStack) {
 		this.everything.translateAndRotate(poseStack);
 		this.body.translateAndRotate(poseStack);
 		modelPart.translateAndRotate(poseStack);
@@ -196,7 +196,7 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 	}
 
 	@Override
-	public void translateToChest(ModelPart modelPart, PoseStack poseStack) {
+	public void translateToChest(T entity, ModelPart modelPart, PoseStack poseStack) {
 		this.everything.translateAndRotate(poseStack);
 		modelPart.translateAndRotate(poseStack);
 		poseStack.translate(0, -(12F / 16F), 0);
@@ -204,14 +204,14 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 	}
 
 	@Override
-	public void translateToLeg(ModelPart modelPart, PoseStack poseStack) {
+	public void translateToLeg(T entity, ModelPart modelPart, PoseStack poseStack) {
 		this.everything.translateAndRotate(poseStack);
 		modelPart.translateAndRotate(poseStack);
 		poseStack.scale(1.05F, 1.05F, 1.05F);
 	}
 
 	@Override
-	public void translateToChestPat(ModelPart modelPart, PoseStack poseStack) {
+	public void translateToChestPat(T entity, ModelPart modelPart, PoseStack poseStack) {
 
 	}
 
