@@ -146,7 +146,7 @@ public class Enchanter extends SpellcasterIllager {
 
     @Override
     public boolean canBeLeader() {
-        return false;
+        return true;
     }
 
     @Override
@@ -177,10 +177,10 @@ public class Enchanter extends SpellcasterIllager {
     @Override
     public void applyRaidBuffs(ServerLevel serverLevel, int p_213660_1_, boolean p_213660_2_) {
         Raid raid = this.getCurrentRaid();
-        boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.1F;
+        boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.2F;
         if (flag) {
             if (this instanceof IEnchantCap cap) {
-                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), 2));
+                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), (int) (1 + raid.getEnchantOdds() * 3)));
             }
         }
     }
