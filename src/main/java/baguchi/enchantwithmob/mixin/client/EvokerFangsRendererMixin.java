@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EvokerFangsRenderer;
 import net.minecraft.client.renderer.entity.state.EvokerFangsRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Final;
@@ -29,10 +29,10 @@ public class EvokerFangsRendererMixin {
     @Final
     private static Identifier TEXTURE_LOCATION;
 
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/EvokerFangsRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At("TAIL"))
-    public void render(EvokerFangsRenderState evokerFangsRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState p_450960_, CallbackInfo ci) {
-        if (evokerFangsRenderState instanceof IEnchantVisual enchantVisual && enchantVisual.hasEnchantVisual()) {
-            float f = evokerFangsRenderState.biteProgress;
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/EvokerFangsRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("TAIL"))
+    public void submit(EvokerFangsRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, CallbackInfo ci) {
+        if (state instanceof IEnchantVisual enchantVisual && enchantVisual.hasEnchantVisual()) {
+            float f = state.biteProgress;
 			if (f != 0.0F) {
 				float f1 = 2.0F;
 				if (f > 0.9F) {
@@ -40,13 +40,13 @@ public class EvokerFangsRendererMixin {
 				}
 
                 poseStack.pushPose();
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F - evokerFangsRenderState.yRot));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F - state.yRot));
                 poseStack.scale(-f1, -f1, f1);
 				float f2 = 0.03125F;
                 poseStack.translate(0.0D, -0.626D, 0.0D);
                 poseStack.scale(0.5F, 0.5F, 0.5F);
-                this.model.setupAnim(evokerFangsRenderState);
-                submitNodeCollector.submitModel(this.model, evokerFangsRenderState, poseStack, this.model.renderType(TEXTURE_LOCATION), evokerFangsRenderState.lightCoords, OverlayTexture.NO_OVERLAY, evokerFangsRenderState.outlineColor, (ModelFeatureRenderer.CrumblingOverlay) null);
+                this.model.setupAnim(state);
+                submitNodeCollector.submitModel(this.model, state, poseStack, this.model.renderType(TEXTURE_LOCATION), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, (ModelFeatureRenderer.CrumblingOverlay) null);
                 poseStack.popPose();
 			}
 		}

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EnderDragonRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.state.EnderDragonRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,21 +26,21 @@ public class EnderDragonRendererMixin {
 	@Final
     private EnderDragonModel model;
 
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/EnderDragonRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At("TAIL"))
-    public void render(EnderDragonRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
-        if (renderState instanceof IEnchantCap cap) {
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/EnderDragonRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("TAIL"))
+    public void submit(EnderDragonRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, CallbackInfo ci) {
+        if (state instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
                 poseStack.pushPose();
-                float f = renderState.getHistoricalPos(7).yRot();
-                float f1 = (float) (renderState.getHistoricalPos(5).y() - renderState.getHistoricalPos(10).y());
+                float f = state.getHistoricalPos(7).yRot();
+                float f1 = (float) (state.getHistoricalPos(5).y() - state.getHistoricalPos(10).y());
                 poseStack.mulPose(Axis.YP.rotationDegrees(-f));
                 poseStack.mulPose(Axis.XP.rotationDegrees(f1 * 10.0F));
                 poseStack.translate(0.0F, 0.0F, 1.0F);
                 poseStack.scale(-1.0F, -1.0F, 1.0F);
                 poseStack.translate(0.0F, -1.501F, 0.0F);
-                this.model.setupAnim(renderState);
-                if (renderState.deathTime <= 0) {
-                    submitNodeCollector.submitModel(this.model, renderState, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), renderState.lightCoords, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);
+                this.model.setupAnim(state);
+                if (state.deathTime <= 0) {
+                    submitNodeCollector.submitModel(this.model, state, poseStack, EnchantLayer.enchantSwirl(cap.getEnchantCap().getMobEnchantType().is(MobEnchantTypes.ANCIENT) ? EnchantLayer.ANCIENT_GLINT : ItemRenderer.ENCHANTED_GLINT_ARMOR), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
                 }
 
                 poseStack.popPose();
