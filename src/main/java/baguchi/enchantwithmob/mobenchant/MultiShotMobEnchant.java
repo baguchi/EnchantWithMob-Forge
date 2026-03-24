@@ -97,7 +97,6 @@ public class MultiShotMobEnchant extends MobEnchant {
         }
 
         newProjectile.getData(ModAttachments.ITEM_MOB_ENCHANT.get()).setHasEnchant(true);
-
         level.addFreshEntity(newProjectile);
     }
 

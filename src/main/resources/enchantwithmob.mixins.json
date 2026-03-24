@@ -11,9 +11,7 @@
   ],
   "client": [
     "client.EnderDragonRendererMixin",
-    "client.EntityRendererMixin",
-    "client.EvokerFangsRendererMixin",
-    "client.WitherSkullRendererMixin"
+    "client.EntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

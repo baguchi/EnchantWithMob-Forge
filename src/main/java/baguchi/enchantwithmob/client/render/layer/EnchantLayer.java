@@ -7,10 +7,10 @@ import baguchi.enchantwithmob.client.ClientRegistrar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.TextureTransform;
@@ -45,7 +45,7 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
                 } else {
                     M entitymodel = this.getParentModel();
                     entitymodel.setupAnim(entitylivingbaseIn);
-                    submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ItemRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                    submitNodeCollector.submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
                             null,
                             entitylivingbaseIn.outlineColor,
                             null);

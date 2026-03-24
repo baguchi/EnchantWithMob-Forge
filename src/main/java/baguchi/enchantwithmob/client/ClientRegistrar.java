@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.client;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.MobEnchantEye;
+import baguchi.enchantwithmob.capability.ItemMobEnchantCapability;
 import baguchi.enchantwithmob.client.model.EnchantedWindModel;
 import baguchi.enchantwithmob.client.model.EnchanterModel;
 import baguchi.enchantwithmob.client.overlay.MobEnchantOverlay;
@@ -13,6 +14,7 @@ import baguchi.enchantwithmob.client.render.layer.EnchantedWindLayer;
 import baguchi.enchantwithmob.client.render.layer.SlimeEnchantLayer;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantEyes;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModEntities;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.reflect.TypeToken;
@@ -125,6 +127,12 @@ public class ClientRegistrar {
 				Optional<Holder.Reference<MobEnchantEye>> enchantEye = MobEnchantEyes.getEyeVariant(entity.registryAccess(), entity.typeHolder());
 
 				enchantEye.ifPresent(mobEnchantEye -> state.setRenderData(EnchantedEyesLayer.ENCHANT_EYE, mobEnchantEye.value().texture()));
+			} else {
+				ItemMobEnchantCapability capability = entity.getData(ModAttachments.ITEM_MOB_ENCHANT.get());
+
+				if (capability != null) {
+					state.setRenderData(EnchantLayer.ENCHANTED, capability.hasEnchant());
+				}
 			}
 		});
 	}

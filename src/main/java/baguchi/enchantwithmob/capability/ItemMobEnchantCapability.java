@@ -15,10 +15,11 @@ public class ItemMobEnchantCapability implements ValueIOSerializable {
 		this.hasEnchant = hasEnchant;
 	}
 
-
 	@Override
 	public void serialize(ValueOutput output) {
-		output.putBoolean("HasEnchant", hasEnchant);
+		if (hasEnchant) {
+			output.putBoolean("HasEnchant", hasEnchant);
+		}
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package baguchi.enchantwithmob.data.resources.registries;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.client.ModParticles;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -24,7 +24,7 @@ public class MobEnchantTypes {
 
     public static void bootstrap(BootstrapContext<MobEnchantType> context) {
         context.register(NORMAL, new MobEnchantType(
-                ItemRenderer.ENCHANTED_GLINT_ARMOR,
+                ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR,
                 1F,
                 Optional.of(ModParticles.ENCHANT.get())
         ));
