@@ -105,22 +105,6 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
-    maven {
-        name = "Maven for PR #2815" // https://github.com/neoforged/NeoForge/pull/2815
-        url = uri("https://prmaven.neoforged.net/NeoForge/pr2815")
-        content {
-            includeModule("net.neoforged", "neoforge")
-            includeModule("net.neoforged", "testframework")
-        }
-    }
-    maven {
-        name = "Maven for PR #2975" // https://github.com/neoforged/NeoForge/pull/2975
-        url = uri("https://prmaven.neoforged.net/NeoForge/pr2975")
-        content {
-            includeModule("net.neoforged", "neoforge")
-            includeModule("net.neoforged", "testframework")
-        }
-    }
 }
 
 dependencies {
