@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(EnchantWithMob.MODID)
 public class EnchantWithMob {
-
 	// Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -53,7 +52,7 @@ public class EnchantWithMob {
 		ModItems.ITEM_REGISTRY.register(modEventBus);
 		ModLootItemFunctions.LOOT_REGISTRY.register(modEventBus);
 		ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
-		ModSounds.SOUND_EVENTS.register(modEventBus);
+		ModSoundEvents.SOUND_EVENTS.register(modEventBus);
 		ModParticles.PARTICLE_TYPES.register(modEventBus);
 		MobEnchants.MOB_ENCHANT.register(modEventBus);
 

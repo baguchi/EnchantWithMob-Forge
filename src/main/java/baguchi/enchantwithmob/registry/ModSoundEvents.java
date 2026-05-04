@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class ModSounds {
+public class ModSoundEvents {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, EnchantWithMob.MODID);
 
     public static final DeferredHolder<SoundEvent, SoundEvent> ENCHANTER_IDLE = createEvent("entity.enchanter.idle");

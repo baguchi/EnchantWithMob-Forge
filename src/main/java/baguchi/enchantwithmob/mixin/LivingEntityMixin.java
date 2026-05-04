@@ -3,6 +3,7 @@ package baguchi.enchantwithmob.mixin;
 import baguchi.bagus_lib.api.IBaguPacket;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.message.MobEnchantFromOwnerMessage;
 import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LivingEntityMixin extends Entity implements IEnchantCap, IBaguPacket {
 
     public MobEnchantCapability capability;
+
     public LivingEntityMixin(EntityType<?> entityType, Level world) {
         super(entityType, world);
     }
@@ -47,15 +49,19 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo callbackInfo) {
-        if ((this.getEnchantCap().hasOwner() || this.getEnchantCap().isFromOwner()) && this.getEnchantCap().hasEnchant()) {
-            if (this.getEnchantCap().getEnchantOwner() == null || !this.getEnchantCap().getEnchantOwner().isAlive()) {
+        if (this.getEnchantCap().hasEnchant()) {
+
+            if (this.getEnchantCap().getEnchantOwner().isEmpty()) {
                 LivingEntity livingEntity = (LivingEntity) ((Object) this);
                 this.getEnchantCap().removeMobEnchantFromOwner(livingEntity);
                 this.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
-            } else if (this.distanceToSqr(this.getEnchantCap().getEnchantOwner()) > 512) {
-                LivingEntity livingEntity = (LivingEntity) ((Object) this);
-                this.getEnchantCap().removeMobEnchantFromOwner(livingEntity);
-                this.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
+            } else {
+                LivingEntity entity = this.getEnchantCap().getEnchantOwner().get().getEntity(this.level(), LivingEntity.class);
+                if (entity == null || !entity.isAlive() || this.distanceToSqr(entity) > 512) {
+                    LivingEntity livingEntity = (LivingEntity) ((Object) this);
+                    this.getEnchantCap().removeMobEnchantFromOwner(livingEntity);
+                    this.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
+                }
             }
         }
     }
@@ -66,6 +72,9 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
             for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, message);
+            }
+            if (this.getEnchantCap().getEnchantOwner().isPresent()) {
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantFromOwnerMessage(entity, this.getEnchantCap().getEnchantOwner().get()));
             }
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new MobEnchantTypeMessage(this, this.getEnchantCap().getMobEnchantType().getKey()));
 

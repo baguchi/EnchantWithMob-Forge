@@ -24,7 +24,7 @@ public class MobEnchantHandler {
 		return enchantLevel;
 	}
 
-	public CompoundTag writeNBT(RegistryAccess registryAccess) {
+	public CompoundTag write(RegistryAccess registryAccess) {
 		CompoundTag nbt = new CompoundTag();
 
 		if (mobEnchant != null) {

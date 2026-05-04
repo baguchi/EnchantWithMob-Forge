@@ -16,13 +16,13 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +35,9 @@ public class MobEnchantCapability {
 
 
 	private List<MobEnchantHandler> mobEnchants = Lists.newArrayList();
-	@Nullable
-	private LivingEntity enchantOwner;
-	private boolean fromOwner;
-    private Holder<MobEnchantType> mobEnchantType;
+
+	private Optional<EntityReference<LivingEntity>> enchantOwner = Optional.empty();
+	private Holder<MobEnchantType> mobEnchantType;
 
     private final RegistryAccess registryAccess;
 
@@ -97,16 +96,15 @@ public class MobEnchantCapability {
 	}
 
 	public void addOwner(LivingEntity entity, LivingEntity owner) {
-		this.fromOwner = true;
-		this.enchantOwner = owner;
+		EntityReference<LivingEntity> reference = EntityReference.of(owner);
+		this.enchantOwner = Optional.of(reference);
         if (!entity.level().isClientSide()) {
-			MobEnchantFromOwnerMessage message = new MobEnchantFromOwnerMessage(entity, owner);
+			MobEnchantFromOwnerMessage message = new MobEnchantFromOwnerMessage(entity, reference);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
 		}
 	}
 	public void removeOwner(LivingEntity livingEntity) {
-		this.fromOwner = false;
-		this.enchantOwner = null;
+		this.enchantOwner = Optional.empty();
 		//Sync Client Enchant
         if (!livingEntity.level().isClientSide()) {
 			RemoveMobEnchantOwnerMessage message = new RemoveMobEnchantOwnerMessage(livingEntity);
@@ -205,18 +203,12 @@ public class MobEnchantCapability {
 		return !this.mobEnchants.isEmpty();
 	}
 
-	@Nullable
-	public LivingEntity getEnchantOwner() {
+	public Optional<EntityReference<LivingEntity>> getEnchantOwner() {
 		return enchantOwner;
 	}
 
 	public boolean hasOwner() {
-		return this.enchantOwner != null && this.enchantOwner.isAlive();
-	}
-
-	//check this enchant from owner
-	public boolean isFromOwner() {
-		return this.fromOwner;
+		return this.enchantOwner.isPresent();
 	}
 
     public Holder<@NotNull MobEnchantType> getMobEnchantType() {
@@ -233,11 +225,11 @@ public class MobEnchantCapability {
 		ListTag listnbt = new ListTag();
 
 		for (int i = 0; i < mobEnchants.size(); i++) {
-			listnbt.add(mobEnchants.get(i).writeNBT(registryAccess));
+			listnbt.add(mobEnchants.get(i).write(registryAccess));
 		}
 
 		nbt.put("StoredMobEnchants", listnbt);
-		nbt.putBoolean("FromOwner", fromOwner);
+		this.enchantOwner.ifPresent(livingEntityEntityReference -> nbt.store("EnchantOwner", EntityReference.codec(), livingEntityEntityReference));
 
         nbt.putString("EnchantType", registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getKey(mobEnchantType.value()).toString());
 
@@ -257,7 +249,7 @@ public class MobEnchantCapability {
             mobEnchant.ifPresent(mobEnchantReference -> mobEnchants.add(new MobEnchantHandler(mobEnchantReference, MobEnchantUtils.getEnchantLevelFromNBT(compoundnbt))));
 		}
 
-        fromOwner = nbt.getBooleanOr("FromOwner", false);
+		this.enchantOwner = nbt.read("EnchantOwner", EntityReference.codec());
         Optional<Holder.Reference<MobEnchantType>> optional = registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).get(Identifier.parse(nbt.getStringOr("EnchantType", MobEnchantTypes.NORMAL.identifier().toString())));
 
         optional.ifPresent(mobEnchantTypeReference -> mobEnchantType = mobEnchantTypeReference);

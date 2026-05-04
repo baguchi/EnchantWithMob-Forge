@@ -114,8 +114,11 @@ public class ClientRegistrar {
 				state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
 				//reset
 				state.setRenderData(EnchantedWindLayer.WIND, false);
-				if (cap.getEnchantCap().getEnchantOwner() != null) {
-					state.setRenderData(ClientEventHandler.ENCHANTER_POS, cap.getEnchantCap().getEnchantOwner().position());
+				if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
+					LivingEntity owner = cap.getEnchantCap().getEnchantOwner().get().getEntity(entity.level(), LivingEntity.class);
+					if (owner != null) {
+						state.setRenderData(ClientEventHandler.ENCHANTER_POS, owner.position());
+					}
 				} else {
 					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);
 				}

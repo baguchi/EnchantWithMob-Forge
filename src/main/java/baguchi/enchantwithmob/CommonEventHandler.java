@@ -5,6 +5,7 @@ import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.capability.MobEnchantHandler;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
+import baguchi.enchantwithmob.message.MobEnchantFromOwnerMessage;
 import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
 import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
@@ -576,6 +577,9 @@ public class CommonEventHandler {
                     cap.getEnchantCap().onNewEnchantEffect(livingEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
 
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantedMessage(entity, cap.getEnchantCap().getMobEnchants().get(i)));
+                }
+                if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantFromOwnerMessage(entity, cap.getEnchantCap().getEnchantOwner().get()));
                 }
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantTypeMessage(entity, cap.getEnchantCap().getMobEnchantType().getKey()));
             }
