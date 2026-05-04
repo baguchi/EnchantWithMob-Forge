@@ -97,7 +97,7 @@ public class MobEnchantCapability {
 
 	public void addOwner(LivingEntity entity, LivingEntity owner) {
 		EntityReference<LivingEntity> reference = EntityReference.of(owner);
-		this.enchantOwner = Optional.of(reference);
+		this.enchantOwner = Optional.ofNullable(reference);
         if (!entity.level().isClientSide()) {
 			MobEnchantFromOwnerMessage message = new MobEnchantFromOwnerMessage(entity, reference);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);

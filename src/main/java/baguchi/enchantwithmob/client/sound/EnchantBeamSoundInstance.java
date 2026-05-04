@@ -14,14 +14,13 @@ public class EnchantBeamSoundInstance extends AbstractTickableSoundInstance {
     private static final float PITCH_MAX = 1.0F;
     private static final float PITCH_DELTA = 0.0025F;
     private final LivingEntity livingEntity;
-    private float pitch = 0.0F;
 
     public EnchantBeamSoundInstance(LivingEntity owner) {
         super(ModSoundEvents.ENCHANTER_BEAM_LOOP.get(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.livingEntity = owner;
         this.looping = true;
         this.delay = 0;
-        this.volume = 1.0F;
+        this.volume = 0.6F;
         this.x = (float) owner.getX();
         this.y = (float) owner.getY();
         this.z = (float) owner.getZ();
@@ -43,7 +42,7 @@ public class EnchantBeamSoundInstance extends AbstractTickableSoundInstance {
             this.y = (float) this.livingEntity.getY();
             this.z = (float) this.livingEntity.getZ();
             this.pitch = 1.0F;
-            this.volume = 1.0F;
+            this.volume = 0.6F;
         }
 
     }

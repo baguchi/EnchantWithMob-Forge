@@ -27,11 +27,13 @@ import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -56,13 +58,16 @@ public class ClientRegistrar {
 	public static final RenderPipeline MOB_ENCHANT_BEAM =
 			RenderPipeline.builder(MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_no_cull"))
-					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withCull(false).withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
-					.withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false))
+					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0")
+					.withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
+					.withCull(false)
+					.withShaderDefine("APPLY_TEXTURE_MATRIX")
+					.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
 					.withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
 	public static final RenderPipeline MOB_ENCHANT_EYE =
 			RenderPipeline.builder(MATRICES_PROJECTION_SNIPPET, FOG_SNIPPET, GLOBALS_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_eye"))
-					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false)).withColorTargetState(new ColorTargetState(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA))).withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
+					.withVertexShader("core/glint").withFragmentShader("core/glint").withSampler("Sampler0").withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false)).withColorTargetState(new ColorTargetState(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA))).withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS).build();
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
@@ -115,9 +120,9 @@ public class ClientRegistrar {
 				//reset
 				state.setRenderData(EnchantedWindLayer.WIND, false);
 				if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
-					LivingEntity owner = cap.getEnchantCap().getEnchantOwner().get().getEntity(entity.level(), LivingEntity.class);
-					if (owner != null) {
-						state.setRenderData(ClientEventHandler.ENCHANTER_POS, owner.position());
+					LivingEntity ownerEntity = EntityReference.getLivingEntity(cap.getEnchantCap().getEnchantOwner().get(), Minecraft.getInstance().player.level());
+					if (ownerEntity != null) {
+						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.position());
 					}
 				} else {
 					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);

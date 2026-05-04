@@ -22,22 +22,22 @@ public class MobEnchantFromOwnerMessage implements CustomPacketPayload, IPayload
 
 
     private int entityId;
-    private EntityReference<LivingEntity> ownerID;
+    private EntityReference<LivingEntity> owner;
 
     public MobEnchantFromOwnerMessage(Entity entity, EntityReference<LivingEntity> ownerEntity) {
         this.entityId = entity.getId();
-        this.ownerID = ownerEntity;
+        this.owner = ownerEntity;
     }
 
-    public MobEnchantFromOwnerMessage(int id, EntityReference<LivingEntity> ownerID) {
+    public MobEnchantFromOwnerMessage(int id, EntityReference<LivingEntity> owner) {
         this.entityId = id;
-        this.ownerID = ownerID;
+        this.owner = owner;
     }
 
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeInt(this.entityId);
-        buffer.writeJsonWithCodec(EntityReference.codec(), this.ownerID);
+        buffer.writeJsonWithCodec(EntityReference.codec(), this.owner);
     }
 
     @Override
@@ -53,9 +53,9 @@ public class MobEnchantFromOwnerMessage implements CustomPacketPayload, IPayload
     public void handle(MobEnchantFromOwnerMessage message, IPayloadContext context) {
         context.enqueueWork(() -> {
             Entity entity = Minecraft.getInstance().player.level().getEntity(message.entityId);
-            LivingEntity ownerEntity = message.ownerID.getEntity(Minecraft.getInstance().player.level(), LivingEntity.class);
+            LivingEntity ownerEntity = EntityReference.getLivingEntity(this.owner, Minecraft.getInstance().player.level());
             if (entity instanceof LivingEntity livingEntity) {
-                    if (livingEntity instanceof IEnchantCap cap) {
+                if (entity instanceof IEnchantCap cap && ownerEntity != null) {
                         cap.getEnchantCap().addOwner(livingEntity, ownerEntity);
                         EnchantWithMobClientProxy.playEnchantBeamSound(livingEntity);
                     }
