@@ -1,7 +1,5 @@
 package baguchi.enchantwithmob.entity;
 
-import baguchi.bagus_lib.entity.SmartHurtMob;
-import baguchi.bagus_lib.entity.goal.SmartDamageTargetGoal;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModSoundEvents;
@@ -20,6 +18,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
@@ -37,7 +36,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Enchanter extends SpellcasterIllager implements SmartHurtMob {
+public class Enchanter extends SpellcasterIllager {
     private LivingEntity enchantTarget;
 
     public final AnimationState idleAnimationState = new AnimationState();
@@ -50,8 +49,6 @@ public class Enchanter extends SpellcasterIllager implements SmartHurtMob {
 
     public int castingAnimationTick;
     public final int castingAnimationLength = 72;
-
-    public SmartDamageTargetGoal smartChangeTargetGoal;
 
     public Enchanter(EntityType<? extends Enchanter> type, Level p_i48551_2_) {
         super(type, p_i48551_2_);
@@ -72,19 +69,10 @@ public class Enchanter extends SpellcasterIllager implements SmartHurtMob {
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.goalSelector.addGoal(11, new RandomLookAroundGoal(this));
-        this.smartChangeTargetGoal = new SmartDamageTargetGoal(this, Raider.class).setAlertOthers();
-        this.targetSelector.addGoal(1, this.smartChangeTargetGoal);
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
         this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, true)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, (new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
-    }
-
-    @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-        if (!this.level().isClientSide() && source.getEntity() instanceof LivingEntity living) {
-            this.smartChangeTargetGoal.addAggro(living, damage); // AI goal for being hurt.
-        }
-        return super.hurtServer(level, source, damage);
     }
 
     @Override
@@ -203,13 +191,6 @@ public class Enchanter extends SpellcasterIllager implements SmartHurtMob {
             return AbstractIllager.IllagerArmPose.SPELLCASTING;
         } else {
             return AbstractIllager.IllagerArmPose.CROSSED;
-        }
-    }
-
-    @Override
-    public void noticedByHurtAllies(LivingEntity target) {
-        if (!this.level().isClientSide()) {
-            this.smartChangeTargetGoal.addAggro(target, 10.0F); // AI goal for being hurt.
         }
     }
 
