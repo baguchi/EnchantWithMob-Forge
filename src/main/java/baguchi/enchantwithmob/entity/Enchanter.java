@@ -1,5 +1,7 @@
 package baguchi.enchantwithmob.entity;
 
+import baguchi.bagus_lib.entity.SmartHurtMob;
+import baguchi.bagus_lib.entity.goal.SmartDamageTargetGoal;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModSoundEvents;
@@ -18,7 +20,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
@@ -36,7 +37,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Enchanter extends SpellcasterIllager {
+public class Enchanter extends SpellcasterIllager implements SmartHurtMob {
     private LivingEntity enchantTarget;
 
     public final AnimationState idleAnimationState = new AnimationState();
@@ -50,6 +51,8 @@ public class Enchanter extends SpellcasterIllager {
     public int castingAnimationTick;
     public final int castingAnimationLength = 72;
 
+    public SmartDamageTargetGoal smartChangeTargetGoal;
+
     public Enchanter(EntityType<? extends Enchanter> type, Level p_i48551_2_) {
         super(type, p_i48551_2_);
         this.xpReward = 12;
@@ -62,19 +65,27 @@ public class Enchanter extends SpellcasterIllager {
         this.goalSelector.addGoal(1, new Enchanter.CastingSpellGoal());
         this.goalSelector.addGoal(1, new AttackGoal(this));
         this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Creaking.class, 8.0F, 1.2, 1.35));
-        this.goalSelector.addGoal(3, new AvoidTargetEntityGoal<>(this, Mob.class, 6.5F, 0.8D, 1.05D));
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, 8.0F, 0.8D, 1.15D));
         this.goalSelector.addGoal(4, new Enchanter.SpellGoal());
+        this.goalSelector.addGoal(5, new AvoidTargetEntityGoal<>(this, Mob.class, 8.0F, 0.8D, 1.05D));
+
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.goalSelector.addGoal(11, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, Raider.class)).setAlertOthers());
+        this.smartChangeTargetGoal = new SmartDamageTargetGoal(this, Raider.class).setAlertOthers();
+        this.targetSelector.addGoal(1, this.smartChangeTargetGoal);
         this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, true)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, (new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
     }
 
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        if (!this.level().isClientSide() && source.getEntity() instanceof LivingEntity living) {
+            this.smartChangeTargetGoal.addAggro(living, damage); // AI goal for being hurt.
+        }
+        return super.hurtServer(level, source, damage);
+    }
 
     @Override
     public void baseTick() {
@@ -192,6 +203,13 @@ public class Enchanter extends SpellcasterIllager {
             return AbstractIllager.IllagerArmPose.SPELLCASTING;
         } else {
             return AbstractIllager.IllagerArmPose.CROSSED;
+        }
+    }
+
+    @Override
+    public void noticedByHurtAllies(LivingEntity target) {
+        if (!this.level().isClientSide()) {
+            this.smartChangeTargetGoal.addAggro(target, 10.0F); // AI goal for being hurt.
         }
     }
 
@@ -321,21 +339,6 @@ public class Enchanter extends SpellcasterIllager {
             }
         }
 
-        /**
-         * Execute a one shot task or start executing a continuous task
-         */
-        public void start() {
-            Enchanter.this.setTarget((LivingEntity) null);
-            super.start();
-        }
-
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
-        public void tick() {
-            Enchanter.this.setTarget((LivingEntity) null);
-            super.tick();
-        }
     }
 
     static class AttackGoal extends Goal {
