@@ -82,15 +82,10 @@ public class ClientRegistrar {
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.AddLayers event) {
-        event.getContext().getEntityRenderDispatcher().getPlayerRenderers().forEach((model, player) ->
+		event.getContext().getEntityRenderDispatcher().getPlayerRenderers().forEach((model, player) ->
 		{
-            if (event.getPlayerRenderer(model) != null) {
-				if (player instanceof LivingEntityRenderer) {
-                    ((LivingEntityRenderer<?, ?, ?>) player).addLayer(new EnchantLayer(event.getPlayerRenderer(model)));
-                    ((LivingEntityRenderer<?, ?, ?>) player).addLayer(new EnchantedWindLayer(event.getPlayerRenderer(model), event.getEntityModels()));
-
-				}
-			}
+			((LivingEntityRenderer<?, ?, ?>) player).addLayer(new EnchantLayer(event.getPlayerRenderer(model)));
+			((LivingEntityRenderer<?, ?, ?>) player).addLayer(new EnchantedWindLayer(event.getPlayerRenderer(model), event.getEntityModels()));
 		});
 		event.getEntityTypes().forEach(entityType -> {
 			if (event.getRenderer(entityType) instanceof SlimeRenderer r) {
