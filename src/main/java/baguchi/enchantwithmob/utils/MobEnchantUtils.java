@@ -22,7 +22,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedRandom;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -175,12 +174,6 @@ public class MobEnchantUtils {
 
 			}
 		}
-		if (flag) {
-			if (!user.level().isClientSide()) {
-                itemIn.hurtAndBreak(1, user, InteractionHand.MAIN_HAND);
-
-			}
-		}
 		return flag;
 	}
 
@@ -193,13 +186,6 @@ public class MobEnchantUtils {
 			if (checkAllowMobEnchantFromMob(mobEnchant, entity, capability)) {
 				capability.getEnchantCap().addMobEnchantFromOwner(entity, mobEnchant, level, owner);
 				flag = true;
-			}
-		}
-
-		if (flag) {
-			if (!owner.level().isClientSide()) {
-                itemIn.hurtAndBreak(1, owner, InteractionHand.MAIN_HAND);
-
 			}
 		}
 		return flag;

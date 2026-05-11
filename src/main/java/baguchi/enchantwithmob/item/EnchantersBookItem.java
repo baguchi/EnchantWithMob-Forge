@@ -76,6 +76,7 @@ public class EnchantersBookItem extends Item {
 						if (flag[0]) {
 							level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
 
+							stack.hurtAndBreak(1, playerIn, handIn);
 							playerIn.getCooldowns().addCooldown(stack, 40);
 
 							return InteractionResult.SUCCESS;

@@ -311,7 +311,7 @@ public class CommonEventHandler {
         Entity entityTarget = event.getTarget();
         Player player = event.getEntity();
 
-        if (!(entityTarget instanceof Player)) {
+        if (!(entityTarget instanceof Player) && !event.getLevel().isClientSide()) {
             if (stack.getItem() == ModItems.MOB_ENCHANT_BOOK.get() && !player.getCooldowns().isOnCooldown(stack)) {
                 if (entityTarget instanceof LivingEntity) {
                     LivingEntity target = (LivingEntity) entityTarget;
