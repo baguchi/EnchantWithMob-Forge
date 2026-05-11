@@ -70,6 +70,8 @@ public class MobEnchantBookItem extends Item {
 						level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
 						playerIn.getCooldowns().addCooldown(stack, 40);
 
+						stack.hurtAndBreak(1, playerIn, handIn);
+
 						return InteractionResult.SUCCESS;
 					} else {
 						playerIn.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.enchant_yourself"));

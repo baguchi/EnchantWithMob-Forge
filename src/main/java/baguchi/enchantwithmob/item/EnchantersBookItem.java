@@ -75,9 +75,9 @@ public class EnchantersBookItem extends Item {
 						//When flag is true, enchanting is success.
 						if (flag[0]) {
 							level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
+							playerIn.getCooldowns().addCooldown(stack, 40);
 
 							stack.hurtAndBreak(1, playerIn, handIn);
-							playerIn.getCooldowns().addCooldown(stack, 40);
 
 							return InteractionResult.SUCCESS;
 						}
