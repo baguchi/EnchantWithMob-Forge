@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
@@ -70,6 +71,7 @@ public class MobEnchantBookItem extends Item {
 					if (flag) {
 						level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
 						playerIn.getCooldowns().addCooldown(stack.getItem(), 40);
+						stack.hurtAndBreak(1, playerIn, LivingEntity.getSlotForHand(handIn));
 
 						return InteractionResultHolder.success(stack);
 					} else {
