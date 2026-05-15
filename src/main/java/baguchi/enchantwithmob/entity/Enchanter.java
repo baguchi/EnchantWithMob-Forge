@@ -6,15 +6,15 @@ import baguchi.enchantwithmob.registry.ModSoundEvents;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import baguchi.enchantwithmob.utils.MobEnchantmentData;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -30,18 +30,24 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Enchanter extends SpellcasterIllager {
-    private LivingEntity enchantTarget;
-
+    protected static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_ENCHANT_TARGET = SynchedEntityData.defineId(
+            Enchanter.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE
+    );
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState attackAnimationState = new AnimationState();
     public final AnimationState castingAnimationState = new AnimationState();
+
+    private LivingEntity enchantTarget;
 
     public int attackAnimationTick;
     public final int attackAnimationLength = 20;
@@ -55,15 +61,23 @@ public class Enchanter extends SpellcasterIllager {
         this.xpReward = 12;
     }
 
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder entityData) {
+        super.defineSynchedData(entityData);
+        entityData.define(DATA_ENCHANT_TARGET, Optional.empty());
+    }
+
     @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new Enchanter.CastingSpellGoal());
         this.goalSelector.addGoal(1, new AttackGoal(this));
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Creaking.class, 8.0F, 1.2, 1.35));
+        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Creaking.class, 8.0F, 1.2, 1.35));
+        this.goalSelector.addGoal(3, new Enchanter.FollowEnchantedGoal(this));
         this.goalSelector.addGoal(4, new Enchanter.SpellGoal());
-        this.goalSelector.addGoal(5, new AvoidTargetEntityGoal<>(this, Mob.class, 8.0F, 0.8D, 1.05D));
+        this.goalSelector.addGoal(5, new AvoidTargetEntityGoal<>(this, LivingEntity.class, 8.0F, 0.8D, 1.05D));
 
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -73,6 +87,36 @@ public class Enchanter extends SpellcasterIllager {
         this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, true)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, (new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false)).setUnseenMemoryTicks(300));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
+    }
+
+    private void setEnchantingTarget(@Nullable LivingEntity enchantTargetIn) {
+        this.enchantTarget = enchantTargetIn;
+    }
+
+    @Nullable
+    public LivingEntity getEnchantingTarget() {
+        return enchantTarget;
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        EntityReference<LivingEntity> owner = this.getEnchantedTargetReference();
+        EntityReference.store(owner, output, "EnchantedTarget");
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        EntityReference<LivingEntity> owner = EntityReference.readWithOldOwnerConversion(input, "EnchantedTarget", this.level());
+        if (owner != null) {
+            try {
+                this.entityData.set(DATA_ENCHANT_TARGET, Optional.of(owner));
+            } catch (Throwable var4) {
+            }
+        } else {
+            this.entityData.set(DATA_ENCHANT_TARGET, Optional.empty());
+        }
     }
 
     @Override
@@ -126,6 +170,22 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
+    @Override
+    protected void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
+        if (!level.isClientSide() && this.tickCount % 20 == 0) {
+            LivingEntity livingEntity = EntityReference.getLivingEntity(this.getEnchantedTargetReference(), this.level());
+
+            if (livingEntity != null && livingEntity instanceof IEnchantCap cap) {
+                if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
+                    if (!cap.getEnchantCap().getEnchantOwner().get().matches(this)) {
+                        setEnchantedTargetReference(null);
+                    }
+                }
+            }
+        }
+    }
+
     private void setupAnimationStates() {
         if (this.attackAnimationState.isStarted() || this.castingAnimationState.isStarted() || this.hurtTime > 0 || this.walkAnimation.isMoving()) {
             this.idleAnimationState.stop();
@@ -134,15 +194,17 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
-    private void setEnchantTarget(@Nullable LivingEntity enchantTargetIn) {
-        this.enchantTarget = enchantTargetIn;
+    public @Nullable EntityReference<LivingEntity> getEnchantedTargetReference() {
+        return this.entityData.get(DATA_ENCHANT_TARGET).orElse(null);
     }
 
-    @Nullable
-    public LivingEntity getEnchantTarget() {
-        return enchantTarget;
+    public void setEnchantedTarget(@Nullable LivingEntity owner) {
+        this.entityData.set(DATA_ENCHANT_TARGET, Optional.ofNullable(owner).map(EntityReference::of));
     }
 
+    public void setEnchantedTargetReference(@Nullable EntityReference<LivingEntity> owner) {
+        this.entityData.set(DATA_ENCHANT_TARGET, Optional.ofNullable(owner));
+    }
     @Override
     public boolean canBeLeader() {
         return true;
@@ -201,8 +263,8 @@ public class Enchanter extends SpellcasterIllager {
 
         @Override
         public void tick() {
-            if (Enchanter.this.isCastingSpell() && Enchanter.this.getEnchantTarget() != null) {
-                Enchanter.this.getLookControl().setLookAt(Enchanter.this.getEnchantTarget(), (float) Enchanter.this.getMaxHeadYRot(), (float) Enchanter.this.getMaxHeadXRot());
+            if (Enchanter.this.isCastingSpell() && Enchanter.this.getEnchantingTarget() != null) {
+                Enchanter.this.getLookControl().setLookAt(Enchanter.this.getEnchantingTarget(), (float) Enchanter.this.getMaxHeadYRot(), (float) Enchanter.this.getMaxHeadXRot());
             } else if (Enchanter.this.isCastingSpell() && Enchanter.this.getTarget() != null) {
                 Enchanter.this.getLookControl().setLookAt(Enchanter.this.getTarget(), (float) Enchanter.this.getMaxHeadYRot(), (float) Enchanter.this.getMaxHeadXRot());
             }
@@ -228,6 +290,8 @@ public class Enchanter extends SpellcasterIllager {
                 return false;
             } else if (Enchanter.this.isCastingSpell()) {
                 return false;
+            } else if (Enchanter.this.getEnchantedTargetReference() != null) {
+                return false;
             } else if (Enchanter.this.tickCount < this.nextAttackTickCount) {
                 return false;
             } else {
@@ -235,18 +299,12 @@ public class Enchanter extends SpellcasterIllager {
                 if (list.isEmpty()) {
                     return false;
                 } else {
-                    List<LivingEntity> enchanted_list = Enchanter.this.level().getEntitiesOfClass(LivingEntity.class, Enchanter.this.getBoundingBox().expandTowards(16.0D, 8.0D, 16.0D), this.enchanted_fillter);
 
-                    //set enchant limit
-                    if (enchanted_list.size() < 5) {
-                        LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
-                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getTeam() == null)) {
-                            Enchanter.this.setEnchantTarget(target);
-                            Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
+                    if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getTeam() == null)) {
+                        Enchanter.this.setEnchantingTarget(target);
+                        Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
+                        return true;
                     } else {
                         return false;
                     }
@@ -258,7 +316,7 @@ public class Enchanter extends SpellcasterIllager {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return Enchanter.this.getEnchantTarget() != null && Enchanter.this.getEnchantTarget() != Enchanter.this.getTarget() && this.attackWarmupDelay > 0;
+            return Enchanter.this.getEnchantingTarget() != null && Enchanter.this.getEnchantingTarget() != Enchanter.this.getTarget() && this.attackWarmupDelay > 0;
         }
 
         /**
@@ -266,15 +324,16 @@ public class Enchanter extends SpellcasterIllager {
          */
         public void stop() {
             super.stop();
-            Enchanter.this.setEnchantTarget(null);
+            Enchanter.this.setEnchantingTarget(null);
         }
 
         protected void performSpellCasting() {
-            LivingEntity entity = Enchanter.this.getEnchantTarget();
+            LivingEntity entity = Enchanter.this.getEnchantingTarget();
             if (entity != null && entity.isAlive()) {
                 if (entity instanceof IEnchantCap cap) {
                     float difficulty = getServerLevel(entity.level()).getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
                     MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2), ModTags.MobEnchantTags.ENCHANTER_ENCHANT);
+                    Enchanter.this.setEnchantedTarget(entity);
                 }
             }
         }
@@ -389,5 +448,74 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
+
+    static class FollowEnchantedGoal extends Goal {
+        private final Enchanter enchanter;
+        private LivingEntity enchantedEntity;
+        private int timeToRecalcPath;
+
+        FollowEnchantedGoal(Enchanter enchanter) {
+            this.enchanter = enchanter;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            EntityReference<LivingEntity> reference = this.enchanter.getEnchantedTargetReference();
+            if (reference == null) {
+                return false;
+            } else {
+                LivingEntity livingEntity = EntityReference.getLivingEntity(reference, this.enchanter.level());
+                if (livingEntity != null && livingEntity.isAlive() && this.enchanter.distanceToSqr(livingEntity) > 9 * 9) {
+                    this.enchantedEntity = livingEntity;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            if (this.enchanter.navigation.isDone()) {
+                return false;
+            } else {
+                return this.enchantedEntity != null && !(this.enchanter.distanceToSqr(this.enchantedEntity) <= 5 * 5);
+            }
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.timeToRecalcPath = 0;
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            this.enchanter.navigation.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+
+            if (this.enchantedEntity != null && this.enchantedEntity.isAlive()) {
+                this.enchanter.getLookControl().setLookAt(this.enchantedEntity, 10.0F, this.enchanter.getMaxHeadXRot());
+
+
+                if (--this.timeToRecalcPath <= 0) {
+                    this.timeToRecalcPath = this.adjustedTickDelay(10);
+
+                    this.enchanter.navigation.moveTo(this.enchantedEntity, 1.1F);
+                }
+            }
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+    }
 
 }
