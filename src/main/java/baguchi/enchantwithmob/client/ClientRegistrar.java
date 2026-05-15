@@ -117,7 +117,7 @@ public class ClientRegistrar {
 				if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
 					LivingEntity ownerEntity = EntityReference.getLivingEntity(cap.getEnchantCap().getEnchantOwner().get(), Minecraft.getInstance().player.level());
 					if (ownerEntity != null) {
-						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.position());
+						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.getEyePosition());
 					}
 				} else {
 					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);
