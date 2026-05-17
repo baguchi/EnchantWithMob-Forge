@@ -26,7 +26,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientRegistrar {
 	private static final RenderType BLAZE_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_blaze_eyes.png"));
 	private static final RenderType CREEPER_EYES = EnchantedEyesLayer.enchantedEyes(ResourceLocation.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_creeper_eyes.png"));
