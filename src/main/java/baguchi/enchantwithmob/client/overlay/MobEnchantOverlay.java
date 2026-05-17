@@ -29,7 +29,7 @@ public class MobEnchantOverlay implements GuiLayer {
 
                             Component s = mobEnchantHandler.getMobEnchant().value().getFullname(mobEnchantHandler.getEnchantLevel());
 
-                            int xOffset = 20;
+                            int xOffset = 20 + EnchantConfig.CLIENT.hudXPostion.getAsInt();
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
                             guiGraphics.text(mc.font, s, (int) (xOffset), (int) yOffset, -1);
