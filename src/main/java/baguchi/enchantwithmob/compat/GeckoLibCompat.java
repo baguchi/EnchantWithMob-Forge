@@ -9,7 +9,7 @@ import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 @EventBusSubscriber(modid = EnchantWithMob.MODID)
 public class GeckoLibCompat {
 	public static boolean isLoaded = false;
-	public static final String GECKO_LIB_MOD_ID = "geckolib3";
+	public static final String GECKO_LIB_MOD_ID = "geckolib";
 
 	@SubscribeEvent
 	public static void onInterMod(InterModProcessEvent event) {
