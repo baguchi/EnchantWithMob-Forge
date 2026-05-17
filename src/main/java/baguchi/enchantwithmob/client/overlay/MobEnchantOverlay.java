@@ -21,7 +21,7 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
             if (EnchantConfig.CLIENT.showEnchantedMobHud.get() && mc.player != null) {
                 if (mc.player instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {
-                        guiGraphics.drawString(mc.font, mc.player.getDisplayName(), (int) EnchantConfig.CLIENT.hudXPostion.getAsInt(), (int) EnchantConfig.CLIENT.hudYPostion.getAsInt(), 0xe0e0e0);
+                        guiGraphics.drawString(mc.font, mc.player.getDisplayName(), EnchantConfig.CLIENT.hudXPostion.getAsInt(), EnchantConfig.CLIENT.hudYPostion.getAsInt(), 0xe0e0e0);
 
                         for (MobEnchantHandler mobEnchantHandler : cap.getEnchantCap().getMobEnchants()) {
 
@@ -29,10 +29,10 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
 
                             Component s = mobEnchantHandler.getMobEnchant().value().getFullname(mobEnchantHandler.getEnchantLevel());
 
-                            int xOffset = 20;
+                            int xOffset = 20 + EnchantConfig.CLIENT.hudXPostion.getAsInt();
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
-                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, 0xe0e0e0);
+                            guiGraphics.drawString(mc.font, s, xOffset, yOffset, 0xe0e0e0);
                         }
                     }
                 }
@@ -41,7 +41,7 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
             if (EnchantConfig.CLIENT.showEnchantedMobHud.get() && mc.crosshairPickEntity != null) {
                 if (mc.crosshairPickEntity instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {
-                        guiGraphics.drawString(mc.font, mc.crosshairPickEntity.getDisplayName(), (int) 20, (int) 50, 0xe0e0e0);
+                        guiGraphics.drawString(mc.font, mc.crosshairPickEntity.getDisplayName(), 20, 50, 0xe0e0e0);
 
                         for (MobEnchantHandler mobEnchantHandler : cap.getEnchantCap().getMobEnchants()) {
                             Holder<MobEnchant> mobEnchant = mobEnchantHandler.getMobEnchant();
@@ -54,7 +54,7 @@ public class MobEnchantOverlay implements LayeredDraw.Layer {
                             int xOffset = 20;
                             int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 60;
 
-                            guiGraphics.drawString(mc.font, s, (int) (xOffset), (int) yOffset, 0xe0e0e0);
+                            guiGraphics.drawString(mc.font, s, xOffset, yOffset, 0xe0e0e0);
                         }
                     }
                 }
