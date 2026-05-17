@@ -1,18 +1,17 @@
 package baguchi.enchantwithmob.compat;
 
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import baguchi.enchantwithmob.EnchantWithMob;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class GeckoLibCompatClient {
-	public static void addLayer(EntityRenderer<?> r) {
-		/*if (r instanceof GeoEntityRenderer) {
-			((GeoEntityRenderer) r).addLayer(new GeoEnchantLayer((GeoEntityRenderer) r));
-
+	@SubscribeEvent
+	public static void entityAddLayerEvent(EntityRenderersEvent.AddLayers event) {
+		if (GeckoLibCompat.isLoaded) {
+			GeckoLibCompatClientRenderer.entityAddLayerEvent(event);
 		}
-		if (r instanceof LivingEntityRenderer<?, ?>) {
-			((LivingEntityRenderer<?, ?>) r).addLayer(new GeoEnchantAuraLayer((LivingEntityRenderer<?, ?>) r));
-		}*/
 	}
 }

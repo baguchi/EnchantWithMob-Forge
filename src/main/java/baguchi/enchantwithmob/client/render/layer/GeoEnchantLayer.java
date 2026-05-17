@@ -1,29 +1,43 @@
 package baguchi.enchantwithmob.client.render.layer;
 
+import baguchi.enchantwithmob.EnchantConfig;
+import baguchi.enchantwithmob.api.IEnchantCap;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class GeoEnchantLayer<T extends Entity> //& IAnimatable> extends GeoLayerRenderer<T>
+import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.enchantSwirl;
+
+public class GeoEnchantLayer<T extends Entity & GeoAnimatable> extends GeoRenderLayer<T>
 {
+    public GeoEnchantLayer(GeoRenderer<T> entityRendererIn) {
+        super(entityRendererIn);
+    }
 
-	/*public void render(PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-	float tick = (float) entitylivingbaseIn.tickCount + partialTicks;
-		entitylivingbaseIn.getCapability(EnchantWithMob.MOB_ENCHANT_CAP).ifPresent(cap ->
-		{
-			if (cap.hasEnchant() && !entitylivingbaseIn.isInvisible()) {
-				RenderType glint = enchantSwirl(cap.isAncient() ? ANCIENT_GLINT : ItemRenderer.ENCHANT_GLINT_LOCATION);
-				this.getRenderer().render(this.getEntityModel().getModel(this.getEntityModel().getModelResource(entitylivingbaseIn)), entitylivingbaseIn, partialTicks, glint, poseStackIn, bufferIn,
-						bufferIn.getBuffer(glint), packedLightIn, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-			}
-		});
-	}
+    @Override
+    public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.render(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+        float tick = (float) animatable.tickCount + partialTick;
+        if (animatable instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
 
-	private static void setupGlintTexturing(float p_110187_) {
-		long var1 = Util.getMillis() * 8L;
-		float var3 = (float) (var1 % 110000L) / 110000.0F;
-		float var4 = (float) (var1 % 30000L) / 30000.0F;
-		Matrix4f var5 = Matrix4f.createTranslateMatrix(-var3, var4, 0.0F);
-		var5.multiply(Vector3f.ZP.rotationDegrees(10.0F));
-		var5.multiply(Matrix4f.createScaleMatrix(p_110187_, p_110187_, p_110187_));
-		RenderSystem.setTextureMatrix(var5);
-	}*/
+            if (cap.getEnchantCap().hasEnchant() && !animatable.isInvisible() && cap.getEnchantCap().getMobEnchantType() != null) {
+                renderType = enchantSwirl(cap.getEnchantCap().getMobEnchantType().value().texture());
+
+                if (renderType != null) {
+                    getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable, renderType,
+                            bufferSource.getBuffer(renderType), partialTick, LightTexture.FULL_SKY, packedOverlay,
+                            getRenderer().getRenderColor(animatable, partialTick, packedLight).argbInt());
+                }
+            }
+
+        }
+    }
 }
