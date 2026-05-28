@@ -78,6 +78,10 @@
         },
         {
           "type": "minecraft:item",
+          "name": "enchantwithmob:enchanter_leggings"
+        },
+        {
+          "type": "minecraft:item",
           "name": "enchantwithmob:enchanter_boots"
         }
       ],
