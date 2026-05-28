@@ -34,7 +34,7 @@ public abstract class EntityMixin implements IEnchantedTime {
     @Inject(method = "refreshDimensions", at = @At("RETURN"))
     public void refreshDimensions(CallbackInfo callbackInfo) {
         if (this instanceof IEnchantCap cap) {
-            if (cap.getEnchantCap().hasEnchant()) {
+            if (cap.getEnchantCap() != null && cap.getEnchantCap().hasEnchant()) {
                 if (EnchantConfig.COMMON.changeSizeWhenEnchant.get()) {
                     float totalWidth = this.dimensions.width() * 1.025F;
                     float totalHeight = this.dimensions.height() * 1.025F;
