@@ -41,7 +41,7 @@ public class MobEnchantOverlay implements GuiLayer {
             if (EnchantConfig.CLIENT.showEnchantedMobHud.get() && mc.crosshairPickEntity != null) {
                 if (mc.crosshairPickEntity instanceof IEnchantCap cap) {
                     if (cap.getEnchantCap().hasEnchant()) {
-                        guiGraphics.text(mc.font, mc.crosshairPickEntity.getDisplayName(), (int) 20, (int) 50, -1);
+                        guiGraphics.text(mc.font, mc.crosshairPickEntity.getDisplayName(), (int) EnchantConfig.CLIENT.hudXPostion.getAsInt(), (int) EnchantConfig.CLIENT.hudYPostion.getAsInt(), -1);
 
                         for (MobEnchantHandler mobEnchantHandler : cap.getEnchantCap().getMobEnchants()) {
                             Holder<MobEnchant> mobEnchant = mobEnchantHandler.getMobEnchant();
@@ -51,8 +51,8 @@ public class MobEnchantOverlay implements GuiLayer {
 
                             Component s = mobEnchantHandler.getMobEnchant().value().getFullname(mobEnchantHandler.getEnchantLevel());
 
-                            int xOffset = 20;
-                            int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 60;
+                            int xOffset = 20 + EnchantConfig.CLIENT.hudXPostion.getAsInt();
+                            int yOffset = cap.getEnchantCap().getMobEnchants().indexOf(mobEnchantHandler) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
                             guiGraphics.text(mc.font, s, (int) (xOffset), (int) yOffset, -1);
                         }
