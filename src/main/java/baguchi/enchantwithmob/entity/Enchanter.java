@@ -1,7 +1,8 @@
 package baguchi.enchantwithmob.entity;
 
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModSoundEvents;
 import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
@@ -176,9 +177,11 @@ public class Enchanter extends SpellcasterIllager {
         if (!level.isClientSide() && this.tickCount % 20 == 0) {
             LivingEntity livingEntity = EntityReference.getLivingEntity(this.getEnchantedTargetReference(), this.level());
 
-            if (livingEntity != null && livingEntity instanceof IEnchantCap cap) {
-                if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
-                    if (!cap.getEnchantCap().getEnchantOwner().get().matches(this)) {
+            if (livingEntity != null) {
+                MobEnchantAttachment attachment = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
+
+                if (attachment.getEnchantOwner().isPresent()) {
+                    if (!attachment.getEnchantOwner().get().matches(this)) {
                         setEnchantedTargetReference(null);
                     }
                 }
@@ -240,9 +243,10 @@ public class Enchanter extends SpellcasterIllager {
         Raid raid = this.getCurrentRaid();
         boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.2F;
         if (flag) {
-            if (this instanceof IEnchantCap cap) {
-                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), (int) (1 + raid.getEnchantOdds() * 3)));
-            }
+            MobEnchantAttachment attachment = this.getData(ModAttachments.MOB_ENCHANTS);
+
+            MobEnchantUtils.addEnchantmentToEntity(this, attachment, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), (int) (1 + raid.getEnchantOdds() * 3)));
+
         }
     }
 
@@ -274,11 +278,11 @@ public class Enchanter extends SpellcasterIllager {
 
     public class SpellGoal extends SpellcasterIllager.SpellcasterUseSpellGoal {
         private final Predicate<LivingEntity> fillter = (entity) -> {
-            return !(entity instanceof Enchanter) && entity instanceof IEnchantCap enchantCap && !enchantCap.getEnchantCap().hasEnchant();
+            return !(entity instanceof Enchanter) && !entity.getData(ModAttachments.MOB_ENCHANTS).hasEnchant();
         };
 
         private final Predicate<LivingEntity> enchanted_fillter = (entity) -> {
-            return !(entity instanceof Enchanter) && entity instanceof IEnchantCap enchantCap && enchantCap.getEnchantCap().hasEnchant();
+            return !(entity instanceof Enchanter) && entity.getData(ModAttachments.MOB_ENCHANTS).hasEnchant();
         };
 
         /**
@@ -330,11 +334,12 @@ public class Enchanter extends SpellcasterIllager {
         protected void performSpellCasting() {
             LivingEntity entity = Enchanter.this.getEnchantingTarget();
             if (entity != null && entity.isAlive()) {
-                if (entity instanceof IEnchantCap cap) {
-                    float difficulty = getServerLevel(entity.level()).getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
-                    MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, cap, entity.getRandom(), (int) (5 + difficulty * 2), ModTags.MobEnchantTags.ENCHANTER_ENCHANT);
-                    Enchanter.this.setEnchantedTarget(entity);
-                }
+                MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
+
+                float difficulty = getServerLevel(entity.level()).getCurrentDifficultyAt(entity.blockPosition()).getEffectiveDifficulty();
+                MobEnchantUtils.addUnstableRandomEnchantmentToEntity(entity, Enchanter.this, attachment, entity.getRandom(), (int) (5 + difficulty * 2), ModTags.MobEnchantTags.ENCHANTER_ENCHANT);
+                Enchanter.this.setEnchantedTarget(entity);
+
             }
         }
 

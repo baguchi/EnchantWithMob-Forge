@@ -1,8 +1,9 @@
 package baguchi.enchantwithmob.item;
 
 import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
@@ -61,8 +62,9 @@ public class MobEnchantBookItem extends Item {
 	public InteractionResult use(Level level, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
 		if (EnchantConfig.COMMON.enchantYourSelf.get() && MobEnchantUtils.hasMobEnchant(stack)) {
-				if (playerIn instanceof IEnchantCap cap) {
-					boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, playerIn, playerIn, cap);
+			MobEnchantAttachment attachment = playerIn.getData(ModAttachments.MOB_ENCHANTS);
+
+			boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, playerIn, playerIn, attachment);
 
 
 					//When flag is true, enchanting is success.
@@ -81,7 +83,6 @@ public class MobEnchantBookItem extends Item {
 						return InteractionResult.FAIL;
 					}
 				}
-		}
 		return super.use(level, playerIn, handIn);
 	}
 

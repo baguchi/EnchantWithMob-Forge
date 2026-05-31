@@ -2,8 +2,9 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -52,10 +53,12 @@ public class PoisonCloudMobEnchant extends MobEnchant {
         if (!shooterIsLiving(projectile) || !EnchantConfig.COMMON.ALLOW_POISON_CLOUD_PROJECTILE.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType()).toString()))
             return;
         LivingEntity owner = (LivingEntity) projectile.getOwner();
-        if (owner instanceof IEnchantCap cap) {
-            int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON_CLOUD.getKey());
+        if (owner != null) {
+            MobEnchantAttachment attachmentAttacker = owner.getData(ModAttachments.MOB_ENCHANTS);
 
-            if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON_CLOUD.getKey())) {
+            int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.getKey());
+
+            if (attachmentAttacker.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.getKey())) {
                 //arrow is different
                 if (!(projectile instanceof AbstractArrow) || !projectile.onGround()) {
                     AreaEffectCloud areaeffectcloud = new AreaEffectCloud(owner.level(), event.getRayTraceResult().getLocation().x, event.getRayTraceResult().getLocation().y, event.getRayTraceResult().getLocation().z);

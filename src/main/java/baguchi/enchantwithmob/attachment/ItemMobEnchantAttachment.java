@@ -1,10 +1,10 @@
-package baguchi.enchantwithmob.capability;
+package baguchi.enchantwithmob.attachment;
 
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public class ItemMobEnchantCapability implements ValueIOSerializable {
+public class ItemMobEnchantAttachment implements ValueIOSerializable {
 	private boolean hasEnchant;
 
 	public boolean hasEnchant() {

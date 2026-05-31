@@ -1,9 +1,10 @@
 package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.message.SoulParticleMessage;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,9 +34,11 @@ public class SoulStealMobEnchant extends MobEnchant {
         DamageSource damageSource = event.getSource();
         if (damageSource != null && damageSource.getDirectEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) damageSource.getDirectEntity();
-            if (attacker instanceof IEnchantCap cap) {
-                int enchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.SOUL_STEAL.getKey());
-                if (cap.getEnchantCap().hasEnchant() && enchantLevel > 0) {
+            MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
+
+            if (attachmentAttacker.hasEnchant()) {
+                int enchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.SOUL_STEAL.getKey());
+                if (enchantLevel > 0) {
                     attacker.heal(Mth.clamp(enchantLevel, 0, entity.getMaxHealth()));
                     if (!entity.level().isClientSide()) {
                         SoulParticleMessage message = new SoulParticleMessage(entity);

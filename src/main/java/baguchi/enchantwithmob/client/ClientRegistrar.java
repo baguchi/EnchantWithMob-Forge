@@ -1,9 +1,8 @@
 package baguchi.enchantwithmob.client;
 
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.MobEnchantEye;
-import baguchi.enchantwithmob.capability.ItemMobEnchantCapability;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.client.model.EnchantedWindModel;
 import baguchi.enchantwithmob.client.model.EnchanterModel;
 import baguchi.enchantwithmob.client.overlay.MobEnchantOverlay;
@@ -109,13 +108,15 @@ public class ClientRegistrar {
 	public static void registerRenderState(RegisterRenderStateModifiersEvent event) {
 		event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>(LivingEntityRenderer.class) {
 		}, (entity, state) -> {
-			if (entity instanceof IEnchantCap cap) {
-				state.setRenderData(EnchantLayer.ENCHANTED, cap.getEnchantCap().hasEnchant());
-				state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, cap.getEnchantCap().getMobEnchantType().value());
+			MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
+
+
+			state.setRenderData(EnchantLayer.ENCHANTED, attachment.hasEnchant());
+			state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, attachment.getMobEnchantType().value());
 				//reset
 				state.setRenderData(EnchantedWindLayer.WIND, false);
-				if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
-					LivingEntity ownerEntity = EntityReference.getLivingEntity(cap.getEnchantCap().getEnchantOwner().get(), Minecraft.getInstance().player.level());
+			if (attachment.getEnchantOwner().isPresent()) {
+				LivingEntity ownerEntity = EntityReference.getLivingEntity(attachment.getEnchantOwner().get(), Minecraft.getInstance().player.level());
 					if (ownerEntity != null) {
 						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.getEyePosition().add(0, -0.1F, 0));
 					}
@@ -130,13 +131,6 @@ public class ClientRegistrar {
 				Optional<Holder.Reference<MobEnchantEye>> enchantEye = MobEnchantEyes.getEyeVariant(entity.registryAccess(), entity.typeHolder());
 
 				enchantEye.ifPresent(mobEnchantEye -> state.setRenderData(EnchantedEyesLayer.ENCHANT_EYE, mobEnchantEye.value().texture()));
-			} else {
-				ItemMobEnchantCapability capability = entity.getData(ModAttachments.ITEM_MOB_ENCHANT.get());
-
-				if (capability != null) {
-					state.setRenderData(EnchantLayer.ENCHANTED, capability.hasEnchant());
-				}
-			}
 		});
 	}
 

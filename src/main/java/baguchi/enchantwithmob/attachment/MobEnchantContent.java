@@ -1,16 +1,23 @@
-package baguchi.enchantwithmob.capability;
+package baguchi.enchantwithmob.attachment;
 
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 
-public class MobEnchantHandler {
+public class MobEnchantContent {
+	public static final Codec<MobEnchantContent> CODEC = RecordCodecBuilder.create(
+			i -> i.group(
+							MobEnchants.getRegistry().holderByNameCodec().fieldOf("mob_enchant").forGetter(MobEnchantContent::getMobEnchant),
+							Codec.INT.fieldOf("enchant_level").forGetter(MobEnchantContent::getEnchantLevel)
+					)
+					.apply(i, MobEnchantContent::new)
+	);
 	private Holder<MobEnchant> mobEnchant;
     private int enchantLevel;
 
-	public MobEnchantHandler(Holder<MobEnchant> mobEnchant, int enchantLevel) {
+	public MobEnchantContent(Holder<MobEnchant> mobEnchant, int enchantLevel) {
         this.mobEnchant = mobEnchant;
         this.enchantLevel = enchantLevel;
     }
@@ -22,17 +29,6 @@ public class MobEnchantHandler {
 
 	public int getEnchantLevel() {
 		return enchantLevel;
-	}
-
-	public CompoundTag write(RegistryAccess registryAccess) {
-		CompoundTag nbt = new CompoundTag();
-
-		if (mobEnchant != null) {
-			nbt.putString("MobEnchant", registryAccess.lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getKey(mobEnchant.value()).toString());
-			nbt.putInt("EnchantLevel", enchantLevel);
-		}
-
-		return nbt;
 	}
 
 	public void setEnchantLevel(int enchantLevel) {

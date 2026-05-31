@@ -6,7 +6,7 @@ import baguchi.enchantwithmob.client.ModParticles;
 import baguchi.enchantwithmob.command.MobEnchantingCommand;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantEyes;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
-import baguchi.enchantwithmob.message.*;
+import baguchi.enchantwithmob.message.SoulParticleMessage;
 import baguchi.enchantwithmob.registry.*;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -70,12 +70,7 @@ public class EnchantWithMob {
 
     public void setupPackets(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
-        registrar.playToClient(MobEnchantTypeMessage.TYPE, MobEnchantTypeMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-		registrar.playToClient(MobEnchantedMessage.TYPE, MobEnchantedMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-		registrar.playToClient(MobEnchantFromOwnerMessage.TYPE, MobEnchantFromOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-		registrar.playToClient(RemoveAllMobEnchantMessage.TYPE, RemoveAllMobEnchantMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-		registrar.playToClient(RemoveMobEnchantOwnerMessage.TYPE, RemoveMobEnchantOwnerMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
-        registrar.playToClient(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
+		registrar.playToClient(SoulParticleMessage.TYPE, SoulParticleMessage.STREAM_CODEC, (handler, payload) -> handler.handle(handler, payload));
 	}
 
     public static Identifier prefix(String path) {

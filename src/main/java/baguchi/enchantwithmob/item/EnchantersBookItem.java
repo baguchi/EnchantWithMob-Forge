@@ -1,7 +1,8 @@
 package baguchi.enchantwithmob.item;
 
 import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.ChatFormatting;
@@ -11,7 +12,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
@@ -24,11 +24,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class EnchantersBookItem extends Item {
-	private final TargetingConditions enchantTargeting = TargetingConditions.forNonCombat().range(16.0D).ignoreLineOfSight().ignoreInvisibilityTesting();
-	private final TargetingConditions alreadyEnchantTargeting = TargetingConditions.forNonCombat().range(16.0D).ignoreLineOfSight().ignoreInvisibilityTesting().selector((server, entity) -> {
-		return entity instanceof IEnchantCap enchantCap && enchantCap.getEnchantCap().hasEnchant();
-	});
-
 	public EnchantersBookItem(Properties properties) {
 		super(properties);
 	}
@@ -44,7 +39,7 @@ public class EnchantersBookItem extends Item {
 			if (MobEnchantUtils.hasMobEnchant(stack)) {
 				List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, playerIn.getBoundingBox().inflate(16.0D));
 				List<LivingEntity> hasEnchantedMoblist = level.getEntitiesOfClass(LivingEntity.class, playerIn.getBoundingBox().inflate(16.0D), (entity) -> {
-					return entity instanceof IEnchantCap enchantCap && enchantCap.getEnchantCap().hasEnchant();
+					return entity.getData(ModAttachments.MOB_ENCHANTS).hasEnchant();
 				});
 
 				if (hasEnchantedMoblist.isEmpty() || hasEnchantedMoblist.size() < 5) {
@@ -59,16 +54,16 @@ public class EnchantersBookItem extends Item {
 							}
 
 							if (!enchantedMob.canAttack(playerIn) && playerIn != enchantedMob) {
-								if (enchantedMob instanceof IEnchantCap cap) {
-									if (!cap.getEnchantCap().hasEnchant()) {
-										if (flag[0]) {
-											MobEnchantUtils.addUnstableItemMobEnchantToEntity(stack, enchantedMob, playerIn, cap);
-										} else {
-											flag[0] = MobEnchantUtils.addUnstableItemMobEnchantToEntity(stack, enchantedMob, playerIn, cap);
-										}
+								MobEnchantAttachment attachment = enchantedMob.getData(ModAttachments.MOB_ENCHANTS);
+
+								if (!attachment.hasEnchant()) {
+									if (flag[0]) {
+										MobEnchantUtils.addUnstableItemMobEnchantToEntity(stack, enchantedMob, playerIn, attachment);
+									} else {
+										flag[0] = MobEnchantUtils.addUnstableItemMobEnchantToEntity(stack, enchantedMob, playerIn, attachment);
 									}
 								}
-								;
+
 							}
 						}
 
