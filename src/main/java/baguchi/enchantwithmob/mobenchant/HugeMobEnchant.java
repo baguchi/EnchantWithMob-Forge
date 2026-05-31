@@ -2,9 +2,9 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
-import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,18 +31,18 @@ public class HugeMobEnchant extends MobEnchant {
 
         if (event.getSource().getEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
+            MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
-            if (attacker instanceof IEnchantCap cap) {
-                if (cap.getEnchantCap().hasEnchant()) {
-                    if (event.getAmount() > 0) {
-                        event.setAmount(getDamageIncrease(event.getAmount(), cap.getEnchantCap()));
-                    }
+            if (attachmentAttacker.hasEnchant()) {
+                if (event.getAmount() > 0) {
+                    event.setAmount(getDamageIncrease(event.getAmount(), attachmentAttacker));
                 }
+
             }
         }
     }
 
-    public static float getDamageIncrease(float damage, MobEnchantCapability cap) {
+    public static float getDamageIncrease(float damage, MobEnchantAttachment cap) {
         int level = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), MobEnchants.HUGE.getKey());
         if (level > 0) {
             damage *= 1.0F + level * 0.15F;

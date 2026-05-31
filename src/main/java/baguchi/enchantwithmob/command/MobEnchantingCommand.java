@@ -1,10 +1,11 @@
 package baguchi.enchantwithmob.command;
 
-import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.api.MobEnchantType;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -31,17 +32,17 @@ public class MobEnchantingCommand {
     );
 
 
-	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
-		LiteralArgumentBuilder<CommandSourceStack> enchantCommand = Commands.literal("mob_enchanting")
+        LiteralArgumentBuilder<CommandSourceStack> enchantCommand = Commands.literal("mob_enchanting")
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
-		enchantCommand.then(Commands.literal("clear").then(Commands.argument("target", EntityArgument.entity()).executes((ctx) -> {
-			return setClear(ctx.getSource(), EntityArgument.getEntity(ctx, "target"));
-		}))).then(Commands.literal("give").then(Commands.argument("target", EntityArgument.entity())
-				.then(Commands.argument("mob_enchantment", ResourceKeyArgument.key(MobEnchants.MOB_ENCHANT_REGISTRY)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), 1))
+        enchantCommand.then(Commands.literal("clear").then(Commands.argument("target", EntityArgument.entity()).executes((ctx) -> {
+            return setClear(ctx.getSource(), EntityArgument.getEntity(ctx, "target"));
+        }))).then(Commands.literal("give").then(Commands.argument("target", EntityArgument.entity())
+                .then(Commands.argument("mob_enchantment", ResourceKeyArgument.key(MobEnchants.MOB_ENCHANT_REGISTRY)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), 1))
                         .then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((p_198357_0_) -> setMobEnchants(p_198357_0_.getSource(), EntityArgument.getEntity(p_198357_0_, "target"), getMobEnchant(p_198357_0_, "mob_enchantment"), IntegerArgumentType.getInteger(p_198357_0_, "level")))))));
 
-		dispatcher.register(enchantCommand);
+        dispatcher.register(enchantCommand);
 
         LiteralArgumentBuilder<CommandSourceStack> mobEnchantType = Commands.literal("mob_enchant_type")
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
@@ -49,13 +50,13 @@ public class MobEnchantingCommand {
 
         mobEnchantType.then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("mob_enchant_type", ResourceKeyArgument.key(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY)).executes((ctx) -> {
             return setMobEnchantType(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), getMobEnchantType(ctx, "mob_enchant_type"));
-		})));
+        })));
 
         dispatcher.register(mobEnchantType);
-	}
+    }
 
     public static Holder.Reference<MobEnchant> getMobEnchant(CommandContext<CommandSourceStack> p_249310_, String p_250729_) throws CommandSyntaxException {
-		return resolveKey(p_249310_, p_250729_, MobEnchants.MOB_ENCHANT_REGISTRY, ERROR_INVALID_FEATURE);
+        return resolveKey(p_249310_, p_250729_, MobEnchants.MOB_ENCHANT_REGISTRY, ERROR_INVALID_FEATURE);
     }
 
     public static Holder.Reference<MobEnchantType> getMobEnchantType(CommandContext<CommandSourceStack> p_249310_, String p_250729_) throws CommandSyntaxException {
@@ -63,7 +64,7 @@ public class MobEnchantingCommand {
     }
 
     private static <T> Registry<T> getRegistry(CommandContext<CommandSourceStack> p_212379_, ResourceKey<? extends Registry<T>> p_212380_) {
-		return p_212379_.getSource().getServer().registryAccess().lookupOrThrow(p_212380_);
+        return p_212379_.getSource().getServer().registryAccess().lookupOrThrow(p_212380_);
     }
 
     private static <T> ResourceKey<T> getRegistryKey(
@@ -81,83 +82,82 @@ public class MobEnchantingCommand {
         return getRegistry(p_248662_, p_249701_).get(resourcekey).orElseThrow(() -> p_249790_.create(resourcekey.identifier()));
     }
 
-	private static int setClear(CommandSourceStack commandStack, Entity entity) {
+    private static int setClear(CommandSourceStack commandStack, Entity entity) {
 
-		if (entity != null) {
-			if (entity instanceof LivingEntity) {
-				if (entity instanceof IEnchantCap enchantCap) {
-					enchantCap.getEnchantCap().removeAllMobEnchant((LivingEntity) entity);
-                    enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, MobEnchantTypes.NORMAL);
-				}
+        if (entity != null) {
+            if (entity instanceof LivingEntity) {
+                MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.clear", entity.getDisplayName()), true);
-				return 1;
-			} else {
-				commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.clear.fail.no_living_entity", entity.getDisplayName()));
+                attachment.removeAllMobEnchant((LivingEntity) entity);
+                attachment.setEnchantType((LivingEntity) entity, MobEnchantTypes.NORMAL);
 
-				return 0;
-			}
-		} else {
-			commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.clear.fail.no_entity"));
+                commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.clear", entity.getDisplayName()), true);
+                return 1;
+            } else {
+                commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.clear.fail.no_living_entity", entity.getDisplayName()));
 
-			return 0;
-		}
-	}
+                return 0;
+            }
+        } else {
+            commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.clear.fail.no_entity"));
+
+            return 0;
+        }
+    }
 
     private static int setMobEnchantType(CommandSourceStack commandStack, Entity entity, Holder.Reference<MobEnchantType> holder) {
-		if (entity != null) {
-			if (entity instanceof LivingEntity) {
+        if (entity != null) {
+            if (entity instanceof LivingEntity) {
+                MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-				if (entity instanceof IEnchantCap enchantCap) {
-                    enchantCap.getEnchantCap().setEnchantType((LivingEntity) entity, holder.getKey());
-				}
+                attachment.setEnchantType((LivingEntity) entity, holder.getKey());
 
-				commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchant_type.set", entity.getDisplayName()), true);
-				return 1;
-			} else {
-				commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_living_entity", entity.getDisplayName()));
 
-				return 0;
-			}
-		} else {
-			commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_entity"));
+                commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchant_type.set", entity.getDisplayName()), true);
+                return 1;
+            } else {
+                commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_living_entity", entity.getDisplayName()));
 
-			return 0;
-		}
-	}
+                return 0;
+            }
+        } else {
+            commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchant_type.fail.no_entity"));
+
+            return 0;
+        }
+    }
 
     private static int setMobEnchants(CommandSourceStack commandStack, Entity entity, Holder.Reference<MobEnchant> holder, int level) {
-		Holder.Reference<MobEnchant> mobEnchant = holder;
+        Holder.Reference<MobEnchant> mobEnchant = holder;
 
 
-		if (entity != null) {
-			if (entity instanceof LivingEntity) {
-				if (mobEnchant != null) {
-					if (level > 255) {
-						commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.too_high"));
-						return 0;
-					} else {
-						if (entity instanceof IEnchantCap enchantCap) {
-							enchantCap.getEnchantCap().addMobEnchant((LivingEntity) entity, mobEnchant, level);
-						}
+        if (entity != null) {
+            if (entity instanceof LivingEntity) {
+                if (mobEnchant != null) {
+                    if (level > 255) {
+                        commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.too_high"));
+                        return 0;
+                    } else {
+                        MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-						commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getKey(mobEnchant.value()).toString()), true);
-						return 1;
-					}
-				} else {
-					commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_mobenchant"));
+                        attachment.addMobEnchant((LivingEntity) entity, mobEnchant, level);
+                        commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant", entity.getDisplayName(), commandStack.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getKey(mobEnchant.value()).toString()), true);
+                        return 1;
+                    }
+                } else {
+                    commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_mobenchant"));
 
-					return 0;
-				}
-			} else {
-				commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_living_entity", entity.getDisplayName()));
+                    return 0;
+                }
+            } else {
+                commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_living_entity", entity.getDisplayName()));
 
-				return 0;
-			}
-		} else {
-			commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_entity"));
+                return 0;
+            }
+        } else {
+            commandStack.sendFailure(Component.translatable("commands.enchantwithmob.mob_enchanting.set_enchant.fail.no_entity"));
 
-			return 0;
-		}
-	}
+            return 0;
+        }
+    }
 }

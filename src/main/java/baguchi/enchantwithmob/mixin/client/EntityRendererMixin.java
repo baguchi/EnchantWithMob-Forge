@@ -1,7 +1,8 @@
 package baguchi.enchantwithmob.mixin.client;
 
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.client.ClientEventHandler;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
@@ -21,8 +22,9 @@ public class EntityRendererMixin<T extends Entity> {
     @Inject(method = "shouldRender", at = @At("RETURN"), cancellable = true)
     public void shouldRender(T entity, Frustum frustum, double p_114493_, double p_114494_, double p_114495_, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue()) {
-            if (entity instanceof IEnchantCap enchantCap) {
-                Optional<EntityReference<LivingEntity>> optional = enchantCap.getEnchantCap().getEnchantOwner();
+            MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
+
+            Optional<EntityReference<LivingEntity>> optional = attachment.getEnchantOwner();
                 if (optional.isPresent()) {
                     LivingEntity livingEntity = optional.get().getEntity(entity.level(), LivingEntity.class);
 
@@ -32,7 +34,7 @@ public class EntityRendererMixin<T extends Entity> {
                         cir.setReturnValue(frustum.isVisible(new AABB(vec31.x, vec31.y, vec31.z, vec3.x, vec3.y, vec3.z)));
                     }
                 }
-            }
+
         }
     }
 }

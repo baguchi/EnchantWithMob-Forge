@@ -1,6 +1,6 @@
 package baguchi.enchantwithmob.client.sound;
 
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModSoundEvents;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -35,7 +35,7 @@ public class EnchantBeamSoundInstance extends AbstractTickableSoundInstance {
     }
 
     public void tick() {
-        if (this.livingEntity.isRemoved() || !(this.livingEntity instanceof IEnchantCap cap) || !cap.getEnchantCap().hasOwner()) {
+        if (this.livingEntity.isRemoved() || !this.livingEntity.getData(ModAttachments.MOB_ENCHANTS).hasOwner()) {
             this.stop();
         } else {
             this.x = (float) this.livingEntity.getX();

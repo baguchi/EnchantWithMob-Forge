@@ -1,8 +1,9 @@
 package baguchi.enchantwithmob.event;
 
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.api.IEnchantCap;
-import baguchi.enchantwithmob.capability.MobEnchantHandler;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
+import baguchi.enchantwithmob.attachment.MobEnchantContent;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,18 +16,17 @@ import java.util.List;
 @EventBusSubscriber(modid = EnchantWithMob.MODID)
 public class MobEnchantMargeEvent {
 
-	@SubscribeEvent
-	public static void onEntityConversion(LivingConversionEvent.Post event) {
+    @SubscribeEvent
+    public static void onEntityConversion(LivingConversionEvent.Post event) {
         LivingEntity livingEntity = event.getEntity();
         LivingEntity outcome = event.getOutcome();
 
-        if (outcome instanceof IEnchantCap cap) {
-            if (livingEntity instanceof IEnchantCap livingCap) {
-                if (livingCap.getEnchantCap().hasEnchant()) {
-                    for (MobEnchantHandler mobEnchantHandler : livingCap.getEnchantCap().getMobEnchants()) {
-                        cap.getEnchantCap().addMobEnchant(outcome, mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
-                    }
-                }
+        MobEnchantAttachment outcomeAttachment = outcome.getData(ModAttachments.MOB_ENCHANTS);
+        MobEnchantAttachment attachment = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
+
+        if (attachment.hasEnchant()) {
+            for (MobEnchantContent mobEnchantContent : attachment.getMobEnchants()) {
+                outcomeAttachment.addMobEnchant(outcome, mobEnchantContent.getMobEnchant(), mobEnchantContent.getEnchantLevel());
             }
         }
     }
@@ -36,15 +36,15 @@ public class MobEnchantMargeEvent {
         LivingEntity livingEntity = event.getParent();
         List<Mob> children = event.getChildren();
         for (Mob outcome : children) {
-            if (outcome instanceof IEnchantCap cap) {
-                if (livingEntity instanceof IEnchantCap livingCap) {
-                    if (livingCap.getEnchantCap().hasEnchant()) {
-                        for (MobEnchantHandler mobEnchantHandler : livingCap.getEnchantCap().getMobEnchants()) {
-                            cap.getEnchantCap().addMobEnchant(outcome, mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
-                        }
-                    }
+            MobEnchantAttachment outcomeAttachment = outcome.getData(ModAttachments.MOB_ENCHANTS);
+            MobEnchantAttachment attachment = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
+
+            if (attachment.hasEnchant()) {
+                for (MobEnchantContent mobEnchantContent : attachment.getMobEnchants()) {
+                    outcomeAttachment.addMobEnchant(outcome, mobEnchantContent.getMobEnchant(), mobEnchantContent.getEnchantLevel());
                 }
             }
+
         }
     }
 }

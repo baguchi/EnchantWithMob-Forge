@@ -1,7 +1,8 @@
 package baguchi.enchantwithmob.item;
 
 import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
@@ -36,19 +37,20 @@ public class EnchanterBottleItem extends Item {
 	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
 		ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
 
-		if (entity instanceof IEnchantCap cap) {
+		MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
+
 			int xp = 0;
-            if (!cap.getEnchantCap().isPreventRemoveSelf() && cap.getEnchantCap().hasEnchant()) {
-				xp += MobEnchantUtils.getExperienceFromMob(cap);
+		if (!attachment.isPreventRemoveSelf() && attachment.hasEnchant()) {
+			xp += MobEnchantUtils.getExperienceFromMob(attachment);
 
 				if (xp > 0) {
 					stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
 				}
 
-				if (cap.getEnchantCap().hasOwner()) {
-					cap.getEnchantCap().removeOwner(entity);
+			if (attachment.hasOwner()) {
+				attachment.removeOwner(entity);
 				}
-				MobEnchantUtils.removeMobEnchantToEntity(entity, cap);
+			MobEnchantUtils.removeMobEnchantToEntity(entity, attachment);
 
 				entity.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
@@ -68,7 +70,6 @@ public class EnchanterBottleItem extends Item {
 					}
 				}
 			}
-		}
 		stack.consume(1, entity);
 
 		if (entity instanceof ServerPlayer serverplayer) {
@@ -90,19 +91,19 @@ public class EnchanterBottleItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level p_41352_, Player p_41353_, InteractionHand p_41354_) {
-		if (p_41353_ instanceof IEnchantCap cap) {
-			int xp = MobEnchantUtils.getExperienceFromMob(cap);
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		MobEnchantAttachment attachment = player.getData(ModAttachments.MOB_ENCHANTS);
 
-			if (xp > 0) {
-				return ItemUtils.startUsingInstantly(p_41352_, p_41353_, p_41354_);
-			}
+		int xp = MobEnchantUtils.getExperienceFromMob(attachment);
+		if (xp > 0) {
+			return ItemUtils.startUsingInstantly(level, player, hand);
 		}
 
-		if (p_41353_.totalExperience > 0) {
-			return ItemUtils.startUsingInstantly(p_41352_, p_41353_, p_41354_);
+
+		if (player.totalExperience > 0) {
+			return ItemUtils.startUsingInstantly(level, player, hand);
 		}
-		return super.use(p_41352_, p_41353_, p_41354_);
+		return super.use(level, player, hand);
 	}
 
 	@Override

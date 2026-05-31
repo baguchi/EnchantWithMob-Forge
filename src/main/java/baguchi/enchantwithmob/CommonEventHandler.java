@@ -1,15 +1,12 @@
 package baguchi.enchantwithmob;
 
-import baguchi.enchantwithmob.api.IEnchantCap;
-import baguchi.enchantwithmob.api.IEnchantVisual;
-import baguchi.enchantwithmob.capability.MobEnchantHandler;
+import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
+import baguchi.enchantwithmob.attachment.MobEnchantContent;
 import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.item.mobenchant.ItemMobEnchantments;
-import baguchi.enchantwithmob.message.MobEnchantFromOwnerMessage;
-import baguchi.enchantwithmob.message.MobEnchantTypeMessage;
-import baguchi.enchantwithmob.message.MobEnchantedMessage;
 import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
@@ -34,7 +31,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -56,34 +52,22 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import static net.minecraft.world.inventory.AnvilMenu.calculateIncreasedRepairCost;
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID)
 public class CommonEventHandler {
-
-    /*
-     * add Enchant Visual
-     */
-    @SubscribeEvent
-    public static void onTraceableEntitySpawn(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof IEnchantVisual enchantVisual && event.getEntity() instanceof TraceableEntity traceableEntity) {
-            if (traceableEntity.getOwner() instanceof IEnchantCap enchantCap) {
-                enchantVisual.setEnchantVisual(enchantCap.getEnchantCap().hasEnchant());
-            }
-        }
-    }
-
     /*
      * this event handle the Alway Enchant System
      */
     @SubscribeEvent
     public static void onMobSpawn(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof IEnchantCap cap && !event.loadedFromDisk()) {
+        MobEnchantAttachment attachment = event.getEntity().getData(ModAttachments.MOB_ENCHANTS);
+
+        if (!event.loadedFromDisk()) {
             LevelAccessor world = event.getLevel();
             if (!world.isClientSide() && world instanceof ServerLevel serverLevel && event.getEntity() instanceof LivingEntity living) {
-                if (!cap.getEnchantCap().hasEnchant()) {
+                if (!attachment.hasEnchant()) {
                     if (isSpawnAlwayEnchantableAncientEntity(living)) {
                         int i = 0;
                         float difficultScale = serverLevel.getCurrentDifficultyAt(living.blockPosition()).getEffectiveDifficulty() - 0.2F;
@@ -91,21 +75,21 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                         }
                         living.setHealth(living.getMaxHealth());
-                        cap.getEnchantCap().setEnchantType(living, MobEnchantTypes.ANCIENT);
+                        attachment.setEnchantType(living, MobEnchantTypes.ANCIENT);
                     }
 
                     // On add MobEnchant Alway Enchantable Mob
@@ -116,17 +100,17 @@ public class CommonEventHandler {
                             case EASY:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                             case NORMAL:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                             case HARD:
                                 i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
 
-                                MobEnchantUtils.addRandomEnchantmentToEntity(living, cap, world.getRandom(), i);
+                                MobEnchantUtils.addRandomEnchantmentToEntity(living, attachment, world.getRandom(), i);
                                 break;
                         }
 
@@ -142,7 +126,8 @@ public class CommonEventHandler {
      */
     @SubscribeEvent
     public static void onSpawnEntity(FinalizeSpawnEvent event) {
-        if (event.getEntity() instanceof IEnchantCap cap) {
+        MobEnchantAttachment attachment = event.getEntity().getData(ModAttachments.MOB_ENCHANTS);
+
             LevelAccessor world = event.getLevel();
             if (!world.isClientSide() && world instanceof ServerLevel serverLevel) {
                 LivingEntity livingEntity = event.getEntity();
@@ -164,17 +149,17 @@ public class CommonEventHandler {
                                         case EASY:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 20);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, attachment, world.getRandom(), i);
                                             break;
                                         case NORMAL:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale * scale, 1, 40);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, attachment, world.getRandom(), i);
                                             break;
                                         case HARD:
                                             i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale * scale, 1, 50);
 
-                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i);
+                                            MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, attachment, world.getRandom(), i);
                                             break;
                                     }
 
@@ -185,13 +170,12 @@ public class CommonEventHandler {
 
                         if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
                             if (world.getRandom().nextFloat() < 0.1F + difficultScaleOnPercent * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, cap, new MobEnchantmentData(world.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(MobEnchants.WIND.getKey()).get(), 1));
+                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, attachment, new MobEnchantmentData(world.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(MobEnchants.WIND.getKey()).get(), 1));
                             }
                         }
 
                     }
                 }
-            }
         }
     }
 
@@ -214,22 +198,35 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void onUpdateEnchanted(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
+        MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-        if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
-            for (MobEnchantHandler enchantHandler : cap.getEnchantCap().getMobEnchants()) {
+        if (entity instanceof LivingEntity livingEntity) {
+            for (MobEnchantContent enchantHandler : attachment.getMobEnchants()) {
                 if (livingEntity.level() instanceof ServerLevel serverLevel) {
                     enchantHandler.getMobEnchant().value().tick(livingEntity, enchantHandler.getEnchantLevel());
                 }
             }
-            if (cap.getEnchantCap().hasEnchant()) {
+            if (attachment.hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
-                        if (cap.getEnchantCap().getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
-                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().value().particle().get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
+                        if (attachment.getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
+                            entity.level().addParticle(attachment.getMobEnchantType().value().particle().get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
                         }
 
                     }
+                } else {
+                    if (attachment.hasEnchant()) {
+
+                        if (attachment.getEnchantOwner().isPresent()) {
+                            LivingEntity owner = attachment.getEnchantOwner().get().getEntity(entity.level(), LivingEntity.class);
+                            if (owner == null || !owner.isAlive() || entity.distanceToSqr(owner) > 512) {
+                                attachment.removeMobEnchantFromOwner(livingEntity);
+                                entity.playSound(SoundEvents.ITEM_BREAK.value(), 1.5F, 1.6F);
+                            }
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -238,16 +235,16 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void onEntityHurtPre(LivingDamageEvent.Pre event) {
         LivingEntity livingEntity = event.getEntity();
+        MobEnchantAttachment attachment = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
 
-        if (livingEntity instanceof IEnchantCap cap) {
-            int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.THORN.getKey());
+        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.THORN.getKey());
 
-            if (event.getSource().getDirectEntity() instanceof LivingEntity && !event.getSource().is(DamageTypeTags.IS_PROJECTILE) && !event.getSource().is(DamageTypes.THORNS) && livingEntity.getRandom().nextFloat() < i * 0.1F) {
-                LivingEntity attacker = (LivingEntity) event.getSource().getDirectEntity();
+        if (event.getSource().getDirectEntity() instanceof LivingEntity && !event.getSource().is(DamageTypeTags.IS_PROJECTILE) && !event.getSource().is(DamageTypes.THORNS) && livingEntity.getRandom().nextFloat() < i * 0.1F) {
+            LivingEntity attacker = (LivingEntity) event.getSource().getDirectEntity();
 
-                attacker.hurt(livingEntity.damageSources().thorns(livingEntity), event.getNewDamage() * (i / 8F));
-            }
+            attacker.hurt(livingEntity.damageSources().thorns(livingEntity), event.getNewDamage() * (i / 8F));
         }
+
     }
 
     @SubscribeEvent
@@ -257,14 +254,13 @@ public class CommonEventHandler {
         if (event.getSource().getEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
             if (attacker.level() instanceof ServerLevel serverLevel) {
-                if (attacker instanceof IEnchantCap cap) {
+                MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
-                    if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON.getKey())) {
-                        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.POISON.getKey());
+                if (attachmentAttacker.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON.getKey())) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON.getKey());
 
-                        if (attacker.getRandom().nextFloat() < i * 0.125F) {
-                            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), attacker);
-                        }
+                    if (attacker.getRandom().nextFloat() < i * 0.125F) {
+                        livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), attacker);
                     }
                 }
 
@@ -280,8 +276,9 @@ public class CommonEventHandler {
         if (event.getSource().getEntity() instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
             if (attacker.level() instanceof ServerLevel serverLevel) {
-                if (attacker instanceof IEnchantCap cap) {
-                    if (cap.getEnchantCap().hasEnchant()) {
+                MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
+
+                if (attachmentAttacker.hasEnchant()) {
                         //make snowman stronger
                         if (event.getAmount() == 0 && event.getContainer().getBlockedDamage() <= 0) {
                             event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
@@ -290,18 +287,19 @@ public class CommonEventHandler {
                             event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
                         }
                     }
-                }
+
             }
         }
+        MobEnchantAttachment attachmentHurt = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
 
-        if (livingEntity instanceof IEnchantCap cap) {
-            if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && cap.getEnchantCap().hasEnchant()) {
+
+        if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && attachmentHurt.hasEnchant()) {
                 if (livingEntity.level() instanceof ServerLevel serverLevel) {
                     float f = CombatRules.getDamageAfterMagicAbsorb(event.getAmount(), MobEnchantUtils.getDamageProtection(serverLevel, livingEntity, event.getSource()));
                     event.setAmount(f);
                 }
             }
-        }
+
     }
 
 
@@ -316,9 +314,9 @@ public class CommonEventHandler {
                 if (entityTarget instanceof LivingEntity) {
                     LivingEntity target = (LivingEntity) entityTarget;
                     if (MobEnchantUtils.hasMobEnchant(stack)) {
+                        MobEnchantAttachment attachmentTarget = target.getData(ModAttachments.MOB_ENCHANTS);
 
-                        if (target instanceof IEnchantCap cap) {
-                            boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, target, player, cap);
+                        boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, target, player, attachmentTarget);
 
                             if (flag) {
                                 player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
@@ -335,7 +333,6 @@ public class CommonEventHandler {
                                 event.setCancellationResult(InteractionResult.FAIL);
                                 event.setCanceled(true);
                             }
-                        }
                     }
                 }
             }
@@ -344,15 +341,15 @@ public class CommonEventHandler {
                 if (entityTarget instanceof LivingEntity) {
                     LivingEntity target = (LivingEntity) entityTarget;
                     ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
+                    MobEnchantAttachment attachmentTarget = target.getData(ModAttachments.MOB_ENCHANTS);
 
-                    if (target instanceof IEnchantCap cap) {
-                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isPreventRemoveSelf()) {
-                            int xp = MobEnchantUtils.getExperienceFromMob(cap);
+                    if (attachmentTarget.hasEnchant() && !attachmentTarget.isPreventRemoveSelf()) {
+                        int xp = MobEnchantUtils.getExperienceFromMob(attachmentTarget);
 
                             if (xp > 0) {
                                 stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
                             }
-                            MobEnchantUtils.removeMobEnchantToEntity(target, cap);
+                        MobEnchantUtils.removeMobEnchantToEntity(target, attachmentTarget);
                             player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
                             stack.consume(1, player);
@@ -368,7 +365,6 @@ public class CommonEventHandler {
                             }
                         }
                     }
-                }
             }
         }
     }
@@ -530,10 +526,10 @@ public class CommonEventHandler {
     @SubscribeEvent
     public static void onExpDropped(LivingExperienceDropEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity instanceof IEnchantCap cap) {
-            if (cap.getEnchantCap().hasEnchant()) {
-                event.setDroppedExperience((int) (event.getDroppedExperience() + (MobEnchantUtils.getExperienceFromMob(cap) * cap.getEnchantCap().getMobEnchantType().value().expGainScale())));
-            }
+        MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
+
+        if (attachment.hasEnchant()) {
+            event.setDroppedExperience((int) (event.getDroppedExperience() + (MobEnchantUtils.getExperienceFromMob(attachment) * attachment.getMobEnchantType().value().expGainScale())));
         }
     }
 
@@ -542,46 +538,29 @@ public class CommonEventHandler {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
-            if (player instanceof IEnchantCap cap) {
-                for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                    cap.getEnchantCap().onNewEnchantEffect(serverPlayer, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
-                    PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
+            MobEnchantAttachment attachment = player.getData(ModAttachments.MOB_ENCHANTS);
 
-                }
-                PacketDistributor.sendToPlayer(serverPlayer, new MobEnchantTypeMessage(player, cap.getEnchantCap().getMobEnchantType().getKey()));
-            }
+            serverPlayer.syncData(ModAttachments.MOB_ENCHANTS);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         Player player = event.getEntity();
-        if (player instanceof IEnchantCap cap) {
-            if (!player.level().isClientSide()) {
-                for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                    cap.getEnchantCap().onNewEnchantEffect(player, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
-
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
-                }
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new MobEnchantTypeMessage(player, cap.getEnchantCap().getMobEnchantType().getKey()));
-            }
+        MobEnchantAttachment attachment = player.getData(ModAttachments.MOB_ENCHANTS);
+        if (!player.level().isClientSide()) {
+            player.syncData(ModAttachments.MOB_ENCHANTS);
         }
     }
 
     @SubscribeEvent
     public static void onEntitySpawn(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof IEnchantCap cap && entity instanceof LivingEntity livingEntity) {
-            if (!entity.level().isClientSide()) {
-                for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                    cap.getEnchantCap().onNewEnchantEffect(livingEntity, cap.getEnchantCap().getMobEnchants().get(i).getMobEnchant(), cap.getEnchantCap().getMobEnchants().get(i).getEnchantLevel());
+        MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantedMessage(entity, cap.getEnchantCap().getMobEnchants().get(i)));
-                }
-                if (cap.getEnchantCap().getEnchantOwner().isPresent()) {
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantFromOwnerMessage(entity, cap.getEnchantCap().getEnchantOwner().get()));
-                }
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new MobEnchantTypeMessage(entity, cap.getEnchantCap().getMobEnchantType().getKey()));
+        if (entity instanceof LivingEntity livingEntity) {
+            if (!entity.level().isClientSide()) {
+                entity.syncData(ModAttachments.MOB_ENCHANTS);
             }
         }
     }
@@ -591,8 +570,8 @@ public class CommonEventHandler {
         Player oldPlayer = event.getOriginal();
         Player newPlayer = event.getEntity();
         if (!event.isWasDeath()) {
-            ((IEnchantCap) oldPlayer).getEnchantCap().getMobEnchants().forEach(mobEnchantHandler -> {
-                ((IEnchantCap) newPlayer).getEnchantCap().addMobEnchant(newPlayer, mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
+            oldPlayer.getData(ModAttachments.MOB_ENCHANTS.get()).getMobEnchants().forEach(mobEnchantHandler -> {
+                newPlayer.getData(ModAttachments.MOB_ENCHANTS.get()).addMobEnchant(newPlayer, mobEnchantHandler.getMobEnchant(), mobEnchantHandler.getEnchantLevel());
             });
         }
     }
