@@ -85,7 +85,7 @@ public class ItemMobEnchantments implements TooltipProvider {
                 Holder<MobEnchant> holder = (Holder) var6.next();
                 int i = this.enchantments.getInt(holder);
                 if (i > 0) {
-                    holder.value().createModifiers(i, (p_331556_, p_330860_) -> list.add(new Pair<>(p_331556_, p_330860_)));
+                    holder.value().createModifiers(i - 1, (p_331556_, p_330860_) -> list.add(new Pair<>(p_331556_, p_330860_)));
 
                     consumer.accept(((MobEnchant) holder.value()).getFullname(i));
                 }
