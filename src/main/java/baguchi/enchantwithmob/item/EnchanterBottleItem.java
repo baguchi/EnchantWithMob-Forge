@@ -11,7 +11,9 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,6 +33,14 @@ public class EnchanterBottleItem extends Item {
 	@Override
 	public boolean isEnabled(FeatureFlagSet p_249172_) {
 		return super.isEnabled(p_249172_) && !EnchantConfig.COMMON.disableMobEnchantStuffItems.get();
+	}
+
+	@Override
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack itemStack, int ticksRemaining) {
+		if (ticksRemaining % 4 == 0) {
+			float drinkPitch = Mth.randomBetween(livingEntity.getRandom(), 0.9F, 1.0F);
+			level.playSound(livingEntity, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.4F, drinkPitch);
+		}
 	}
 
 	@Override
