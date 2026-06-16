@@ -16,7 +16,7 @@ public class MobEnchantOverlay implements GuiLayer {
     public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker partialTick) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.options.getCameraType().isMirrored() && !mc.options.hideGui) {
+        if (mc.options.getCameraType().isMirrored() && !mc.gui.hud.isHidden()) {
             if (EnchantConfig.CLIENT.showEnchantedMobHud.get() && mc.player != null) {
                 MobEnchantAttachment attachment = mc.player.getData(ModAttachments.MOB_ENCHANTS);
 

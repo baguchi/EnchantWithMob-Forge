@@ -17,7 +17,7 @@ public class ItemTagGenerator extends ItemTagsProvider {
     @SuppressWarnings("unchecked")
     @Override
     protected void addTags(HolderLookup.Provider p_256380_) {
-        this.tag(ItemTags.BOOKSHELF_BOOKS).add(ModItems.MOB_ENCHANT_BOOK.get());
-        this.tag(ItemTags.BOOKSHELF_BOOKS).add(ModItems.ENCHANTERS_BOOK.get());
+        this.tag(ItemTags.BOOKSHELF_BOOKS).add(ModItems.MOB_ENCHANT_BOOK.getKey());
+        this.tag(ItemTags.BOOKSHELF_BOOKS).add(ModItems.ENCHANTERS_BOOK.getKey());
     }
 }

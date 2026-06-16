@@ -3,7 +3,7 @@ package baguchi.enchantwithmob.item;
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;

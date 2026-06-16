@@ -17,7 +17,7 @@ public class EntityTagGenerator extends EntityTypeTagsProvider {
     @SuppressWarnings("unchecked")
     @Override
     protected void addTags(HolderLookup.Provider p_255894_) {
-        this.tag(EntityTypeTags.ILLAGER).add(ModEntities.ENCHANTER.get());
-        this.tag(EntityTypeTags.RAIDERS).add(ModEntities.ENCHANTER.get());
+        this.tag(EntityTypeTags.ILLAGER).add(ModEntities.ENCHANTER.getKey());
+        this.tag(EntityTypeTags.RAIDERS).add(ModEntities.ENCHANTER.getKey());
     }
 }

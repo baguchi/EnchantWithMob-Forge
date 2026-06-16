@@ -10,6 +10,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import java.util.Optional;
 
@@ -35,52 +36,52 @@ public class MobEnchantEyes {
 
     public static void bootstrap(BootstrapContext<MobEnchantEye> context) {
         context.register(BLAZE, new MobEnchantEye(
-                HolderSet.direct(EntityType.BLAZE.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.BLAZE.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_blaze_eyes.png")
         ));
         context.register(CREEPER, new MobEnchantEye(
-                HolderSet.direct(EntityType.CREEPER.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.CREEPER.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_creeper_eyes.png")
         ));
         context.register(EVOKER, new MobEnchantEye(
-                HolderSet.direct(EntityType.EVOKER.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.EVOKER.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_evoker_eyes.png")
         ));
         context.register(GUARDIAN, new MobEnchantEye(
-                HolderSet.direct(EntityType.GUARDIAN.builtInRegistryHolder(), EntityType.ELDER_GUARDIAN.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.GUARDIAN.builtInRegistryHolder(), EntityTypes.ELDER_GUARDIAN.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_guardian_eyes.png")
         ));
         context.register(PILLAGER, new MobEnchantEye(
-                HolderSet.direct(EntityType.PILLAGER.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.PILLAGER.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_pillager_eyes.png")
         ));
         context.register(SLIME, new MobEnchantEye(
-                HolderSet.direct(EntityType.SLIME.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.SLIME.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_slime_eyes.png")
         ));
         context.register(SPIDER, new MobEnchantEye(
-                HolderSet.direct(EntityType.SPIDER.builtInRegistryHolder(), EntityType.CAVE_SPIDER.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.SPIDER.builtInRegistryHolder(), EntityTypes.CAVE_SPIDER.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_spider_eyes.png")
         ));
         context.register(VINDICATOR, new MobEnchantEye(
-                HolderSet.direct(EntityType.VINDICATOR.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.VINDICATOR.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_vindicator_eyes.png")
         ));
         context.register(WITCH, new MobEnchantEye(
-                HolderSet.direct(EntityType.WITCH.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.WITCH.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_witch_eyes.png")
         ));
 
         context.register(ZOMBIE, new MobEnchantEye(
-                HolderSet.direct(EntityType.ZOMBIE.builtInRegistryHolder(), EntityType.HUSK.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.ZOMBIE.builtInRegistryHolder(), EntityTypes.HUSK.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_zombie_eyes.png")
         ));
         context.register(SKELETON, new MobEnchantEye(
-                HolderSet.direct(EntityType.SKELETON.builtInRegistryHolder(), EntityType.STRAY.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.SKELETON.builtInRegistryHolder(), EntityTypes.STRAY.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_skeleton_eyes.png")
         ));
         context.register(PARCHED, new MobEnchantEye(
-                HolderSet.direct(EntityType.PARCHED.builtInRegistryHolder()),
+                HolderSet.direct(EntityTypes.PARCHED.builtInRegistryHolder()),
                 Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "textures/entity/enchant_eye/enchanted_parched_eyes.png")
         ));
     }
