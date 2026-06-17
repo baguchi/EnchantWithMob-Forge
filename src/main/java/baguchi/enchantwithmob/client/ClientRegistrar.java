@@ -68,7 +68,7 @@ public class ClientRegistrar {
 					.withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
 					.withCull(false)
 					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-					.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+					.withDepthStencilState(DepthStencilState.DEFAULT)
 					.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 	public static final RenderPipeline MOB_ENCHANT_EYE =
 			RenderPipeline.builder(GLOBALS_SNIPPET)
@@ -77,7 +77,7 @@ public class ClientRegistrar {
 					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_eye"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
-					.withBindGroupLayout(BindGroupLayouts.SAMPLER0).withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false)).withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT_PREMULTIPLIED_ALPHA)).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
+					.withBindGroupLayout(BindGroupLayouts.SAMPLER0).withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false)).withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT)).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
