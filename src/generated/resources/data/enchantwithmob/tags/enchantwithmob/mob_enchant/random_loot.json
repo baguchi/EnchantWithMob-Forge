@@ -1,5 +1,13 @@
 {
   "values": [
-    "#enchantwithmob:random_spawn"
+    "enchantwithmob:tough",
+    "enchantwithmob:health_boost",
+    "enchantwithmob:protection",
+    "enchantwithmob:thorn",
+    "enchantwithmob:strong",
+    "enchantwithmob:speedy",
+    "enchantwithmob:deflect",
+    "enchantwithmob:poison_cloud",
+    "enchantwithmob:poison"
   ]
 }

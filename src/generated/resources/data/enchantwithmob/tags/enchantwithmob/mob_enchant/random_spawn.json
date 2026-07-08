@@ -8,6 +8,7 @@
     "enchantwithmob:speedy",
     "enchantwithmob:deflect",
     "enchantwithmob:poison_cloud",
-    "enchantwithmob:poison"
+    "enchantwithmob:poison",
+    "enchantwithmob:bounce"
   ]
 }
