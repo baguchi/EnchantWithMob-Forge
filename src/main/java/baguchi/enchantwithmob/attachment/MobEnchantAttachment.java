@@ -227,7 +227,7 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     @Override
     public void serialize(ValueOutput output) {
 
-        for (int i = 0; i < mobEnchants.size(); i++) {
+        for (int i = 0; i < mobEnchants.size(); ++i) {
             output.list(MobEnchantUtils.TAG_STORED_MOB_ENCHANTS, MobEnchantContent.CODEC).add(mobEnchants.get(i));
         }
 
