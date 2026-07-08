@@ -227,8 +227,10 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     @Override
     public void serialize(ValueOutput output) {
 
+        ValueOutput.TypedOutputList<MobEnchantContent> list = output.list(MobEnchantUtils.TAG_STORED_MOB_ENCHANTS, MobEnchantContent.CODEC);
+
         for (int i = 0; i < mobEnchants.size(); i++) {
-            output.list(MobEnchantUtils.TAG_STORED_MOB_ENCHANTS, MobEnchantContent.CODEC).add(mobEnchants.get(i));
+            list.add(mobEnchants.get(i));
         }
 
         this.enchantOwner.ifPresent(livingEntityEntityReference -> output.store("EnchantOwner", EntityReference.codec(), livingEntityEntityReference));
