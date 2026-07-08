@@ -327,18 +327,15 @@ public class MobEnchantUtils {
 
     public static boolean checkAllowMobEnchantFromMob(@Nullable Holder<MobEnchant> mobEnchant, LivingEntity livingEntity, MobEnchantAttachment capability) {
         if (!EnchantConfig.COMMON.universalEnchant.get()) {
-			/*if (mobEnchant != null && !mobEnchant.isCompatibleMob(livingEntity)) {
+            if (mobEnchant != null && !mobEnchant.value().isCompatibleMob(livingEntity)) {
 				return false;
-			}*/
+            }
         }
 
 
         for (MobEnchantContent enchantHandler : capability.getMobEnchants()) {
             if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant.value()) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
                 return false;
-            }
-            if (mobEnchant != null && !mobEnchant.value().isCompatibleMob(livingEntity)) {
-
             }
         }
 
