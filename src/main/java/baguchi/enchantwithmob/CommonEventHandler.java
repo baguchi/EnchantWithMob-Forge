@@ -209,8 +209,8 @@ public class CommonEventHandler {
             if (attachment.hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
-                        if (attachment.getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
-                            entity.level().addParticle(attachment.getMobEnchantType().value().particle().get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
+                        if (attachment.getMobEnchantType(entity).value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
+                            entity.level().addParticle(attachment.getMobEnchantType(entity).value().particle().get(), entity.getRandomX(1), entity.getRandomY(), entity.getRandomZ(1), 0, 0, 0);
                         }
 
                     }
@@ -529,7 +529,7 @@ public class CommonEventHandler {
         MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
         if (attachment.hasEnchant()) {
-            event.setDroppedExperience((int) (event.getDroppedExperience() + (MobEnchantUtils.getExperienceFromMob(attachment) * attachment.getMobEnchantType().value().expGainScale())));
+            event.setDroppedExperience((int) (event.getDroppedExperience() + (MobEnchantUtils.getExperienceFromMob(attachment) * attachment.getMobEnchantType(entity).value().expGainScale())));
         }
     }
 

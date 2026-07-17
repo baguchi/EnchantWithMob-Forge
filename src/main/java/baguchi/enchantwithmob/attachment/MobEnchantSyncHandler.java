@@ -1,6 +1,6 @@
 package baguchi.enchantwithmob.attachment;
 
-import baguchi.enchantwithmob.api.MobEnchantType;
+import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.EntityReference;
 import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
@@ -21,7 +21,7 @@ public class MobEnchantSyncHandler implements AttachmentSyncHandler<MobEnchantAt
 
         attachment.enchantOwner.ifPresent(livingEntityEntityReference -> buf.writeJsonWithCodec(EntityReference.codec(), livingEntityEntityReference));
 
-        buf.writeJsonWithCodec(MobEnchantType.CODEC, attachment.mobEnchantType);
+        buf.writeResourceKey(attachment.getMobEnchantTypeKey());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MobEnchantSyncHandler implements AttachmentSyncHandler<MobEnchantAt
         if (buf.readBoolean()) {
             attachment.enchantOwner = Optional.of(buf.readLenientJsonWithCodec(EntityReference.codec()));
         }
-        attachment.mobEnchantType = buf.readLenientJsonWithCodec(MobEnchantType.CODEC);
+        attachment.setEnchantTypeWithoutSync(buf.readResourceKey(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY));
 
         return attachment;
     }
