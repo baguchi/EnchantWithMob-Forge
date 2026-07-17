@@ -10,9 +10,13 @@ import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -20,9 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +42,11 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     protected List<MobEnchantContent> mobEnchants = Lists.newArrayList();
 
     protected Optional<EntityReference<LivingEntity>> enchantOwner = Optional.empty();
-    protected Holder<MobEnchantType> mobEnchantType;
+    private Holder<MobEnchantType> mobEnchantTypeCached;
+    private ResourceKey<MobEnchantType> mobEnchantTypeKey = MobEnchantTypes.NORMAL;
+    // キャッシュ用（何度もLookupすると重いため）
 
     public MobEnchantAttachment() {
-        this.mobEnchantType = CommonHooks.resolveLookup(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getOrThrow(MobEnchantTypes.NORMAL);
     }
 
     /**
@@ -67,10 +70,16 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     }
 
     public void setEnchantType(LivingEntity entity, ResourceKey<MobEnchantType> enchantType) {
-        this.mobEnchantType = entity.registryAccess().getOrThrow(enchantType);
+        this.mobEnchantTypeKey = enchantType;
+        this.mobEnchantTypeCached = null;
         if (!entity.level().isClientSide()) {
             entity.syncData(ModAttachments.MOB_ENCHANTS);
         }
+    }
+
+    protected void setEnchantTypeWithoutSync(ResourceKey<MobEnchantType> enchantType) {
+        this.mobEnchantTypeKey = enchantType;
+        this.mobEnchantTypeCached = null;
     }
 
     /**
@@ -216,17 +225,50 @@ public class MobEnchantAttachment implements ValueIOSerializable {
         return this.enchantOwner.isPresent();
     }
 
-    public Holder<@NotNull MobEnchantType> getMobEnchantType() {
-        return mobEnchantType;
+    public Holder<MobEnchantType> getMobEnchantType(Entity entity) {
+        if (mobEnchantTypeCached != null) {
+            return mobEnchantTypeCached;
+        }
+
+        // Entityが存在するレベルから RegistryAccess / RegistryLookup を取得する
+        // ※コンストラクタ時ではなく、ワールドに参加した「後」に呼ばれるため安全
+        RegistryAccess registryAccess = entity.level().registryAccess();
+
+        // 1. レジストリ自体が存在するか安全に確認
+        Optional<Registry<MobEnchantType>> lookupOpt =
+                registryAccess.lookup(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY);
+
+        if (lookupOpt.isPresent()) {
+            HolderLookup.RegistryLookup<MobEnchantType> lookup = lookupOpt.get();
+
+            // check is mob enchant in registry
+            Optional<Holder.Reference<MobEnchantType>> holderOpt = lookup.get(this.mobEnchantTypeKey);
+            if (holderOpt.isPresent()) {
+                this.mobEnchantTypeCached = holderOpt.get();
+                return this.mobEnchantTypeCached;
+            }
+        }
+
+        //fallback
+        return getAbsoluteDefault(registryAccess);
     }
 
+    public ResourceKey<MobEnchantType> getMobEnchantTypeKey() {
+        return mobEnchantTypeKey;
+    }
+
+    private Holder<MobEnchantType> getAbsoluteDefault(RegistryAccess access) {
+        return access.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY)
+                .getOrThrow(MobEnchantTypes.NORMAL); // もしくは適当な最初の1要素
+    }
+
+
     public boolean isPreventRemoveSelf() {
-        return mobEnchantType.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+        return mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
     }
 
     @Override
     public void serialize(ValueOutput output) {
-
         ValueOutput.TypedOutputList<MobEnchantContent> list = output.list(MobEnchantUtils.TAG_STORED_MOB_ENCHANTS, MobEnchantContent.CODEC);
 
         for (int i = 0; i < mobEnchants.size(); i++) {
@@ -235,7 +277,7 @@ public class MobEnchantAttachment implements ValueIOSerializable {
 
         this.enchantOwner.ifPresent(livingEntityEntityReference -> output.store("EnchantOwner", EntityReference.codec(), livingEntityEntityReference));
 
-        output.store("EnchantType", MobEnchantType.CODEC, this.mobEnchantType);
+        output.store("EnchantType", ResourceKey.codec(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY), this.mobEnchantTypeKey);
 
     }
 
@@ -249,9 +291,9 @@ public class MobEnchantAttachment implements ValueIOSerializable {
 
 
         this.enchantOwner = input.read("EnchantOwner", EntityReference.codec());
-        Optional<Holder<MobEnchantType>> optional = input.read("EnchantType", MobEnchantType.CODEC);
+        Optional<ResourceKey<MobEnchantType>> optional = input.read("EnchantType", ResourceKey.codec(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY));
 
-        optional.ifPresent(mobEnchantTypeReference -> mobEnchantType = mobEnchantTypeReference);
+        optional.ifPresent(mobEnchantTypeReference -> mobEnchantTypeKey = mobEnchantTypeReference);
 
     }
 

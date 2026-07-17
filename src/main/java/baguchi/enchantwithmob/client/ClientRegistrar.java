@@ -112,7 +112,7 @@ public class ClientRegistrar {
 
 
 			state.setRenderData(EnchantLayer.ENCHANTED, attachment.hasEnchant());
-			state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, attachment.getMobEnchantType().value());
+			state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, attachment.getMobEnchantType(entity).value());
 				//reset
 				state.setRenderData(EnchantedWindLayer.WIND, false);
 			if (attachment.getEnchantOwner().isPresent()) {
