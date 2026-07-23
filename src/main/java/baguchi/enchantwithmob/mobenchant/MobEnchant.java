@@ -32,7 +32,7 @@ import java.util.function.BiConsumer;
 
 public class MobEnchant implements FeatureElement {
     private final Map<Holder<Attribute>, AttributeTemplate> attributeModifierMap = Maps.newHashMap();
-    protected final Rarity enchantType;
+    protected final Rarity rarity;
     private final int level;
     private int minlevel = 1;
     private final int anvilCost;
@@ -42,7 +42,7 @@ public class MobEnchant implements FeatureElement {
 
     public MobEnchant(Properties properties) {
 
-        this.enchantType = properties.enchantType;
+        this.rarity = properties.enchantType;
         this.level = properties.level;
         this.anvilCost = properties.getAnvilCost();
         this.requiredFeatures = properties.requiredFeatures;
@@ -54,7 +54,7 @@ public class MobEnchant implements FeatureElement {
 
 
     public Rarity getRarity() {
-        return enchantType;
+        return rarity;
     }
 
     public MobEnchant setMinLevel(int level) {
