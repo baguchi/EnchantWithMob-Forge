@@ -44,7 +44,6 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     protected Optional<EntityReference<LivingEntity>> enchantOwner = Optional.empty();
     private Holder<MobEnchantType> mobEnchantTypeCached;
     private ResourceKey<MobEnchantType> mobEnchantTypeKey = MobEnchantTypes.NORMAL;
-    // キャッシュ用（何度もLookupすると重いため）
 
     public MobEnchantAttachment() {
     }
