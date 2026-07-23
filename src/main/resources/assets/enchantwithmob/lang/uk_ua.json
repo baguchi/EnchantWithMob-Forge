@@ -62,7 +62,7 @@
   "enchantwithmob.config.EffectiveDifficultyEnchantedSpawnPercent": "Відсоток появи ефективно-складного зачарування",
   "enchantwithmob.config.DisableEnchanterArmor": "Вимкнути зачарування обладунків",
   "enchantwithmob.config.DisableMobEnchantStuffItems": "Вимкнути предмети «MobEnchantStuff»",
-  "enchantwithmob.config.showEnchantedMobHude": "Вимкнути частинки отрути",
+  "enchantwithmob.config.showEnchantedMobHud": "Вимкнути частинки отрути",
   "enchantwithmob.config.disablePoisonParticle": "Вимкнути частинки отрути",
   "enchantwithmob.config.disableAuraRender": "Вимкнути візуалізацію аури",
   "enchantwithmob.config.OldStyleAnimation": "Увімкнути стару анімацію",
