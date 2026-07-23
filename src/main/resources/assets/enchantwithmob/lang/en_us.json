@@ -61,7 +61,7 @@
   "enchantwithmob.config.DifficultyEnchantedSpawnPercent": "Difficulty Enchanted Spawn Percent",
   "enchantwithmob.config.EffectiveDifficultyEnchantedSpawnPercent": "EffectiveDifficulty Enchanted Spawn Percent",
   "enchantwithmob.config.DisableMobEnchantStuffItems": "Disable MobEnchantStuff Items",
-  "enchantwithmob.config.showEnchantedMobHud": "Disable Poison Particle",
+  "enchantwithmob.config.showEnchantedMobHud": "Disable Mob Enchant Hud",
   "enchantwithmob.config.disablePoisonParticle": "Disable Poison Particle",
   "enchantwithmob.config.disableAuraRender": "Disable Aura Render",
   "enchantwithmob.config.disableEyeRender": "Disable Eye Render",
