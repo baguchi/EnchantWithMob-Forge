@@ -33,7 +33,7 @@ import java.util.Optional;
 public class MobEnchantAttachment implements ValueIOSerializable {
     private static final Identifier HEALTH_MODIFIER_NAME = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost");
 
-    private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost"), 0.5D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "health_boost"), 0.25D, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     private static final Identifier SCALE_MODIFIER_NAME = Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "scale_boost");
 
     private static final AttributeModifier SCALE_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "scale_boost"), 0.025F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
