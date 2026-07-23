@@ -60,7 +60,6 @@
   "enchantwithmob.config.universalEnchant": "Universal Enchant",
   "enchantwithmob.config.DifficultyEnchantedSpawnPercent": "Difficulty Enchanted Spawn Percent",
   "enchantwithmob.config.EffectiveDifficultyEnchantedSpawnPercent": "EffectiveDifficulty Enchanted Spawn Percent",
-  "enchantwithmob.config.DisableEnchanterArmor": "Disable Enchant Armor",
   "enchantwithmob.config.DisableMobEnchantStuffItems": "Disable MobEnchantStuff Items",
   "enchantwithmob.config.showEnchantedMobHude": "Disable Poison Particle",
   "enchantwithmob.config.disablePoisonParticle": "Disable Poison Particle",
