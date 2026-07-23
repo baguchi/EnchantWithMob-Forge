@@ -61,7 +61,6 @@
   "enchantwithmob.config.universalEnchant": "モブエンチャント共通化",
   "enchantwithmob.config.DifficultyEnchantedSpawnPercent": "基礎難易度によってスポーンする確率",
   "enchantwithmob.config.EffectiveDifficultyEnchantedSpawnPercent": "地域難易度によってスポーンする確率",
-  "enchantwithmob.config.DisableEnchanterArmor": "エンチャンターアーマーを無効化する",
   "enchantwithmob.config.DisableMobEnchantStuffItems": "モブエンチャントをするアイテムを無効化する",
   "enchantwithmob.config.disableAuraRender": "エンチャントオーラを無効化する",
   "enchantwithmob.config.disableEyeRender": "エンチャント時の眼の発光を無効化する",
