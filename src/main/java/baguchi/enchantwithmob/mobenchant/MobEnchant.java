@@ -39,8 +39,10 @@ public class MobEnchant implements FeatureElement {
     private final FeatureFlagSet requiredFeatures;
     @Nullable
     private String descriptionId;
+    private final Holder.Reference<MobEnchant> builtInRegistryHolder;
 
     public MobEnchant(Properties properties) {
+        this.builtInRegistryHolder = MobEnchants.getRegistry().createIntrusiveHolder(this);
 
         this.rarity = properties.enchantType;
         this.level = properties.level;
@@ -48,10 +50,14 @@ public class MobEnchant implements FeatureElement {
         this.requiredFeatures = properties.requiredFeatures;
     }
 
-    public static boolean areCompatible(Holder<MobEnchant> holder, Holder<MobEnchant> holder1) {
-        return holder.value().isCompatibleWith(holder1.value());
+    public static boolean areCompatible(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return holder.value().isCompatibleWith(holder, anotherHolder);
     }
 
+
+    public Holder.Reference<MobEnchant> builtInRegistryHolder() {
+        return builtInRegistryHolder;
+    }
 
     public Rarity getRarity() {
         return rarity;
@@ -95,8 +101,8 @@ public class MobEnchant implements FeatureElement {
 
     }
 
-    public final boolean isCompatibleWith(MobEnchant enchantmentIn) {
-        return this.canApplyTogether(enchantmentIn) && enchantmentIn.canApplyTogether(this);
+    public final boolean isCompatibleWith(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return this.canApplyTogether(holder, anotherHolder) && anotherHolder.value().canApplyTogether(anotherHolder, holder);
     }
 
     public boolean isCompatibleMob(LivingEntity livingEntity) {
@@ -106,8 +112,8 @@ public class MobEnchant implements FeatureElement {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    protected boolean canApplyTogether(MobEnchant ench) {
-        return this != ench;
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return holder.value() != anotherHolder.value();
     }
 
     public MobEnchant addAttributesModifier(Holder<Attribute> p_316656_, Identifier p_350368_, double p_19475_, AttributeModifier.Operation p_19476_) {

@@ -104,10 +104,12 @@ public class MultiShotMobEnchant extends MobEnchant {
         return projectile.getOwner() != null && projectile.getOwner() instanceof LivingEntity;
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 10;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return this.getMinEnchantability(enchantmentLevel) + 40;
     }

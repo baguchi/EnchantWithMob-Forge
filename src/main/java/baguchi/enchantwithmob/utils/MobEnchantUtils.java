@@ -334,7 +334,7 @@ public class MobEnchantUtils {
 
 
         for (MobEnchantContent enchantHandler : attachment.getMobEnchants()) {
-            if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant.value()) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
+            if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
                 return false;
             }
         }

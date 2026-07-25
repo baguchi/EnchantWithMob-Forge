@@ -2,7 +2,9 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -143,8 +145,8 @@ public class BouncyMobEnchant extends MobEnchant {
     }
 
     @Override
-    protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != MobEnchants.THORN.get();
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.AFFECT_SELF_REFLECT);
     }
 
     @Override
