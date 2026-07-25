@@ -128,12 +128,12 @@ public class CommonEventHandler {
     public static void onSpawnEntity(FinalizeSpawnEvent event) {
         MobEnchantAttachment attachment = event.getEntity().getData(ModAttachments.MOB_ENCHANTS);
 
-            LevelAccessor world = event.getLevel();
-            if (!world.isClientSide() && world instanceof ServerLevel serverLevel) {
-                LivingEntity livingEntity = event.getEntity();
-                float difficultScale = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
-                float difficultScaleOnPercent = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty();
-
+        LevelAccessor world = event.getLevel();
+        if (!world.isClientSide() && world instanceof ServerLevel serverLevel) {
+            LivingEntity livingEntity = event.getEntity();
+            float difficultScale = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
+            float difficultScaleOnPercent = serverLevel.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty();
+            if (!attachment.hasEnchant()) {
 
                 if (EnchantConfig.COMMON.naturalSpawnEnchantedMob.get() && isSpawnEnchantableEntity(event.getEntity())) {
 
@@ -176,6 +176,7 @@ public class CommonEventHandler {
 
                     }
                 }
+            }
         }
     }
 
@@ -279,14 +280,14 @@ public class CommonEventHandler {
                 MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
                 if (attachmentAttacker.hasEnchant()) {
-                        //make snowman stronger
-                        if (event.getAmount() == 0 && event.getContainer().getBlockedDamage() <= 0) {
-                            event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
+                    //make snowman stronger
+                    if (event.getAmount() == 0 && event.getContainer().getBlockedDamage() <= 0) {
+                        event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
 
-                        } else if (event.getAmount() > 0) {
-                            event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
-                        }
+                    } else if (event.getAmount() > 0) {
+                        event.setAmount(MobEnchantUtils.modifyDamage(serverLevel, attacker, event.getSource(), event.getAmount()));
                     }
+                }
 
             }
         }
@@ -294,11 +295,11 @@ public class CommonEventHandler {
 
 
         if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && attachmentHurt.hasEnchant()) {
-                if (livingEntity.level() instanceof ServerLevel serverLevel) {
-                    float f = CombatRules.getDamageAfterMagicAbsorb(event.getAmount(), MobEnchantUtils.getDamageProtection(serverLevel, livingEntity, event.getSource()));
-                    event.setAmount(f);
-                }
+            if (livingEntity.level() instanceof ServerLevel serverLevel) {
+                float f = CombatRules.getDamageAfterMagicAbsorb(event.getAmount(), MobEnchantUtils.getDamageProtection(serverLevel, livingEntity, event.getSource()));
+                event.setAmount(f);
             }
+        }
 
     }
 
@@ -318,21 +319,21 @@ public class CommonEventHandler {
 
                         boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, target, player, attachmentTarget);
 
-                            if (flag) {
-                                player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
+                        if (flag) {
+                            player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
-                                stack.hurtAndBreak(1, player, event.getHand());
+                            stack.hurtAndBreak(1, player, event.getHand());
 
-                                player.getCooldowns().addCooldown(stack, 60);
+                            player.getCooldowns().addCooldown(stack, 60);
 
-                                event.setCancellationResult(InteractionResult.SUCCESS);
-                                event.setCanceled(true);
-                            } else {
-                                player.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.enchant"));
-                                player.getCooldowns().addCooldown(stack, 20);
-                                event.setCancellationResult(InteractionResult.FAIL);
-                                event.setCanceled(true);
-                            }
+                            event.setCancellationResult(InteractionResult.SUCCESS);
+                            event.setCanceled(true);
+                        } else {
+                            player.sendOverlayMessage(Component.translatable("enchantwithmob.cannot.enchant"));
+                            player.getCooldowns().addCooldown(stack, 20);
+                            event.setCancellationResult(InteractionResult.FAIL);
+                            event.setCanceled(true);
+                        }
                     }
                 }
             }
@@ -346,25 +347,25 @@ public class CommonEventHandler {
                     if (attachmentTarget.hasEnchant() && !attachmentTarget.isPreventRemoveSelf()) {
                         int xp = MobEnchantUtils.getExperienceFromMob(attachmentTarget);
 
-                            if (xp > 0) {
-                                stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
-                            }
+                        if (xp > 0) {
+                            stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
+                        }
                         MobEnchantUtils.removeMobEnchantToEntity(target, attachmentTarget);
-                            player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
+                        player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
-                            stack.consume(1, player);
-                            player.getCooldowns().addCooldown(stack, 80);
+                        stack.consume(1, player);
+                        player.getCooldowns().addCooldown(stack, 80);
 
-                            event.setCancellationResult(InteractionResult.SUCCESS);
-                            event.setCanceled(true);
+                        event.setCancellationResult(InteractionResult.SUCCESS);
+                        event.setCanceled(true);
 
-                            if (!player.hasInfiniteMaterials()) {
-                                if (!player.getInventory().add(stack1)) {
-                                    player.drop(stack1, false);
-                                }
+                        if (!player.hasInfiniteMaterials()) {
+                            if (!player.getInventory().add(stack1)) {
+                                player.drop(stack1, false);
                             }
                         }
                     }
+                }
             }
         }
     }
