@@ -180,8 +180,8 @@ public class MobEnchantUtils {
         return flag;
     }
 
-    public static void removeMobEnchantToEntity(LivingEntity entity, MobEnchantAttachment capability) {
-        capability.removeAllMobEnchant(entity);
+    public static void removeMobEnchantToEntity(LivingEntity entity, MobEnchantAttachment attachment) {
+        attachment.removeAllMobEnchant(entity);
     }
 
     public static int getExperienceFromMob(MobEnchantAttachment cap) {
@@ -198,13 +198,13 @@ public class MobEnchantUtils {
      * add Mob Enchantments To Entity
      *
      * @param livingEntity Enchanting target
-     * @param capability   MobEnchant Capability
+     * @param attachment   MobEnchant Capability
      * @param data         MobEnchant Data
      */
-    public static boolean addEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment capability, MobEnchantmentData data) {
+    public static boolean addEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment attachment, MobEnchantmentData data) {
         boolean flag = false;
-        if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, capability)) {
-            capability.addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel);
+        if (checkAllowMobEnchantFromMob(data.enchantment, livingEntity, attachment)) {
+            attachment.addMobEnchant(livingEntity, data.enchantment, data.enchantmentLevel);
             flag = true;
         }
         return flag;
@@ -214,18 +214,18 @@ public class MobEnchantUtils {
      * add Mob Enchantments To Entity
      *
      * @param livingEntity Enchanting target
-     * @param capability   MobEnchant Capability
+     * @param attachment   MobEnchant Capability
      * @param random       Random
      * @param level        max limit level MobEnchant
      */
-    public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment capability, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
+    public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment attachment, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
         List<MobEnchantmentData> list = getSpawnEnchantmentList(livingEntity.registryAccess(), random, level, mobEnchantTagKey);
         ;
 
         boolean flag = false;
         for (MobEnchantmentData enchantmentdata : list) {
-            if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, capability)) {
-                capability.addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
+            if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, attachment)) {
+                attachment.addMobEnchant(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
                 flag = true;
             }
         }
@@ -236,31 +236,31 @@ public class MobEnchantUtils {
      * add Mob Enchantments To Entity
      *
      * @param livingEntity Enchanting target
-     * @param capability   MobEnchant Capability
+     * @param attachment   MobEnchant Capability
      * @param random       Random
      * @param level        max limit level MobEnchant
      */
-    public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment capability, RandomSource random, int level) {
+    public static boolean addRandomEnchantmentToEntity(LivingEntity livingEntity, MobEnchantAttachment attachment, RandomSource random, int level) {
 
-        return addRandomEnchantmentToEntity(livingEntity, capability, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
+        return addRandomEnchantmentToEntity(livingEntity, attachment, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
     }
 
     /**
      * add Mob Enchantments To Entity(but unstable enchant)
      *
      * @param livingEntity Enchanting target
-     * @param capability   MobEnchant Capability
+     * @param attachment   MobEnchant Capability
      * @param random       Random
      * @param level        max limit level MobEnchant
      */
-    public static boolean addUnstableRandomEnchantmentToEntity(LivingEntity livingEntity, LivingEntity ownerEntity, MobEnchantAttachment capability, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
+    public static boolean addUnstableRandomEnchantmentToEntity(LivingEntity livingEntity, LivingEntity ownerEntity, MobEnchantAttachment attachment, RandomSource random, int level, TagKey<MobEnchant> mobEnchantTagKey) {
         List<MobEnchantmentData> list = getSpawnEnchantmentList(livingEntity.registryAccess(), random, level, mobEnchantTagKey);
 
         boolean flag = false;
 
         for (MobEnchantmentData enchantmentdata : list) {
-            if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, capability)) {
-                capability.addMobEnchantFromOwner(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel, ownerEntity);
+            if (checkAllowMobEnchantFromMob(enchantmentdata.enchantment, livingEntity, attachment)) {
+                attachment.addMobEnchantFromOwner(livingEntity, enchantmentdata.enchantment, enchantmentdata.enchantmentLevel, ownerEntity);
                 flag = true;
             }
         }
@@ -271,12 +271,12 @@ public class MobEnchantUtils {
      * add Mob Enchantments To Entity(but unstable enchant)
      *
      * @param livingEntity Enchanting target
-     * @param capability   MobEnchant Capability
+     * @param attachment   MobEnchant Capability
      * @param random       Random
      * @param level        max limit level MobEnchant
      */
-    public static boolean addUnstableRandomEnchantmentToEntity(LivingEntity livingEntity, LivingEntity ownerEntity, MobEnchantAttachment capability, RandomSource random, int level) {
-        return addUnstableRandomEnchantmentToEntity(livingEntity, ownerEntity, capability, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
+    public static boolean addUnstableRandomEnchantmentToEntity(LivingEntity livingEntity, LivingEntity ownerEntity, MobEnchantAttachment attachment, RandomSource random, int level) {
+        return addUnstableRandomEnchantmentToEntity(livingEntity, ownerEntity, attachment, random, level, ModTags.MobEnchantTags.RANDOM_SPAWN);
     }
 
     public static List<MobEnchantmentData> getSpawnEnchantmentList(RegistryAccess registryAccess, RandomSource random, int cost, TagKey<MobEnchant> mobEnchantTagKey) {
@@ -325,7 +325,7 @@ public class MobEnchantUtils {
         return false;
     }
 
-    public static boolean checkAllowMobEnchantFromMob(@Nullable Holder<MobEnchant> mobEnchant, LivingEntity livingEntity, MobEnchantAttachment capability) {
+    public static boolean checkAllowMobEnchantFromMob(@Nullable Holder<MobEnchant> mobEnchant, LivingEntity livingEntity, MobEnchantAttachment attachment) {
         if (!EnchantConfig.COMMON.universalEnchant.get()) {
             if (mobEnchant != null && !mobEnchant.value().isCompatibleMob(livingEntity)) {
 				return false;
@@ -333,7 +333,7 @@ public class MobEnchantUtils {
         }
 
 
-        for (MobEnchantContent enchantHandler : capability.getMobEnchants()) {
+        for (MobEnchantContent enchantHandler : attachment.getMobEnchants()) {
             if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant.value()) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
                 return false;
             }
