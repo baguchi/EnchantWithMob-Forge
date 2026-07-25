@@ -39,11 +39,8 @@ public class MobEnchant implements FeatureElement {
     private final FeatureFlagSet requiredFeatures;
     @Nullable
     private String descriptionId;
-    private final Holder.Reference<MobEnchant> builtInRegistryHolder;
 
     public MobEnchant(Properties properties) {
-        this.builtInRegistryHolder = MobEnchants.getRegistry().createIntrusiveHolder(this);
-
         this.rarity = properties.enchantType;
         this.level = properties.level;
         this.anvilCost = properties.getAnvilCost();
@@ -52,11 +49,6 @@ public class MobEnchant implements FeatureElement {
 
     public static boolean areCompatible(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
         return holder.value().isCompatibleWith(holder, anotherHolder);
-    }
-
-
-    public Holder.Reference<MobEnchant> builtInRegistryHolder() {
-        return builtInRegistryHolder;
     }
 
     public Rarity getRarity() {
