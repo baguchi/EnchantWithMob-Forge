@@ -6,6 +6,7 @@ import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,10 +18,12 @@ public class HugeMobEnchant extends MobEnchant {
         super(properties);
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 20 + (enchantmentLevel - 1) * 10;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return this.getMinEnchantability(enchantmentLevel) + 20;
     }
@@ -53,5 +56,10 @@ public class HugeMobEnchant extends MobEnchant {
     @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {
         return super.isCompatibleMob(livingEntity) || EnchantConfig.COMMON.bigYourSelf.get();
+    }
+
+    @Override
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.value() != MobEnchants.SMALL.get();
     }
 }
