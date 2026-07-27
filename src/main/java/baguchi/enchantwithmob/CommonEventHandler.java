@@ -222,7 +222,7 @@ public class CommonEventHandler {
             if (cap.getEnchantCap().hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
-                        if (cap.getEnchantCap().getMobEnchantType().value().particle().isPresent()) {
+                        if (cap.getEnchantCap().getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
                             entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().value().particle().get(), entity.getRandomX(entity.getBbWidth()), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth()), 0, 0, 0);
                         }
 
