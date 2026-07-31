@@ -2,7 +2,9 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.phys.EntityHitResult;
@@ -17,10 +19,12 @@ public class DeflectMobEnchant extends MobEnchant {
         super(properties);
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 30;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return this.getMinEnchantability(enchantmentLevel) + 30;
     }
@@ -39,9 +43,9 @@ public class DeflectMobEnchant extends MobEnchant {
         }
     }
 
-    @Override
-    protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != MobEnchants.THORN.get();
-    }
 
+    @Override
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.AFFECT_SELF_REFLECT);
+    }
 }

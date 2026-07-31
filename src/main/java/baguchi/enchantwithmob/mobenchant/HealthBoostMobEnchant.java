@@ -9,10 +9,12 @@ public class HealthBoostMobEnchant extends MobEnchant {
         super(properties);
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 15 + (enchantmentLevel - 1) * 10;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return this.getMinEnchantability(enchantmentLevel) + 50;
     }

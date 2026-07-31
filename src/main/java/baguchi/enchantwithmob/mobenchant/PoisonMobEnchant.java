@@ -1,7 +1,8 @@
 package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantConfig;
-import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,10 +14,12 @@ public class PoisonMobEnchant extends MobEnchant {
         super(properties);
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 5 + (enchantmentLevel - 1) * 10;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return this.getMinEnchantability(enchantmentLevel) + 30;
     }
@@ -38,7 +41,8 @@ public class PoisonMobEnchant extends MobEnchant {
     }
 
     @Override
-    protected boolean canApplyTogether(MobEnchant ench) {
-        return ench != MobEnchants.POISON_CLOUD.get() && super.canApplyTogether(ench);
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.POISON);
     }
 }
+

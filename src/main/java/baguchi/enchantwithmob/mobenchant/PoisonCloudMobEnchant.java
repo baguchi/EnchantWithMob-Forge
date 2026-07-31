@@ -4,7 +4,9 @@ import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -23,10 +25,12 @@ public class PoisonCloudMobEnchant extends MobEnchant {
         super(properties);
     }
 
+    @Override
     public int getMinEnchantability(int enchantmentLevel) {
         return 20;
     }
 
+    @Override
     public int getMaxEnchantability(int enchantmentLevel) {
         return 50;
     }
@@ -42,8 +46,8 @@ public class PoisonCloudMobEnchant extends MobEnchant {
     }
 
     @Override
-    protected boolean canApplyTogether(MobEnchant ench) {
-        return ench != MobEnchants.POISON.get() && super.canApplyTogether(ench);
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.POISON);
     }
 
     @SubscribeEvent

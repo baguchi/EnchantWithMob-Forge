@@ -349,7 +349,7 @@ public class MobEnchantUtils {
 
 
 		for (MobEnchantHandler enchantHandler : capability.getEnchantCap().getMobEnchants()) {
-			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(mobEnchant.value()) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
+			if (mobEnchant != null && enchantHandler.getMobEnchant() != null && (!enchantHandler.getMobEnchant().value().isCompatibleWith(enchantHandler.getMobEnchant(), mobEnchant) || enchantHandler.getMobEnchant().value() == mobEnchant.value())) {
 				return false;
 			}
 		}
@@ -427,7 +427,7 @@ public class MobEnchantUtils {
 		Iterator<MobEnchantmentData> iterator = dataList.iterator();
 
 		while (iterator.hasNext()) {
-			if (!data.enchantment.value().isCompatibleWith((iterator.next()).enchantment.value())) {
+			if (!data.enchantment.value().isCompatibleWith(data.enchantment, (iterator.next()).enchantment)) {
 				iterator.remove();
 			}
 		}

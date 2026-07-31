@@ -1,11 +1,11 @@
 package baguchi.enchantwithmob.mobenchant;
 
-import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -50,9 +50,8 @@ public class HugeMobEnchant extends MobEnchant {
         return damage;
     }
 
-
     @Override
-    public boolean isCompatibleMob(LivingEntity livingEntity) {
-        return super.isCompatibleMob(livingEntity) || EnchantConfig.COMMON.bigYourSelf.get();
+    protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
+        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.value() != MobEnchants.SMALL.get();
     }
 }
