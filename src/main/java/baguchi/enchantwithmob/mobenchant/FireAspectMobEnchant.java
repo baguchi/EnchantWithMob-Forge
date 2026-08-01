@@ -7,6 +7,7 @@ import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -50,5 +51,10 @@ public class FireAspectMobEnchant extends MobEnchant {
     @Override
     protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
         return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.POST_ATTACK);
+    }
+
+    @Override
+    public boolean isCompatibleMob(LivingEntity livingEntity) {
+        return super.isCompatibleMob(livingEntity) && !livingEntity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES);
     }
 }
