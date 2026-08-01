@@ -21,18 +21,18 @@ public class MobEnchantOverlay implements GuiLayer {
                 MobEnchantAttachment attachment = mc.player.getData(ModAttachments.MOB_ENCHANTS);
 
                 if (attachment.hasEnchant()) {
-                        guiGraphics.text(mc.font, mc.player.getDisplayName(), (int) EnchantConfig.CLIENT.hudXPostion.getAsInt(), (int) EnchantConfig.CLIENT.hudYPostion.getAsInt(), -1);
+                    guiGraphics.text(mc.font, mc.player.getDisplayName(), EnchantConfig.CLIENT.hudXPostion.getAsInt(), EnchantConfig.CLIENT.hudYPostion.getAsInt(), -1);
 
                     for (MobEnchantContent mobEnchantContent : attachment.getMobEnchants()) {
 
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                        Component s = mobEnchantContent.getMobEnchant().value().getFullname(mobEnchantContent.getEnchantLevel());
+                        Component s = mobEnchantContent.getMobEnchant().value().getFullname(mobEnchantContent.getMobEnchant(), mobEnchantContent.getEnchantLevel());
 
                             int xOffset = 20 + EnchantConfig.CLIENT.hudXPostion.getAsInt();
                         int yOffset = attachment.getMobEnchants().indexOf(mobEnchantContent) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
-                            guiGraphics.text(mc.font, s, (int) (xOffset), (int) yOffset, -1);
+                        guiGraphics.text(mc.font, s, xOffset, yOffset, -1);
                         }
                     }
             }
@@ -41,17 +41,17 @@ public class MobEnchantOverlay implements GuiLayer {
                 MobEnchantAttachment attachment = mc.crosshairPickEntity.getData(ModAttachments.MOB_ENCHANTS);
 
                 if (attachment.hasEnchant()) {
-                        guiGraphics.text(mc.font, mc.crosshairPickEntity.getDisplayName(), (int) EnchantConfig.CLIENT.hudXPostion.getAsInt(), (int) EnchantConfig.CLIENT.hudYPostion.getAsInt(), -1);
+                    guiGraphics.text(mc.font, mc.crosshairPickEntity.getDisplayName(), EnchantConfig.CLIENT.hudXPostion.getAsInt(), EnchantConfig.CLIENT.hudYPostion.getAsInt(), -1);
 
                     for (MobEnchantContent mobEnchantContent : attachment.getMobEnchants()) {
                             ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 
-                        Component s = mobEnchantContent.getMobEnchant().value().getFullname(mobEnchantContent.getEnchantLevel());
+                        Component s = mobEnchantContent.getMobEnchant().value().getFullname(mobEnchantContent.getMobEnchant(), mobEnchantContent.getEnchantLevel());
 
                             int xOffset = 20 + EnchantConfig.CLIENT.hudXPostion.getAsInt();
                         int yOffset = attachment.getMobEnchants().indexOf(mobEnchantContent) * 10 + 10 + EnchantConfig.CLIENT.hudYPostion.getAsInt();
 
-                            guiGraphics.text(mc.font, s, (int) (xOffset), (int) yOffset, -1);
+                        guiGraphics.text(mc.font, s, xOffset, yOffset, -1);
                         }
                 }
             }

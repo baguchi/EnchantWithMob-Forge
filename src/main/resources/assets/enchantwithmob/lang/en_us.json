@@ -17,6 +17,8 @@
   "mob_enchant.enchantwithmob.health_boost": "HealthBoost",
   "mob_enchant.enchantwithmob.poison": "Poison",
   "mob_enchant.enchantwithmob.poison_cloud": "Poison Cloud",
+  "mob_enchant.enchantwithmob.frozen": "Frozen",
+  "mob_enchant.enchantwithmob.fire_aspect": "Fire Aspect",
   "mob_enchant.enchantwithmob.huge": "Huge",
   "mob_enchant.enchantwithmob.multishot": "MultiShot",
   "mob_enchant.enchantwithmob.soul_steal": "Soul Steal",

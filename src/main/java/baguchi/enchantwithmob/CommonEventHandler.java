@@ -26,8 +26,6 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
@@ -245,27 +243,6 @@ public class CommonEventHandler {
             attacker.hurt(livingEntity.damageSources().thorns(livingEntity), event.getNewDamage() * (i / 8F));
         }
 
-    }
-
-    @SubscribeEvent
-    public static void onEntityHurtPost(LivingDamageEvent.Post event) {
-        LivingEntity livingEntity = event.getEntity();
-
-        if (event.getSource().getEntity() instanceof LivingEntity) {
-            LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
-            if (attacker.level() instanceof ServerLevel serverLevel) {
-                MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
-
-                if (attachmentAttacker.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON.getKey())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON.getKey());
-
-                    if (attacker.getRandom().nextFloat() < i * 0.125F) {
-                        livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), attacker);
-                    }
-                }
-
-            }
-        }
     }
 
 
