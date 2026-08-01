@@ -18,7 +18,7 @@ public class ModTags {
 
         public static final TagKey<MobEnchant> AFFECT_SELF_REFLECT = create("affect_self_relect");
         public static final TagKey<MobEnchant> AFFECT_SPEED = create("affect_speed");
-        public static final TagKey<MobEnchant> POISON = create("poison");
+        public static final TagKey<MobEnchant> POST_ATTACK = create("post_attack");
 
 
         private static TagKey<MobEnchant> create(String p_341202_) {

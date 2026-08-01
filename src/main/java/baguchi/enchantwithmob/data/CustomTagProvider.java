@@ -36,7 +36,7 @@ public class CustomTagProvider {
             this.tag(ModTags.MobEnchantTags.AFFECT_SPEED)
                     .add(MobEnchants.SPEEDY.getKey());
 
-            this.tag(ModTags.MobEnchantTags.POISON)
+            this.tag(ModTags.MobEnchantTags.POST_ATTACK)
                     .add(MobEnchants.POISON.getKey())
                     .add(MobEnchants.POISON_CLOUD.getKey());
         }
