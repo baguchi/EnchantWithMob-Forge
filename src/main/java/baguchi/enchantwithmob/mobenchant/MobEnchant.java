@@ -56,13 +56,6 @@ public class MobEnchant implements FeatureElement {
         return rarity;
     }
 
-    public MobEnchant setMinLevel(int level) {
-        this.minlevel = level;
-
-        return this;
-    }
-
-
     /**
      * Returns the minimum level that the enchantment can have.
      */
@@ -145,10 +138,6 @@ public class MobEnchant implements FeatureElement {
 
     public boolean isDisabled() {
         return EnchantConfig.COMMON.DISABLE_ENCHANTS.get().contains(MobEnchants.getRegistry().getKey(this).toString());
-    }
-
-    public boolean isCursedEnchant() {
-        return false;
     }
 
     @Override

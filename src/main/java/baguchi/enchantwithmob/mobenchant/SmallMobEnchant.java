@@ -54,12 +54,6 @@ public class SmallMobEnchant extends MobEnchant {
         return damage;
     }
 
-
-    @Override
-    public boolean isCursedEnchant() {
-        return true;
-    }
-
     @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {
         return super.isCompatibleMob(livingEntity) || EnchantConfig.COMMON.bigYourSelf.get();
