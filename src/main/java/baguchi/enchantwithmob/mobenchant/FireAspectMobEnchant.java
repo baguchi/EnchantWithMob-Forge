@@ -28,8 +28,8 @@ public class FireAspectMobEnchant extends MobEnchant {
             if (attacker.level() instanceof ServerLevel serverLevel) {
                 if (attacker instanceof IEnchantCap cap) {
 
-                    if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FLAME.getKey())) {
-                        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FLAME.getKey());
+                    if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FIRE_ASPECT.getKey())) {
+                        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FIRE_ASPECT.getKey());
 
                         livingEntity.igniteForSeconds(2 + 2 * (i - 1));
                     }
@@ -50,7 +50,7 @@ public class FireAspectMobEnchant extends MobEnchant {
 
     @Override
     protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
-        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.POST_ATTACK);
+        return super.canApplyTogether(holder, anotherHolder) && !anotherHolder.is(ModTags.MobEnchantTags.POST_ATTACK);
     }
 
     @Override
