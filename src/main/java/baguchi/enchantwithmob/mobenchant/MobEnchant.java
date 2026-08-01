@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.mobenchant;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.registry.MobEnchants;
+import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantConfigUtils;
 import com.google.common.collect.Maps;
 import net.minecraft.ChatFormatting;
@@ -172,9 +173,9 @@ public class MobEnchant implements FeatureElement {
         return this.getOrCreateDescriptionId();
     }
 
-    public Component getFullname(int p_44701_) {
+    public Component getFullname(Holder<MobEnchant> holder, int p_44701_) {
         MutableComponent mutablecomponent = Component.translatable(this.getDescriptionId());
-        if (this.isCursedEnchant()) {
+        if (holder.is(ModTags.MobEnchantTags.CURSE)) {
             mutablecomponent.withStyle(ChatFormatting.RED);
         } else {
             mutablecomponent.withStyle(ChatFormatting.AQUA);
