@@ -13,8 +13,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID)
-public class FlameMobEnchant extends MobEnchant {
-    public FlameMobEnchant(Properties properties) {
+public class FireAspectMobEnchant extends MobEnchant {
+    public FireAspectMobEnchant(Properties properties) {
         super(properties);
     }
 
