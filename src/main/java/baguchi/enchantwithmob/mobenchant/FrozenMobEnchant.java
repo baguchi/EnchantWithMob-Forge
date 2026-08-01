@@ -30,7 +30,7 @@ public class FrozenMobEnchant extends MobEnchant {
                     if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FROZEN.getKey())) {
                         int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), MobEnchants.FROZEN.getKey());
 
-                        if (livingEntity.getTicksFrozen() < livingEntity.getTicksRequiredToFreeze()) {
+                        if (livingEntity.getTicksFrozen() < 100 + 50 * i) {
                             livingEntity.setTicksFrozen(livingEntity.getTicksFrozen() + 100 + 50 * i);
                         }
                     }
