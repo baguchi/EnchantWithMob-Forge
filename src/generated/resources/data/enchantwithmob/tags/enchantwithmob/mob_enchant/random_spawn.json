@@ -9,6 +9,8 @@
     "enchantwithmob:deflect",
     "enchantwithmob:poison_cloud",
     "enchantwithmob:poison",
-    "enchantwithmob:bounce"
+    "enchantwithmob:bounce",
+    "enchantwithmob:frozen",
+    "enchantwithmob:fire_aspect"
   ]
 }

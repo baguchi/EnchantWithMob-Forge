@@ -87,7 +87,7 @@ public class ItemMobEnchantments implements TooltipProvider {
                 if (i > 0) {
                     holder.value().createModifiers(i - 1, (p_331556_, p_330860_) -> list.add(new Pair<>(p_331556_, p_330860_)));
 
-                    consumer.accept(((MobEnchant) holder.value()).getFullname(i));
+                    consumer.accept(holder.value().getFullname(holder, i));
                 }
             }
 
@@ -95,9 +95,9 @@ public class ItemMobEnchantments implements TooltipProvider {
 
             while (var9.hasNext()) {
                 Object2IntMap.Entry<Holder<MobEnchant>> entry = (Object2IntMap.Entry) var9.next();
-                Holder<MobEnchant> holder1 = (Holder) entry.getKey();
+                Holder<MobEnchant> holder1 = entry.getKey();
                 if (!holderset.contains(holder1)) {
-                    consumer.accept(((MobEnchant) holder1.value()).getFullname(entry.getIntValue()));
+                    consumer.accept(holder1.value().getFullname(holder1, entry.getIntValue()));
                 }
             }
         }
@@ -114,7 +114,7 @@ public class ItemMobEnchantments implements TooltipProvider {
         if (p_341186_ != null) {
             Optional<HolderSet.Named<T>> optional = p_341186_.lookupOrThrow(p_341113_).get(p_341409_);
             if (optional.isPresent()) {
-                return (HolderSet) optional.get();
+                return optional.get();
             }
         }
 
@@ -146,8 +146,7 @@ public class ItemMobEnchantments implements TooltipProvider {
             return true;
         } else {
             boolean var10000;
-            if (p_331697_ instanceof ItemMobEnchantments) {
-                ItemMobEnchantments itemenchantments = (ItemMobEnchantments) p_331697_;
+            if (p_331697_ instanceof ItemMobEnchantments itemenchantments) {
                 var10000 = this.showInTooltip == itemenchantments.showInTooltip && this.enchantments.equals(itemenchantments.enchantments);
             } else {
                 var10000 = false;

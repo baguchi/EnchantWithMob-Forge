@@ -26,10 +26,13 @@ public class CustomTagProvider {
             this.tag(ModTags.MobEnchantTags.ENCHANTER_ENCHANT).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey()).add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey());
             this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey())
                     .add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey()).add(MobEnchants.SPEEDY.getKey())
-                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey()).add(MobEnchants.BOUNCE.getKey());
+                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey()).add(MobEnchants.BOUNCE.getKey())
+                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
             this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey())
                     .add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey()).add(MobEnchants.SPEEDY.getKey())
-                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey());
+                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey())
+                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
+
             this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND.getKey()).add(MobEnchants.SOUL_STEAL.getKey());
 
             this.tag(ModTags.MobEnchantTags.AFFECT_SELF_REFLECT)
@@ -41,9 +44,11 @@ public class CustomTagProvider {
             this.tag(ModTags.MobEnchantTags.AFFECT_SPEED)
                     .add(MobEnchants.SPEEDY.getKey());
 
-            this.tag(ModTags.MobEnchantTags.POISON)
+            this.tag(ModTags.MobEnchantTags.POST_ATTACK)
                     .add(MobEnchants.POISON.getKey())
-                    .add(MobEnchants.POISON_CLOUD.getKey());
+                    .add(MobEnchants.POISON_CLOUD.getKey())
+                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
+
         }
     }
 

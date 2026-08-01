@@ -29,6 +29,8 @@ public class MobEnchants {
     public static final DeferredHolder<MobEnchant, MobEnchant> HEALTH_BOOST = MOB_ENCHANT.register("health_boost", () -> new HealthBoostMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 5, 5)).addAttributesModifier(Attributes.MAX_HEALTH, Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "mob_enchant.health_boost"), HealthBoostMobEnchant.DEFAULT_HEALTH, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEnchant, MobEnchant> POISON = MOB_ENCHANT.register("poison", () -> new PoisonMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.RARE, 3, 3)));
     public static final DeferredHolder<MobEnchant, MobEnchant> POISON_CLOUD = MOB_ENCHANT.register("poison_cloud", () -> new PoisonCloudMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.RARE, 2, 3)));
+    public static final DeferredHolder<MobEnchant, MobEnchant> FROZEN = MOB_ENCHANT.register("frozen", () -> new FrozenMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.RARE, 3, 3)));
+    public static final DeferredHolder<MobEnchant, MobEnchant> FIRE_ASPECT = MOB_ENCHANT.register("fire_aspect", () -> new FireAspectMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.RARE, 3, 3)));
     public static final DeferredHolder<MobEnchant, MobEnchant> MULTISHOT = MOB_ENCHANT.register("multishot", () -> new MultiShotMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.RARE, 1, 3)));
     public static final DeferredHolder<MobEnchant, MobEnchant> WIND = MOB_ENCHANT.register("wind", () -> new WindMobEnchant(new MobEnchant.Properties(MobEnchant.Rarity.VERY_RARE, 1, 4)));
 
