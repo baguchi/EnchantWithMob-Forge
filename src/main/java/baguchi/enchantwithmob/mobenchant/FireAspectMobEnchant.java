@@ -49,7 +49,7 @@ public class FireAspectMobEnchant extends MobEnchant {
 
     @Override
     protected boolean canApplyTogether(Holder<MobEnchant> holder, Holder<MobEnchant> anotherHolder) {
-        return super.canApplyTogether(holder, anotherHolder) && anotherHolder.is(ModTags.MobEnchantTags.POST_ATTACK);
+        return super.canApplyTogether(holder, anotherHolder) && !anotherHolder.is(ModTags.MobEnchantTags.POST_ATTACK);
     }
 
     @Override
