@@ -43,7 +43,7 @@ public class PoisonCloudMobEnchant extends MobEnchant {
 
     @Override
     public boolean isCompatibleMob(LivingEntity livingEntity) {
-        return EnchantConfig.COMMON.WHITELIST_SHOOT_ENTITY.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(livingEntity.getType()).toString()) && !(livingEntity instanceof Witch) || super.isCompatibleMob(livingEntity);
+        return EnchantConfig.COMMON.WHITELIST_SHOOT_ENTITY.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(livingEntity.getType()).toString()) && !(livingEntity instanceof Witch) && super.isCompatibleMob(livingEntity);
     }
 
     @Override
