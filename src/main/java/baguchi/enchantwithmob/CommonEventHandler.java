@@ -320,12 +320,12 @@ public class CommonEventHandler {
                     ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
                     MobEnchantAttachment attachmentTarget = target.getData(ModAttachments.MOB_ENCHANTS);
 
-                    if (attachmentTarget.hasEnchant() && !attachmentTarget.isPreventRemoveSelf()) {
+                    if (attachmentTarget.hasEnchant() && !attachmentTarget.isPreventRemoveSelf(event.getLevel())) {
                         int xp = MobEnchantUtils.getExperienceFromMob(attachmentTarget);
 
-                            if (xp > 0) {
-                                stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
-                            }
+                        if (xp > 0) {
+                            stack1.set(ModDataCompnents.EXPERIENCE.get(), xp);
+                        }
                         MobEnchantUtils.removeMobEnchantToEntity(target, attachmentTarget);
                             player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.0F);
 
@@ -335,10 +335,8 @@ public class CommonEventHandler {
                             event.setCancellationResult(InteractionResult.SUCCESS);
                             event.setCanceled(true);
 
-                            if (!player.hasInfiniteMaterials()) {
-                                if (!player.getInventory().add(stack1)) {
-                                    player.drop(stack1, false);
-                                }
+                        if (!player.getInventory().add(stack1)) {
+                            player.drop(stack1, false);
                             }
                         }
                     }

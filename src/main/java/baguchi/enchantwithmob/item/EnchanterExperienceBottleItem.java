@@ -5,7 +5,10 @@ import baguchi.enchantwithmob.registry.ModDataCompnents;
 import baguchi.enchantwithmob.registry.ModItems;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,6 +31,14 @@ public class EnchanterExperienceBottleItem extends Item {
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity livingEntity, ItemStack itemStack, int ticksRemaining) {
+        if (ticksRemaining % 4 == 0) {
+            float drinkPitch = Mth.randomBetween(livingEntity.getRandom(), 0.9F, 1.0F);
+            level.playSound(livingEntity, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.4F, drinkPitch);
+        }
+    }
+
+    @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_BOTTLE.get());
         if (entity instanceof ServerPlayer serverplayer) {
@@ -38,7 +49,6 @@ public class EnchanterExperienceBottleItem extends Item {
 
         if (xp > 0) {
             if (entity instanceof ServerPlayer serverPlayer) {
-                serverPlayer.getCooldowns().addCooldown(stack1, 40);
                 serverPlayer.giveExperiencePoints(xp);
             }
         }

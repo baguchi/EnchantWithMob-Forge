@@ -50,7 +50,7 @@ public class EnchanterBottleItem extends Item {
 		MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
 			int xp = 0;
-		if (!attachment.isPreventRemoveSelf() && attachment.hasEnchant()) {
+		if (!attachment.isPreventRemoveSelf(level) && attachment.hasEnchant()) {
 			xp += MobEnchantUtils.getExperienceFromMob(attachment);
 
 				if (xp > 0) {
@@ -90,7 +90,7 @@ public class EnchanterBottleItem extends Item {
 		if (stack.isEmpty()) {
 			return stack1;
 		} else {
-			if (entity instanceof Player player && !player.hasInfiniteMaterials()) {
+			if (entity instanceof Player player) {
 				if (!player.getInventory().add(stack1)) {
 					player.drop(stack1, false);
 				}
