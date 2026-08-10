@@ -22,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -262,8 +263,29 @@ public class MobEnchantAttachment implements ValueIOSerializable {
     }
 
 
-    public boolean isPreventRemoveSelf() {
-        return mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+    public boolean isPreventRemoveSelf(Level level) {
+        if (mobEnchantTypeCached != null) {
+            return mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+        }
+        // Entityが存在するレベルから RegistryAccess / RegistryLookup を取得する
+        // ※コンストラクタ時ではなく、ワールドに参加した「後」に呼ばれるため安全
+        RegistryAccess registryAccess = level.registryAccess();
+
+        // 1. レジストリ自体が存在するか安全に確認
+        Optional<Registry<MobEnchantType>> lookupOpt =
+                registryAccess.lookup(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY);
+
+        if (lookupOpt.isPresent()) {
+            HolderLookup.RegistryLookup<MobEnchantType> lookup = lookupOpt.get();
+
+            // check is mob enchant in registry
+            Optional<Holder.Reference<MobEnchantType>> holderOpt = lookup.get(this.mobEnchantTypeKey);
+            if (holderOpt.isPresent()) {
+                this.mobEnchantTypeCached = holderOpt.get();
+                return this.mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+            }
+        }
+        return false;
     }
 
     @Override
