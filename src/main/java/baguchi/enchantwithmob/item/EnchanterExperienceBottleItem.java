@@ -49,7 +49,6 @@ public class EnchanterExperienceBottleItem extends Item {
 
         if (xp > 0) {
             if (entity instanceof ServerPlayer serverPlayer) {
-                serverPlayer.getCooldowns().addCooldown(stack1, 40);
                 serverPlayer.giveExperiencePoints(xp);
             }
         }
