@@ -143,10 +143,6 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 
 		this.Cape.xRot = 0.1F + entity.walkAnimationSpeed * 0.6F;
 
-		if (entity.isRiding) {
-            sitAnimation.applyStatic();
-		}
-
 		if (EnchantConfig.CLIENT.oldStyleAnimation.get()) {
 			if (entity.castingAnimationState.isStarted()) {
                 oldCastingAnimation.apply(entity.castingAnimationState, entity.ageInTicks);
@@ -178,11 +174,20 @@ public class EnchanterModel<T extends EnchanterRenderState> extends EntityModel<
 			} else if (!entity.castingAnimationState.isStarted() && !entity.attackAnimationState.isStarted()) {
 				if (entity.idleAnimationState.isStarted()) {
                     idleAnimation.apply(entity.idleAnimationState, entity.ageInTicks, 1.0F);
-				} else {
+				} else if (!entity.isRiding) {
                     walkAnimation.applyWalk(entity.walkAnimationPos, entity.walkAnimationSpeed, 3.0F, 4.5F);
                     walkStopAnimation.applyStatic();
 				}
 			}
+		}
+
+		if (entity.isRiding) {
+			this.right_leg.xRot = -1.4137167F;
+			this.right_leg.yRot = (float) (Math.PI / 10);
+			this.right_leg.zRot = 0.07853982F;
+			this.left_leg.xRot = -1.4137167F;
+			this.left_leg.yRot = (float) (-Math.PI / 10);
+			this.left_leg.zRot = -0.07853982F;
 		}
 	}
 
