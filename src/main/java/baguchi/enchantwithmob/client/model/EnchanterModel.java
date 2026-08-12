@@ -126,9 +126,6 @@ public class EnchanterModel<T extends Enchanter> extends HierarchicalModel<T> im
 
 		this.Cape.xRot = 0.1F + limbSwingAmount * 0.6F;
 
-		if (this.riding) {
-			this.applyStatic(NormalAnimation.SIT);
-		}
 
 		if (EnchantConfig.CLIENT.oldStyleAnimation.get()) {
 			if (entity.castingAnimationState.isStarted()) {
@@ -161,11 +158,20 @@ public class EnchanterModel<T extends Enchanter> extends HierarchicalModel<T> im
 			} else if (!entity.castingAnimationState.isStarted() && !entity.attackAnimationState.isStarted()) {
 				if (entity.idleAnimationState.isStarted()) {
 					this.animate(entity.idleAnimationState, EnchanterAnimation.IDLE, ageInTicks, 1.0F);
-				} else {
+				} else if (!this.riding) {
 					this.animateWalk(EnchanterAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 4.5F);
 					this.applyStatic(NormalAnimation.WALK_STOP);
 				}
 			}
+		}
+
+		if (this.riding) {
+			this.right_leg.xRot = -1.4137167F;
+			this.right_leg.yRot = (float) (Math.PI / 10);
+			this.right_leg.zRot = 0.07853982F;
+			this.left_leg.xRot = -1.4137167F;
+			this.left_leg.yRot = (float) (-Math.PI / 10);
+			this.left_leg.zRot = -0.07853982F;
 		}
 	}
 
