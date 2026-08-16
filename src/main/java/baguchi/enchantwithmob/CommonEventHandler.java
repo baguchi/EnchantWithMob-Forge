@@ -220,8 +220,8 @@ public class CommonEventHandler {
             if (cap.getEnchantCap().hasEnchant()) {
                 if (entity.level().isClientSide() && !EnchantConfig.CLIENT.disableAuraRender.get()) {
                     if (!(entity instanceof Player player) || !player.isSpectator()) {
-                        if (cap.getEnchantCap().getMobEnchantType().value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
-                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType().value().particle().get(), entity.getRandomX(entity.getBbWidth()), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth()), 0, 0, 0);
+                        if (cap.getEnchantCap().getMobEnchantType(entity).value().particle().isPresent() && entity.getRandom().nextFloat() < 0.25F) {
+                            entity.level().addParticle(cap.getEnchantCap().getMobEnchantType(entity).value().particle().get(), entity.getRandomX(entity.getBbWidth()), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth()), 0, 0, 0);
                         }
 
                     }
@@ -317,7 +317,7 @@ public class CommonEventHandler {
                     ItemStack stack1 = new ItemStack(ModItems.ENCHANATERS_EXPERIENCE_BOTTLE.get());
 
                     if (target instanceof IEnchantCap cap) {
-                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isPreventRemoveSelf()) {
+                        if (cap.getEnchantCap().hasEnchant() && !cap.getEnchantCap().isPreventRemoveSelf(event.getLevel())) {
                             int xp = MobEnchantUtils.getExperienceFromMob(cap);
 
                             if (xp > 0) {
@@ -503,7 +503,7 @@ public class CommonEventHandler {
         LivingEntity entity = event.getEntity();
         if (entity instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
-                if (cap.getEnchantCap().isPreventRemoveSelf()) {
+                if (cap.getEnchantCap().isPreventRemoveSelf(event.getEntity().level())) {
                     event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap) * 5);
                 } else {
                     event.setDroppedExperience(event.getDroppedExperience() + MobEnchantUtils.getExperienceFromMob(cap));

@@ -57,13 +57,13 @@ public class EnchantLayer<T extends LivingEntity, M extends EntityModel<T>> exte
         float tick = (float) entitylivingbaseIn.tickCount + partialTicks;
         if (entitylivingbaseIn instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
 
-            if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible() && cap.getEnchantCap().getMobEnchantType() != null) {
+            if (cap.getEnchantCap().hasEnchant() && !entitylivingbaseIn.isInvisible() && cap.getEnchantCap().getMobEnchantType(entitylivingbaseIn) != null) {
                 float f = (float) entitylivingbaseIn.tickCount + partialTicks;
                 float intensity = cap.getEnchantCap().getMobEnchants().size() < 3 ? ((float) cap.getEnchantCap().getMobEnchants().size() / 3) : 3;
                 EntityModel<T> entitymodel = this.getParentModel();
                 entitymodel.prepareMobModel(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
                 this.getParentModel().copyPropertiesTo(entitymodel);
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(enchantSwirl(cap.getEnchantCap().getMobEnchantType().value().texture()));
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(enchantSwirl(cap.getEnchantCap().getMobEnchantType(entitylivingbaseIn).value().texture()));
                 entitymodel.setupAnim(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                 entitymodel.renderToBuffer(poseStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(intensity, 1F, 1F, 1F));
             }

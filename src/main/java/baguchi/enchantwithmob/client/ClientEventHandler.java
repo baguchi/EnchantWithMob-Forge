@@ -2,6 +2,7 @@ package baguchi.enchantwithmob.client;
 
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,17 +46,17 @@ public class ClientEventHandler {
         MultiBufferSource bufferBuilder = event.getMultiBufferSource();
         float particalTick = event.getPartialTick();
         if (event.getEntity() instanceof IEnchantCap cap) {
-			if (cap.getEnchantCap().hasOwner() && cap.getEnchantCap().hasEnchant() && cap.getEnchantCap().getMobEnchantType() != null) {
+			if (cap.getEnchantCap().hasOwner() && cap.getEnchantCap().hasEnchant() && cap.getEnchantCap().getMobEnchantType(event.getEntity()) != null) {
 
 				LivingEntity entity = cap.getEnchantCap().getEnchantOwner();
                 if (entity != null) {
-                    renderBeam(cap.getEnchantCap(), event.getEntity(), particalTick, matrixStack, bufferBuilder, entity, event.getRenderer());
+					renderBeam(cap.getEnchantCap(), event.getEntity(), cap.getEnchantCap().getMobEnchantType(event.getEntity()), particalTick, matrixStack, bufferBuilder, entity, event.getRenderer());
                 }
             }
         }
     }
 
-	private static void renderBeam(@NotNull MobEnchantCapability cap, LivingEntity p_229118_1_, float p_229118_2_, PoseStack p_229118_3_, MultiBufferSource p_229118_4_, Entity p_229118_5_, LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {
+	private static void renderBeam(@NotNull MobEnchantCapability cap, LivingEntity p_229118_1_, Holder<MobEnchantType> mobEnchantType, float p_229118_2_, PoseStack p_229118_3_, MultiBufferSource p_229118_4_, Entity p_229118_5_, LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {
 		float tick = (float) p_229118_1_.tickCount + p_229118_2_;
 		p_229118_3_.pushPose();
 		Vec3 vector3d = p_229118_5_.getRopeHoldPosition(p_229118_2_);
@@ -70,7 +72,7 @@ public class ClientEventHandler {
 		float f1 = (float) (vector3d.y - d4);
 		float f2 = (float) (vector3d.z - d5);
 		float f3 = 0.1F;
-		VertexConsumer ivertexbuilder = p_229118_4_.getBuffer(enchantBeamSwirl(cap.getMobEnchantType().value().texture()));
+		VertexConsumer ivertexbuilder = p_229118_4_.getBuffer(enchantBeamSwirl(mobEnchantType.value().texture()));
 		Matrix4f matrix4f = p_229118_3_.last().pose();
 		Matrix3f matrix3f = p_229118_3_.last().normal();
 		float f4 = Mth.fastInvCubeRoot(f * f + f2 * f2) * 0.1F / 2.0F;

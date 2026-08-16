@@ -29,7 +29,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(EntityType p_20966_, Level p_20967_, CallbackInfo ci) {
-        capability = new MobEnchantCapability(p_20967_.registryAccess());
+        capability = new MobEnchantCapability();
     }
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
@@ -38,7 +38,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
-        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability(this.registryAccess());
+        MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
         mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"), this.registryAccess());
         this.setEnchantCap(mobEnchantCapability);
     }
@@ -65,7 +65,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, message);
             }
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new MobEnchantTypeMessage(this, this.getEnchantCap().getMobEnchantType().getKey()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new MobEnchantTypeMessage(this, this.getEnchantCap().getMobEnchantType(this).getKey()));
 
         }
     }

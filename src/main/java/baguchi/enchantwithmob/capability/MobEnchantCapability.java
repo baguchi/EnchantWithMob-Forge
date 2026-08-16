@@ -10,18 +10,20 @@ import baguchi.enchantwithmob.registry.ModTags;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,13 +40,10 @@ public class MobEnchantCapability {
 	@Nullable
 	private LivingEntity enchantOwner;
 	private boolean fromOwner;
-	private Holder<MobEnchantType> mobEnchantType;
+	private Holder<MobEnchantType> mobEnchantTypeCached;
+	private ResourceKey<MobEnchantType> mobEnchantTypeKey = MobEnchantTypes.NORMAL;
 
-	private final RegistryAccess registryAccess;
-
-	public MobEnchantCapability(RegistryAccess registryAccess) {
-		this.registryAccess = registryAccess;
-		this.mobEnchantType = registryAccess.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getOrThrow(MobEnchantTypes.NORMAL);
+	public MobEnchantCapability() {
 	}
 
 
@@ -62,7 +61,8 @@ public class MobEnchantCapability {
 	}
 
 	public void setEnchantType(LivingEntity entity, ResourceKey<MobEnchantType> enchantType) {
-		this.mobEnchantType = registryAccess.holderOrThrow(enchantType);
+		this.mobEnchantTypeKey = enchantType;
+		this.mobEnchantTypeCached = null;
 		if (!entity.level().isClientSide()) {
 			MobEnchantTypeMessage message = new MobEnchantTypeMessage(entity, enchantType);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, message);
@@ -212,12 +212,62 @@ public class MobEnchantCapability {
 		return this.fromOwner;
 	}
 
-	public Holder<@NotNull MobEnchantType> getMobEnchantType() {
-		return mobEnchantType;
+	public Holder<MobEnchantType> getMobEnchantType(Entity entity) {
+		if (mobEnchantTypeCached != null) {
+			return mobEnchantTypeCached;
+		}
+
+		// Entityが存在するレベルから RegistryAccess / RegistryLookup を取得する
+		// ※コンストラクタ時ではなく、ワールドに参加した「後」に呼ばれるため安全
+		RegistryAccess registryAccess = entity.level().registryAccess();
+
+		// 1. レジストリ自体が存在するか安全に確認
+		Optional<HolderLookup.RegistryLookup<MobEnchantType>> lookupOpt =
+				registryAccess.lookup(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY);
+
+		if (lookupOpt.isPresent()) {
+			HolderLookup.RegistryLookup<MobEnchantType> lookup = lookupOpt.get();
+
+			// check is mob enchant in registry
+			Optional<Holder.Reference<MobEnchantType>> holderOpt = lookup.get(this.mobEnchantTypeKey);
+			if (holderOpt.isPresent()) {
+				this.mobEnchantTypeCached = holderOpt.get();
+				return this.mobEnchantTypeCached;
+			}
+		}
+
+		//fallback
+		return getAbsoluteDefault(registryAccess);
 	}
 
-	public boolean isPreventRemoveSelf() {
-		return mobEnchantType.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+	private Holder<MobEnchantType> getAbsoluteDefault(RegistryAccess access) {
+		return access.lookupOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY)
+				.getOrThrow(MobEnchantTypes.NORMAL); // もしくは適当な最初の1要素
+	}
+
+	public boolean isPreventRemoveSelf(Level level) {
+		if (mobEnchantTypeCached != null) {
+			return mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+		}
+		// Entityが存在するレベルから RegistryAccess / RegistryLookup を取得する
+		// ※コンストラクタ時ではなく、ワールドに参加した「後」に呼ばれるため安全
+		RegistryAccess registryAccess = level.registryAccess();
+
+		// 1. レジストリ自体が存在するか安全に確認
+		Optional<HolderLookup.RegistryLookup<MobEnchantType>> lookupOpt =
+				registryAccess.lookup(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY);
+
+		if (lookupOpt.isPresent()) {
+			HolderLookup.RegistryLookup<MobEnchantType> lookup = lookupOpt.get();
+
+			// check is mob enchant in registry
+			Optional<Holder.Reference<MobEnchantType>> holderOpt = lookup.get(this.mobEnchantTypeKey);
+			if (holderOpt.isPresent()) {
+				this.mobEnchantTypeCached = holderOpt.get();
+				return this.mobEnchantTypeCached.is(ModTags.MobEnchantTypeTags.PREVENT_REMOVE_SELF);
+			}
+		}
+		return false;
 	}
 
 	public CompoundTag serializeNBT(RegistryAccess registryAccess) {
@@ -232,7 +282,7 @@ public class MobEnchantCapability {
 		nbt.put("StoredMobEnchants", listnbt);
 		nbt.putBoolean("FromOwner", fromOwner);
 
-		nbt.putString("EnchantType", registryAccess.registryOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getKey(mobEnchantType.value()).toString());
+		nbt.putString("EnchantType", mobEnchantTypeKey.location().toString());
 
 		return nbt;
 	}
@@ -256,8 +306,8 @@ public class MobEnchantCapability {
 		if (nbt.contains("EnchantType")) {
 
 			Optional<Holder.Reference<MobEnchantType>> optional = registryAccess.registryOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getHolder(ResourceLocation.parse(nbt.getString("EnchantType")));
-			optional.ifPresentOrElse(mobEnchantTypeReference -> mobEnchantType = mobEnchantTypeReference, () -> {
-				mobEnchantType = registryAccess.registryOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getHolder(MobEnchantTypes.NORMAL).get();
+			optional.ifPresent(mobEnchantTypeReference -> {
+				mobEnchantTypeKey = mobEnchantTypeReference.key();
 			});
 		}
 	}

@@ -28,8 +28,8 @@ public class GeoEnchantLayer<T extends Entity & GeoAnimatable> extends GeoRender
         float tick = (float) animatable.tickCount + partialTick;
         if (animatable instanceof IEnchantCap cap && !EnchantConfig.CLIENT.disableAuraRender.get()) {
 
-            if (cap.getEnchantCap().hasEnchant() && !animatable.isInvisible() && cap.getEnchantCap().getMobEnchantType() != null) {
-                renderType = enchantSwirl(cap.getEnchantCap().getMobEnchantType().value().texture());
+            if (cap.getEnchantCap().hasEnchant() && !animatable.isInvisible() && cap.getEnchantCap().getMobEnchantType(animatable) != null) {
+                renderType = enchantSwirl(cap.getEnchantCap().getMobEnchantType(animatable).value().texture());
 
                 if (renderType != null) {
                     getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable, renderType,
