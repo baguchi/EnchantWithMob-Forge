@@ -30,6 +30,7 @@ import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -433,7 +434,7 @@ public class Enchanter extends SpellcasterIllager {
                 this.enchanter.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
                 if (this.canPerformAttack(livingentity)) {
                     if (this.tick == this.enchanter.attackAnimationActionPoint) {
-                        this.enchanter.swing(InteractionHand.MAIN_HAND);
+                        this.enchanter.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
                         this.enchanter.doHurtTarget(serverLevel, livingentity);
                         this.enchanter.playSound(ModSoundEvents.ENCHANTER_ATTACK.get());
                     }

@@ -32,14 +32,14 @@ public class EnderDragonRendererMixin {
                 poseStack.pushPose();
                 float f = state.getHistoricalPos(7).yRot();
                 float f1 = (float) (state.getHistoricalPos(5).y() - state.getHistoricalPos(10).y());
-                poseStack.mulPose(Axis.YP.rotationDegrees(-f));
-                poseStack.mulPose(Axis.XP.rotationDegrees(f1 * 10.0F));
+            poseStack.rotateDegrees(Axis.YP, -f);
+            poseStack.rotateDegrees(Axis.XP, f1 * 10.0F);
                 poseStack.translate(0.0F, 0.0F, 1.0F);
                 poseStack.scale(-1.0F, -1.0F, 1.0F);
                 poseStack.translate(0.0F, -1.501F, 0.0F);
                 this.model.setupAnim(state);
                 if (state.deathTime <= 0) {
-                    submitNodeCollector.submitModel(this.model, state, poseStack, EnchantLayer.enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+                    submitNodeCollector.submitModel(this.model, state, poseStack, EnchantLayer.enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 }
 
                 poseStack.popPose();

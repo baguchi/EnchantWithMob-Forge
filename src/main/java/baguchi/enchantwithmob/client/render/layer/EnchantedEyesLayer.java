@@ -40,8 +40,7 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 		if (enchanted && !EnchantConfig.CLIENT.disableEyeRender.get() && enchantEye != null) {
 			submitNodeCollector.order(1).submitModel(this.getParentModel(), entity, p_116983_, enchantedEyes(enchantEye), p_116985_, OverlayTexture.NO_OVERLAY, -1,
                         null,
-                        entity.outlineColor,
-                        null);
+                    entity.outlineColor);
 		}
 	}
 

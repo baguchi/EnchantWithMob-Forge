@@ -1,23 +1,23 @@
 package baguchi.enchantwithmob.data.generators.crafting;
 
 import baguchi.enchantwithmob.registry.ModItems;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class CraftingGenerator extends RecipeProvider {
-    public CraftingGenerator(HolderLookup.Provider p_248933_, RecipeOutput p_323846_) {
-        super(p_248933_, p_323846_);
+    public CraftingGenerator(final BootstrapContext<Recipe<?>> recipeOutput, final BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override
     protected void buildRecipes() {
-        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, new ItemStackTemplate(ModItems.ENCHANATERS_BOTTLE.get(), 3))
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, new ItemStackTemplate(ModItems.ENCHANATERS_BOTTLE.get(), 3))
                 .pattern(" G ")
                 .pattern("ALA")
                 .pattern(" A ")

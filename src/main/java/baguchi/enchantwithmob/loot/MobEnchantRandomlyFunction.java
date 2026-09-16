@@ -12,7 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
@@ -35,7 +35,7 @@ public class MobEnchantRandomlyFunction extends LootItemConditionalFunction {
 			p_344688_ -> commonFields(p_344688_)
 					.and(
 							p_344688_.group(
-									RegistryCodecs.homogeneousList(MobEnchants.MOB_ENCHANT_REGISTRY).optionalFieldOf("options").forGetter(p_344687_ -> p_344687_.options),
+									RegistryCodecs.holderSet(MobEnchants.MOB_ENCHANT_REGISTRY).optionalFieldOf("options").forGetter(p_344687_ -> p_344687_.options),
 									Codec.BOOL.optionalFieldOf("only_compatible", Boolean.valueOf(true)).forGetter(p_344689_ -> p_344689_.onlyCompatible)
 							)
 					)
@@ -44,7 +44,7 @@ public class MobEnchantRandomlyFunction extends LootItemConditionalFunction {
 	private final Optional<HolderSet<MobEnchant>> options;
 	private final boolean onlyCompatible;
 
-	public MobEnchantRandomlyFunction(List<LootItemCondition> conditons, Optional<HolderSet<MobEnchant>> options, boolean onlyCompatible) {
+	public MobEnchantRandomlyFunction(Optional<Holder<LootItemCondition>> conditons, Optional<HolderSet<MobEnchant>> options, boolean onlyCompatible) {
 		super(conditons);
 		this.options = options;
 		this.onlyCompatible = onlyCompatible;
@@ -120,7 +120,7 @@ public class MobEnchantRandomlyFunction extends LootItemConditionalFunction {
 
 		@Override
 		public LootItemFunction build() {
-			return new MobEnchantRandomlyFunction(this.getConditions(), this.options, this.onlyCompatible);
+			return new MobEnchantRandomlyFunction(this.getCondition(), this.options, this.onlyCompatible);
 		}
 	}
 }

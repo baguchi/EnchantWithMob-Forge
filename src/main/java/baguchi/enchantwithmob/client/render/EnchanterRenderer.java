@@ -50,7 +50,6 @@ public class EnchanterRenderer extends MobRenderer<Enchanter, EnchanterRenderSta
                 ? CrossbowItem.getChargeDuration(p_365030_.getUseItem(), p_365030_)
                 : 0;
         p_364586_.ticksUsingItem = p_365030_.getTicksUsingItem();
-        p_364586_.attackAnim = p_365030_.getAttackAnim(p_360560_);
         p_364586_.isAggressive = p_365030_.isAggressive();
         p_364586_.attackAnimationState.copyFrom(p_365030_.attackAnimationState);
         p_364586_.castingAnimationState.copyFrom(p_365030_.castingAnimationState);

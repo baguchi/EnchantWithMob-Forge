@@ -9,6 +9,7 @@ import baguchi.enchantwithmob.data.resources.registries.MobEnchantTypes;
 import baguchi.enchantwithmob.message.SoulParticleMessage;
 import baguchi.enchantwithmob.registry.*;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -75,6 +76,14 @@ public class EnchantWithMob {
 
     public static Identifier prefix(String path) {
         return Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, path);
+    }
+
+    public static String prefix(ResourceKey<?> key) {
+        return prefix(key.identifier());
+    }
+
+    public static String prefix(Identifier key) {
+        return key.getNamespace() + "/" + key.getPath();
     }
 
 

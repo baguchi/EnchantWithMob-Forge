@@ -36,7 +36,7 @@ public class EnchantedWindLayer<T extends LivingEntityRenderState, M extends Ent
 
         if (wind) {
             RenderType rendertype = RenderTypes.breezeWind(WIND_TEXTURE_LOCATION, this.xOffset(entity.ageInTicks) % 1.0F, 0.0F);
-            submitNodeCollector.order(1).submitModel(this.model, entity, poseStack, rendertype, p_117351_, OverlayTexture.NO_OVERLAY, -1, null, entity.outlineColor, null);
+            submitNodeCollector.order(1).submitModel(this.model, entity, poseStack, rendertype, p_117351_, OverlayTexture.NO_OVERLAY, -1, null, entity.outlineColor);
         }
     }
 

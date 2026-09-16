@@ -34,14 +34,12 @@ public class SlimeEnchantLayer<T extends LivingEntityRenderState> extends Render
                     this.model.setupAnim(entitylivingbaseIn);
                     submitNodeCollector.submitModel(this.model, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
                             null,
-                            entitylivingbaseIn.outlineColor,
-                            null);
+                            entitylivingbaseIn.outlineColor);
                 } else {
                     this.model.setupAnim(entitylivingbaseIn);
                     submitNodeCollector.submitModel(this.model, entitylivingbaseIn, poseStack, enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
                             null,
-                            entitylivingbaseIn.outlineColor,
-                            null);
+                            entitylivingbaseIn.outlineColor);
                 }
             }
         }

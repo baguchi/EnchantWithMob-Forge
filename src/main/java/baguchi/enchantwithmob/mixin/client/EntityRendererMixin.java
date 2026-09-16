@@ -20,7 +20,7 @@ import java.util.Optional;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin<T extends Entity> {
     @Inject(method = "shouldRender", at = @At("RETURN"), cancellable = true)
-    public void shouldRender(T entity, Frustum frustum, double p_114493_, double p_114494_, double p_114495_, CallbackInfoReturnable<Boolean> cir) {
+    public void shouldRender(T entity, Frustum culler, double camX, double camY, double camZ, float partialTicks, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue()) {
             MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
@@ -31,7 +31,7 @@ public class EntityRendererMixin<T extends Entity> {
                     if (livingEntity != null) {
                         Vec3 vec3 = ClientEventHandler.getPosition(livingEntity, (double) livingEntity.getBbHeight() * 0.5F, 1.0F);
                         Vec3 vec31 = ClientEventHandler.getPosition(entity, (double) entity.getBbHeight() * 0.5F, 1.0F);
-                        cir.setReturnValue(frustum.isVisible(new AABB(vec31.x, vec31.y, vec31.z, vec3.x, vec3.y, vec3.z)));
+                        cir.setReturnValue(culler.isVisible(new AABB(vec31.x, vec31.y, vec31.z, vec3.x, vec3.y, vec3.z)));
                     }
                 }
 

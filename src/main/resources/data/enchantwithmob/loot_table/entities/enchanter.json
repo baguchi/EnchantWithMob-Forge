@@ -7,9 +7,9 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "min": 0.0,
                 "max": 3.0,
@@ -23,17 +23,15 @@
                 "min": 0.0
               },
               "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
+              "type": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:emerald"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:killed_by_player"
+      }
     },
     {
       "name": "paper",
@@ -41,9 +39,9 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "min": 0.0,
                 "max": 3.0,
@@ -57,7 +55,7 @@
                 "min": 0.0
               },
               "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
+              "type": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:paper"
@@ -73,21 +71,24 @@
           "name": "enchantwithmob:enchanters_bottle"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        },
-        {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.035,
-            "per_level_above_first": 0.01
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:killed_by_player"
           },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.05
-        }
-      ]
+          {
+            "type": "minecraft:random_chance_with_enchanted_bonus",
+            "enchanted_chance": {
+              "type": "minecraft:linear",
+              "base": 0.035,
+              "per_level_above_first": 0.01
+            },
+            "enchantment": "minecraft:looting",
+            "unenchanted_chance": 0.05
+          }
+        ]
+      }
     },
     {
       "name": "enchant_book",
@@ -98,32 +99,33 @@
           "name": "enchantwithmob:mob_enchant_book"
         }
       ],
-      "functions": [
-        {
-          "function": "enchantwithmob:mob_enchant_with_levels",
-          "levels": {
-            "type": "minecraft:uniform",
-            "min": 10.0,
-            "max": 30.0
-          },
-          "options": "#enchantwithmob:random_loot"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
+      "modifier": {
+        "type": "enchantwithmob:mob_enchant_with_levels",
+        "levels": {
+          "type": "minecraft:uniform",
+          "max": 50,
+          "min": 30
         },
-        {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.035,
-            "per_level_above_first": 0.01
+        "options": "#enchantwithmob:random_loot"
+      },
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:killed_by_player"
           },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.05
-        }
-      ]
+          {
+            "type": "minecraft:random_chance_with_enchanted_bonus",
+            "enchanted_chance": {
+              "type": "minecraft:linear",
+              "base": 0.035,
+              "per_level_above_first": 0.01
+            },
+            "enchantment": "minecraft:looting",
+            "unenchanted_chance": 0.05
+          }
+        ]
+      }
     },
     {
       "name": "enchanters_book",
@@ -134,32 +136,33 @@
           "name": "enchantwithmob:enchanters_book"
         }
       ],
-      "functions": [
-        {
-          "function": "enchantwithmob:mob_enchant_with_levels",
-          "levels": {
-            "type": "minecraft:uniform",
-            "max": 30.0,
-            "min": 10.0
-          },
-          "options": "#enchantwithmob:random_loot"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
+      "modifier": {
+        "type": "enchantwithmob:mob_enchant_with_levels",
+        "levels": {
+          "type": "minecraft:uniform",
+          "max": 30.0,
+          "min": 10.0
         },
-        {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.035,
-            "per_level_above_first": 0.01
+        "options": "#enchantwithmob:random_loot"
+      },
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:killed_by_player"
           },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.05
-        }
-      ]
+          {
+            "type": "minecraft:random_chance_with_enchanted_bonus",
+            "enchanted_chance": {
+              "type": "minecraft:linear",
+              "base": 0.035,
+              "per_level_above_first": 0.01
+            },
+            "enchantment": "minecraft:looting",
+            "unenchanted_chance": 0.05
+          }
+        ]
+      }
     }
   ]
 }

@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.CombatRules;
@@ -335,7 +336,7 @@ public class CommonEventHandler {
                         event.setCanceled(true);
 
                         if (!player.getInventory().add(stack1)) {
-                            player.drop(stack1, false);
+                            player.drop(stack1, false, Prediction.PREDICTED);
                         }
 
                     }

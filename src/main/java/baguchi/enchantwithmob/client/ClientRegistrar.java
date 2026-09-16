@@ -17,15 +17,11 @@ import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModEntities;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.reflect.TypeToken;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.pipeline.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BindGroupLayouts;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -43,37 +39,29 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 
 import java.util.Optional;
 
-import static net.minecraft.client.renderer.RenderPipelines.GLOBALS_SNIPPET;
-
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientRegistrar {
 	public static final RenderPipeline MOB_ENCHANT =
-			RenderPipeline.builder(GLOBALS_SNIPPET)
-					.withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
-					.withBindGroupLayout(BindGroupLayouts.FOG)
+            RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
 					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
 					.withBindGroupLayout(BindGroupLayouts.SAMPLER0).withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false))
 					.withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE)).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 	public static final RenderPipeline MOB_ENCHANT_BEAM =
-			RenderPipeline.builder(GLOBALS_SNIPPET)
-					.withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
-					.withBindGroupLayout(BindGroupLayouts.FOG)
-					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_no_cull"))
+            RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+                    .withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_beam"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
 					.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
 					.withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
 					.withCull(false)
 					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-					.withDepthStencilState(DepthStencilState.DEFAULT)
+                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
 					.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 	public static final RenderPipeline MOB_ENCHANT_EYE =
-			RenderPipeline.builder(GLOBALS_SNIPPET)
-					.withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
-					.withBindGroupLayout(BindGroupLayouts.FOG)
+            RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET, RenderPipelines.EYES_SNIPPET)
 					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_eye"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)

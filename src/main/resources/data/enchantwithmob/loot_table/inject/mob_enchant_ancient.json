@@ -10,17 +10,15 @@
         {
           "type": "minecraft:item",
           "weight": 1,
-          "functions": [
-            {
-              "function": "enchantwithmob:mob_enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 30.0,
-                "min": 10.0
-              },
-              "options": "#enchantwithmob:random_loot"
-            }
-          ],
+          "modifier": {
+            "type": "enchantwithmob:mob_enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "max": 30.0,
+              "min": 10.0
+            },
+            "options": "#enchantwithmob:random_loot"
+          },
           "name": "enchantwithmob:mob_enchant_book"
         }
       ]

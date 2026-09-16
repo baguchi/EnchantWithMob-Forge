@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchantwithmob:enchanters_bottle"
+        "recipes": "enchantwithmob:enchanters_bottle"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
