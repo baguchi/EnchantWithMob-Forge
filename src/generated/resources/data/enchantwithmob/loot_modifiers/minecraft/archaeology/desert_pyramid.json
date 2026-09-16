@@ -1,0 +1,17 @@
+{
+  "type": "bagus_lib:one_in_loot",
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:archaeology/desert_pyramid"
+      },
+      {
+        "type": "minecraft:random_chance",
+        "chance": 0.15
+      }
+    ]
+  },
+  "loot_table": "enchantwithmob:inject/archaeology_enchant_normal"
+}
