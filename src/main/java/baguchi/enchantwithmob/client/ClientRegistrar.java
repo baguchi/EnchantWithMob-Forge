@@ -68,7 +68,7 @@ public class ClientRegistrar {
 					.withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
 					.withCull(false)
 					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-					.withDepthStencilState(DepthStencilState.DEFAULT)
+					.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
 					.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 	public static final RenderPipeline MOB_ENCHANT_EYE =
 			RenderPipeline.builder(GLOBALS_SNIPPET)
