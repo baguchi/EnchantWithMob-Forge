@@ -22,7 +22,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,8 +44,8 @@ public class EnchantWithMob {
 		// Register the setup method for modloading
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::setupPackets);
-		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantEyes.MOB_ENCHANT_EYE_REGISTRY_KEY, MobEnchantEye.DIRECT_CODEC, MobEnchantEye.DIRECT_CODEC));
-		modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantType.DIRECT_CODEC, MobEnchantType.DIRECT_CODEC));
+		modEventBus.addListener(NewDatapackRegistryEvent.class, event -> event.worldRegistry(MobEnchantEyes.MOB_ENCHANT_EYE_REGISTRY_KEY, MobEnchantEye.DIRECT_CODEC, MobEnchantEye.DIRECT_CODEC));
+		modEventBus.addListener(NewDatapackRegistryEvent.class, event -> event.worldRegistry(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY, MobEnchantType.DIRECT_CODEC, MobEnchantType.DIRECT_CODEC));
 
 
         ModEntities.ENTITIES_REGISTRY.register(modEventBus);
