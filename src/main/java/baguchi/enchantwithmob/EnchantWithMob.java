@@ -60,7 +60,7 @@ public class EnchantWithMob {
 		NeoForge.EVENT_BUS.addListener(this::registerCommands);
 
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, EnchantConfig.COMMON_SPEC);
+		modContainer.registerConfig(ModConfig.Type.LOCAL, EnchantConfig.COMMON_SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, EnchantConfig.CLIENT_SPEC);
 	}
 
