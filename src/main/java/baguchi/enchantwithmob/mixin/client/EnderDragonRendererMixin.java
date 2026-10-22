@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.mixin.client;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +27,7 @@ public class EnderDragonRendererMixin {
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(EnderDragon p_114208_, float p_114209_, float p_114210_, PoseStack p_114211_, MultiBufferSource p_114212_, int p_114213_, CallbackInfo callbackInfo) {
-        if (p_114208_ instanceof IEnchantCap cap) {
+        if (!EnchantConfig.CLIENT.disableAuraRender.getAsBoolean() && p_114208_ instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
                 p_114211_.pushPose();
                 float f = (float) p_114208_.getLatencyPos(7, p_114210_)[0];

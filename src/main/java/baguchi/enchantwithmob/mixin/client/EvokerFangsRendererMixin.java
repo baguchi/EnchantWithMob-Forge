@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.mixin.client;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantVisual;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -27,7 +28,7 @@ public class EvokerFangsRendererMixin {
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(EvokerFangs p_114528_, float p_114529_, float p_114530_, PoseStack p_114531_, MultiBufferSource p_114532_, int p_114533_, CallbackInfo callbackInfo) {
-		if (p_114528_ instanceof IEnchantVisual enchantVisual && enchantVisual.hasEnchantVisual()) {
+		if (!EnchantConfig.CLIENT.disableAuraRender.getAsBoolean() && p_114528_ instanceof IEnchantVisual enchantVisual && enchantVisual.hasEnchantVisual()) {
 			float f = p_114528_.getAnimationProgress(p_114530_);
 			if (f != 0.0F) {
 				float f1 = 2.0F;

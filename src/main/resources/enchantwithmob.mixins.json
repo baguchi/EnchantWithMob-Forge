@@ -10,7 +10,7 @@
     "WoodlandMansionPieceMixin"
   ],
   "client": [
-    "ArrowRendererMixin",
+    "client.ArrowRendererMixin",
     "client.EnderDragonRendererMixin",
     "client.EntityRendererMixin",
     "client.EvokerFangsRendererMixin",

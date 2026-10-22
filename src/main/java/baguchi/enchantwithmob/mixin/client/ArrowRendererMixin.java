@@ -1,5 +1,6 @@
-package baguchi.enchantwithmob.mixin;
+package baguchi.enchantwithmob.mixin.client;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +24,7 @@ public class ArrowRendererMixin<T extends AbstractArrow> {
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(T p_113839_, float p_113840_, float p_113841_, PoseStack p_113842_, MultiBufferSource p_113843_, int p_113844_, CallbackInfo callbackInfo) {
-		if (p_113839_.getOwner() != null) {
+		if (!EnchantConfig.CLIENT.disableAuraRender.getAsBoolean() && p_113839_.getOwner() != null) {
             if (p_113839_.getOwner() instanceof IEnchantCap cap) {
                 if (cap.getEnchantCap().hasEnchant()) {
                     p_113842_.pushPose();

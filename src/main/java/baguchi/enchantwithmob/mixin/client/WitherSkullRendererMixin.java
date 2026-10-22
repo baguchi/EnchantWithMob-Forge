@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.mixin.client;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.api.IEnchantCap;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -27,7 +28,7 @@ public class WitherSkullRendererMixin {
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(WitherSkull p_116484_, float p_116485_, float p_116486_, PoseStack p_116487_, MultiBufferSource p_116488_, int p_116489_, CallbackInfo callbackInfo) {
-		if (p_116484_ instanceof IEnchantCap cap) {
+		if (!EnchantConfig.CLIENT.disableAuraRender.getAsBoolean() && p_116484_ instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
                 if (cap.getEnchantCap().hasEnchant()) {
                     p_116487_.pushPose();
