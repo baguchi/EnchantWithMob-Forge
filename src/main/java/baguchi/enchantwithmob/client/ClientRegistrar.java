@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.client;
 
+import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.MobEnchantEye;
 import baguchi.enchantwithmob.attachment.MobEnchantAttachment;
@@ -108,12 +109,10 @@ public class ClientRegistrar {
 		event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>(LivingEntityRenderer.class) {
 		}, (entity, state) -> {
 			MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
-
-
-			state.setRenderData(EnchantLayer.ENCHANTED, attachment.hasEnchant());
-			state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, attachment.getMobEnchantType(entity).value());
-				//reset
-				state.setRenderData(EnchantedWindLayer.WIND, false);
+			if (!EnchantConfig.CLIENT.disableAuraRender.getAsBoolean()) {
+				state.setRenderData(EnchantLayer.ENCHANTED, attachment.hasEnchant());
+				state.setRenderData(EnchantLayer.MOB_ENCHANT_TYPE, attachment.getMobEnchantType(entity).value());
+			}
 			if (attachment.getEnchantOwner().isPresent()) {
 				LivingEntity ownerEntity = EntityReference.getLivingEntity(attachment.getEnchantOwner().get(), Minecraft.getInstance().player.level());
 					if (ownerEntity != null) {
