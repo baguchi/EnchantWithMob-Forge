@@ -282,7 +282,7 @@ public class MobEnchantCapability {
 		nbt.put("StoredMobEnchants", listnbt);
 		nbt.putBoolean("FromOwner", fromOwner);
 
-		nbt.putString("EnchantType", mobEnchantTypeKey.location().toString());
+		nbt.putString("EnchantType", mobEnchantTypeKey.location().toString().toLowerCase());
 
 		return nbt;
 	}
@@ -305,7 +305,7 @@ public class MobEnchantCapability {
 		fromOwner = nbt.getBoolean("FromOwner");
 		if (nbt.contains("EnchantType")) {
 
-			Optional<Holder.Reference<MobEnchantType>> optional = registryAccess.registryOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getHolder(ResourceLocation.parse(nbt.getString("EnchantType")));
+			Optional<Holder.Reference<MobEnchantType>> optional = registryAccess.registryOrThrow(MobEnchantTypes.MOB_ENCHANT_TYPE_REGISTRY_KEY).getHolder(ResourceLocation.parse(nbt.getString("EnchantType").toLowerCase()));
 			optional.ifPresent(mobEnchantTypeReference -> {
 				mobEnchantTypeKey = mobEnchantTypeReference.key();
 			});
