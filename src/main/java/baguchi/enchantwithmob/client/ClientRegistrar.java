@@ -118,10 +118,9 @@ public class ClientRegistrar {
 			if (attachment.getEnchantOwner().isPresent()) {
 				LivingEntity ownerEntity = EntityReference.getLivingEntity(attachment.getEnchantOwner().get(), Minecraft.getInstance().player.level());
 					if (ownerEntity != null) {
-						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.getEyePosition().add(0, -0.1F, 0));
+						state.setRenderData(ClientEventHandler.ENCHANTER_POS, ownerEntity.getEyePosition(state.partialTick).add(0, -0.1F, 0));
+						state.setRenderData(ClientEventHandler.ENCHANTED_MOB_POS, entity.getEyePosition(state.partialTick).add(-0.2F));
 					}
-				} else {
-					state.setRenderData(ClientEventHandler.ENCHANTER_POS, null);
 				}
 
 				MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {

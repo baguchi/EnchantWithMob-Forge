@@ -5,6 +5,7 @@ import baguchi.enchantwithmob.api.MobEnchantType;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -26,13 +27,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
 
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
 	public static final ContextKey<Vec3> ENCHANTER_POS = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "enchanter_pos"));
+	public static final ContextKey<Vec3> ENCHANTED_MOB_POS = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "enchanted_mob_pos"));
 
 	@SubscribeEvent
 	public static void renderEnchantBeam(RenderLivingEvent.Post<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> event) {
@@ -44,58 +44,74 @@ public class ClientEventHandler {
 
 		if (event.getRenderState().getRenderDataOrDefault(EnchantLayer.ENCHANTED, false)) {
 			if (vec3 != null && mobEnchantType != null) {
-				renderBeam(mobEnchantType, event.getRenderState(), vec3, particalTick, matrixStack, bufferBuilder, event.getRenderer());
+				renderBeam(mobEnchantType, event.getRenderState(), vec3, matrixStack, bufferBuilder, event.getRenderer());
 			}
 		}
 	}
 
-	private static void renderBeam(@NotNull MobEnchantType mobEnchantType, LivingEntityRenderState livingEntityRenderState, Vec3 vec3, float p_229118_2_, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LivingEntityRenderer<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer) {
+	private static void renderBeam(@NotNull MobEnchantType mobEnchantType, LivingEntityRenderState livingEntityRenderState, Vec3 vec3, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LivingEntityRenderer<LivingEntity, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> renderer) {
 		poseStack.pushPose();
-		Vec3 vector3d = vec3;
-		double d0 = livingEntityRenderState.bodyRot * ((float) Math.PI / 180F) + (Math.PI / 2D);
-		Vector3d vector3d1 = new Vector3d(0.0D, (double) livingEntityRenderState.eyeHeight / 2, 0.0F);
-		double d1 = Math.cos(d0) * vector3d1.z + Math.sin(d0) * vector3d1.x;
-		double d2 = Math.sin(d0) * vector3d1.z - Math.cos(d0) * vector3d1.x;
-		double d3 = livingEntityRenderState.x + d1;
-		double d4 = livingEntityRenderState.y + vector3d1.y;
-		double d5 = livingEntityRenderState.z + d2;
-		poseStack.translate(d1, vector3d1.y, d2);
-		float dx = (float) (vector3d.x - d3);
-		float dy = (float) (vector3d.y - d4);
-		float dz = (float) (vector3d.z - d5);
-		float offsetFactor = Mth.invSqrt(dx * dx + dz * dz) * 0.05F / 2.0F;
-		float dxOff = dz * offsetFactor;
-		float dzOff = dx * offsetFactor;
+		float texVOff = 0F;
+		Vec3 vec32 = livingEntityRenderState.getRenderData(ENCHANTED_MOB_POS);
+		poseStack.translate(0.0F, livingEntityRenderState.eyeHeight - 0.4F, 0.0F);
+		renderBeam(mobEnchantType, livingEntityRenderState, poseStack, submitNodeCollector, vec3.subtract(vec32), 0, texVOff);
 
-		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(mobEnchantType.texture(), livingEntityRenderState.ageInTicks % 1.0F, livingEntityRenderState.ageInTicks * 0.01F % 1.0F), (pose, vertexConsumer) -> {
-			int lightCoords = livingEntityRenderState.lightCoords;
-
-
-			for (int k = 0; k <= 24; k++) {
-				addVertexPair(vertexConsumer, pose.pose(), pose, lightCoords, dx, dy, dz, k, dxOff, dzOff);
-			}
-
-			for (int k = 24; k >= 0; k--) {
-				addVertexPair(vertexConsumer, pose.pose(), pose, lightCoords, dx, dy, dz, k, dxOff, dzOff);
-			}
-		});
 		poseStack.popPose();
 	}
 
+	private static void renderBeam(@NotNull MobEnchantType mobEnchantType, LivingEntityRenderState livingEntityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, Vec3 beamVector, float timeInTicks, float texVOff) {
+		float length = (float) (beamVector.length() - 0.025F);
+		beamVector = beamVector.normalize();
+		float xRot = (float) Math.acos(beamVector.y);
+		float yRot = ((float) Math.PI / 2F) - (float) Math.atan2(beamVector.z, beamVector.x);
+		poseStack.rotateDegrees(Axis.YP, yRot * (180F / (float) Math.PI));
+		poseStack.rotateDegrees(Axis.XP, xRot * (180F / (float) Math.PI));
+		float rot = timeInTicks * 0.05F * -1.5F;
+		float colorScale = 1F * 1;
+		int red = 255;
+		int green = 255;
+		int blue = 255;
+		float rr1 = 0.1F;
+		float rr2 = 0.15F;
+		float wnx = Mth.cos(rot + 2.3561945F) * 0.15F;
+		float wnz = Mth.sin(rot + 2.3561945F) * 0.15F;
+		float enx = Mth.cos(rot + ((float) Math.PI / 4F)) * 0.15F;
+		float enz = Mth.sin(rot + ((float) Math.PI / 4F)) * 0.15F;
+		float wsx = Mth.cos(rot + 3.926991F) * 0.15F;
+		float wsz = Mth.sin(rot + 3.926991F) * 0.15F;
+		float esx = Mth.cos(rot + 5.4977875F) * 0.15F;
+		float esz = Mth.sin(rot + 5.4977875F) * 0.15F;
+		float wx = Mth.cos(rot + (float) Math.PI) * 0.1F;
+		float wz = Mth.sin(rot + (float) Math.PI) * 0.1F;
+		float ex = Mth.cos(rot + 0.0F) * 0.1F;
+		float ez = Mth.sin(rot + 0.0F) * 0.1F;
+		float nx = Mth.cos(rot + ((float) Math.PI / 2F)) * 0.1F;
+		float nz = Mth.sin(rot + ((float) Math.PI / 2F)) * 0.1F;
+		float sx = Mth.cos(rot + ((float) Math.PI * 1.5F)) * 0.1F;
+		float sz = Mth.sin(rot + ((float) Math.PI * 1.5F)) * 0.1F;
+		float minU = 0.0F;
+		float maxU = 0.4999F;
+		float minV = -1.0F + texVOff;
+		float maxV = minV + length * 2.5F;
+		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(mobEnchantType.texture(), Mth.cos(livingEntityRenderState.ageInTicks % 1.0F * 0.02F) * 3.0F, livingEntityRenderState.ageInTicks * 0.01F % 1.0F), (pose, buffer) -> {
+			vertex(buffer, pose, wx, length, wz, red, green, blue, 0.4999F, maxV);
+			vertex(buffer, pose, wx, 0.0F, wz, red, green, blue, 0.4999F, minV);
+			vertex(buffer, pose, ex, 0.0F, ez, red, green, blue, 0.0F, minV);
+			vertex(buffer, pose, ex, length, ez, red, green, blue, 0.0F, maxV);
+			vertex(buffer, pose, nx, length, nz, red, green, blue, 0.4999F, maxV);
+			vertex(buffer, pose, nx, 0.0F, nz, red, green, blue, 0.4999F, minV);
+			vertex(buffer, pose, sx, 0.0F, sz, red, green, blue, 0.0F, minV);
+			vertex(buffer, pose, sx, length, sz, red, green, blue, 0.0F, maxV);
+			float vBase = Mth.floor(timeInTicks) % 2 == 0 ? 0.5F : 0.0F;
+			vertex(buffer, pose, wnx, length, wnz, red, green, blue, 0.5F, vBase + 0.5F);
+			vertex(buffer, pose, enx, length, enz, red, green, blue, 1.0F, vBase + 0.5F);
+			vertex(buffer, pose, esx, length, esz, red, green, blue, 1.0F, vBase);
+			vertex(buffer, pose, wsx, length, wsz, red, green, blue, 0.5F, vBase);
+		});
+	}
 
-	public static void addVertexPair(VertexConsumer vertexConsumer, Matrix4f matrix4f, PoseStack.Pose matrix3f, int light, float x, float y, float z, int i, float dxOff, float dzOff) {
-		float progress = (float) i / (float) 24.0F;
-		float f4 = x * progress;
-		float f5 = y * progress;
-		float f6 = z * progress;
-		float fudge = 0.05F;
-		vertexConsumer.addVertex(matrix4f, f4 - dxOff, f5 - fudge, f6 - dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-		vertexConsumer.addVertex(matrix4f, f4 + dxOff, y - fudge, f6 - dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-
-		vertexConsumer.addVertex(matrix4f, f4 + dxOff, y + fudge, f6 + dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-		vertexConsumer.addVertex(matrix4f, f4 - dxOff, y + fudge, f6 + dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-
-
+	private static void vertex(VertexConsumer builder, PoseStack.Pose pose, float x, float y, float z, int red, int green, int blue, float u, float v) {
+		builder.addVertex(pose, x, y, z).setColor(red, green, blue, 255).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(15728880).setNormal(pose, 0.0F, 1.0F, 0.0F);
 	}
 
 	protected static int getSkyLightLevel(Entity p_239381_1_, BlockPos p_239381_2_) {
