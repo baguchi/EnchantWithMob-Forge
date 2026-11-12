@@ -123,7 +123,7 @@ public class ClientRegistrar {
 					}
 				}
 
-				MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.getKey(), () -> {
+			MobEnchantUtils.executeIfPresent(entity, MobEnchants.WIND.key(), () -> {
 					state.setRenderData(EnchantedWindLayer.WIND, true);
 
 				});

@@ -28,8 +28,8 @@ public class FireAspectMobEnchant extends MobEnchant {
             LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
             if (attacker.level() instanceof ServerLevel serverLevel) {
                 MobEnchantAttachment attachment = attacker.getData(ModAttachments.MOB_ENCHANTS);
-                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.FIRE_ASPECT.getKey())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.FIRE_ASPECT.getKey());
+                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.FIRE_ASPECT.key())) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.FIRE_ASPECT.key());
 
                     livingEntity.igniteForSeconds(2 + 2 * (i - 1));
                 }

@@ -110,7 +110,7 @@ public class MobEnchantingCommand {
             if (entity instanceof LivingEntity) {
                 MobEnchantAttachment attachment = entity.getData(ModAttachments.MOB_ENCHANTS);
 
-                attachment.setEnchantType((LivingEntity) entity, holder.getKey());
+                attachment.setEnchantType((LivingEntity) entity, holder.key());
 
 
                 commandStack.sendSuccess(() -> Component.translatable("commands.enchantwithmob.mob_enchant_type.set", entity.getDisplayName()), true);

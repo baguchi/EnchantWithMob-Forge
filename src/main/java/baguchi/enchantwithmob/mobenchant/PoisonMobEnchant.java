@@ -56,8 +56,8 @@ public class PoisonMobEnchant extends MobEnchant {
             if (attacker.level() instanceof ServerLevel serverLevel) {
                 MobEnchantAttachment attachment = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
-                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.POISON.getKey())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.POISON.getKey());
+                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.POISON.key())) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.POISON.key());
 
                     if (attacker.getRandom().nextFloat() < i * 0.125F) {
                         livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), attacker);

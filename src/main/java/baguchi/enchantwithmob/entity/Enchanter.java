@@ -246,7 +246,7 @@ public class Enchanter extends SpellcasterIllager {
         if (flag) {
             MobEnchantAttachment attachment = this.getData(ModAttachments.MOB_ENCHANTS);
 
-            MobEnchantUtils.addEnchantmentToEntity(this, attachment, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.getKey()), (int) (1 + raid.getEnchantOdds() * 3)));
+            MobEnchantUtils.addEnchantmentToEntity(this, attachment, new MobEnchantmentData(this.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).getOrThrow(MobEnchants.PROTECTION.key()), (int) (1 + raid.getEnchantOdds() * 3)));
 
         }
     }

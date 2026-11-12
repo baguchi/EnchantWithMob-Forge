@@ -85,7 +85,7 @@ public class BouncyMobEnchant extends MobEnchant {
     @SubscribeEvent
     public static void knockbackEvent(LivingKnockBackEvent event) {
         LivingEntity entity = event.getEntity();
-        MobEnchantUtils.executeIfPresent(entity, MobEnchants.BOUNCE.getKey(), () -> {
+        MobEnchantUtils.executeIfPresent(entity, MobEnchants.BOUNCE.key(), () -> {
             event.setCanceled(true);
             float horizontalHitAngleScale = 1.6F;
             float verticalHitAngleScale = 0.5F;

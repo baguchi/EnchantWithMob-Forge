@@ -46,7 +46,7 @@ public class HugeMobEnchant extends MobEnchant {
     }
 
     public static float getDamageIncrease(float damage, MobEnchantAttachment cap) {
-        int level = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), MobEnchants.HUGE.getKey());
+        int level = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), MobEnchants.HUGE.key());
         if (level > 0) {
             damage *= 1.0F + level * 0.15F;
         }

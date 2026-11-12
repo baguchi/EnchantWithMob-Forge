@@ -35,7 +35,7 @@ public class DeflectMobEnchant extends MobEnchant {
 
         if (event.getRayTraceResult() instanceof EntityHitResult) {
             EntityHitResult entityHitResult = (EntityHitResult) event.getRayTraceResult();
-            MobEnchantUtils.executeIfPresent(entityHitResult.getEntity(), MobEnchants.DEFLECT.getKey(), () -> {
+            MobEnchantUtils.executeIfPresent(entityHitResult.getEntity(), MobEnchants.DEFLECT.key(), () -> {
                 event.setCanceled(true);
                 projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityHitResult.getEntity(), EntityReference.of(projectile.getOwner()), false, 1.0F);
             });

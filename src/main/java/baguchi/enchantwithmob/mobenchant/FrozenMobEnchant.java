@@ -29,8 +29,8 @@ public class FrozenMobEnchant extends MobEnchant {
             if (attacker.level() instanceof ServerLevel serverLevel) {
                 MobEnchantAttachment attachment = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
-                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.FROZEN.getKey())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.FROZEN.getKey());
+                if (attachment.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachment.getMobEnchants(), MobEnchants.FROZEN.key())) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.FROZEN.key());
 
                     if (livingEntity.getTicksFrozen() < livingEntity.getTicksRequiredToFreeze() && !livingEntity.getType().builtInRegistryHolder().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
                         livingEntity.setTicksFrozen(livingEntity.getTicksFrozen() + 140 + 80 * i);

@@ -23,31 +23,31 @@ public class CustomTagProvider {
         @Override
         protected void addTags(HolderLookup.Provider p_256380_) {
 
-            this.tag(ModTags.MobEnchantTags.ENCHANTER_ENCHANT).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey()).add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey());
-            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey())
-                    .add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey()).add(MobEnchants.SPEEDY.getKey())
-                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey()).add(MobEnchants.BOUNCE.getKey())
-                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
-            this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).add(MobEnchants.TOUGH.getKey()).add(MobEnchants.HEALTH_BOOST.getKey()).add(MobEnchants.PROTECTION.getKey())
-                    .add(MobEnchants.THORN.getKey()).add(MobEnchants.STRONG.getKey()).add(MobEnchants.SPEEDY.getKey())
-                    .add(MobEnchants.DEFLECT.getKey()).add(MobEnchants.POISON_CLOUD.getKey()).add(MobEnchants.POISON.getKey())
-                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
+            this.tag(ModTags.MobEnchantTags.ENCHANTER_ENCHANT).add(MobEnchants.TOUGH.key()).add(MobEnchants.HEALTH_BOOST.key()).add(MobEnchants.PROTECTION.key()).add(MobEnchants.THORN.key()).add(MobEnchants.STRONG.key());
+            this.tag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.TOUGH.key()).add(MobEnchants.HEALTH_BOOST.key()).add(MobEnchants.PROTECTION.key())
+                    .add(MobEnchants.THORN.key()).add(MobEnchants.STRONG.key()).add(MobEnchants.SPEEDY.key())
+                    .add(MobEnchants.DEFLECT.key()).add(MobEnchants.POISON_CLOUD.key()).add(MobEnchants.POISON.key()).add(MobEnchants.BOUNCE.key())
+                    .add(MobEnchants.FROZEN.key()).add(MobEnchants.FIRE_ASPECT.key());
+            this.tag(ModTags.MobEnchantTags.RANDOM_LOOT).add(MobEnchants.TOUGH.key()).add(MobEnchants.HEALTH_BOOST.key()).add(MobEnchants.PROTECTION.key())
+                    .add(MobEnchants.THORN.key()).add(MobEnchants.STRONG.key()).add(MobEnchants.SPEEDY.key())
+                    .add(MobEnchants.DEFLECT.key()).add(MobEnchants.POISON_CLOUD.key()).add(MobEnchants.POISON.key())
+                    .add(MobEnchants.FROZEN.key()).add(MobEnchants.FIRE_ASPECT.key());
 
-            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND.getKey()).add(MobEnchants.SOUL_STEAL.getKey());
+            this.tag(ModTags.MobEnchantTags.TOOLTIP_ORDER).addTag(ModTags.MobEnchantTags.RANDOM_SPAWN).add(MobEnchants.WIND.key()).add(MobEnchants.SOUL_STEAL.key());
 
             this.tag(ModTags.MobEnchantTags.AFFECT_SELF_REFLECT)
-                    .add(MobEnchants.BOUNCE.getKey())
-                    .add(MobEnchants.THORN.getKey())
-                    .add(MobEnchants.DEFLECT.getKey());
+                    .add(MobEnchants.BOUNCE.key())
+                    .add(MobEnchants.THORN.key())
+                    .add(MobEnchants.DEFLECT.key());
 
 
             this.tag(ModTags.MobEnchantTags.AFFECT_SPEED)
-                    .add(MobEnchants.SPEEDY.getKey());
+                    .add(MobEnchants.SPEEDY.key());
 
             this.tag(ModTags.MobEnchantTags.POST_ATTACK)
-                    .add(MobEnchants.POISON.getKey())
-                    .add(MobEnchants.POISON_CLOUD.getKey())
-                    .add(MobEnchants.FROZEN.getKey()).add(MobEnchants.FIRE_ASPECT.getKey());
+                    .add(MobEnchants.POISON.key())
+                    .add(MobEnchants.POISON_CLOUD.key())
+                    .add(MobEnchants.FROZEN.key()).add(MobEnchants.FIRE_ASPECT.key());
 
         }
     }

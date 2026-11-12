@@ -39,7 +39,7 @@ public class SoulStealMobEnchant extends MobEnchant {
             MobEnchantAttachment attachmentAttacker = attacker.getData(ModAttachments.MOB_ENCHANTS);
 
             if (attachmentAttacker.hasEnchant()) {
-                int enchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.SOUL_STEAL.getKey());
+                int enchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.SOUL_STEAL.key());
                 if (enchantLevel > 0) {
                     attacker.heal(Mth.clamp(enchantLevel, 0, entity.getMaxHealth()));
                     if (!entity.level().isClientSide()) {

@@ -169,7 +169,7 @@ public class CommonEventHandler {
 
                         if (event.getSpawnType() == EntitySpawnReason.TRIAL_SPAWNER) {
                             if (world.getRandom().nextFloat() < 0.1F + difficultScaleOnPercent * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, attachment, new MobEnchantmentData(world.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(MobEnchants.WIND.getKey()).get(), 1));
+                                MobEnchantUtils.addEnchantmentToEntity(livingEntity, attachment, new MobEnchantmentData(world.registryAccess().lookupOrThrow(MobEnchants.MOB_ENCHANT_REGISTRY).get(MobEnchants.WIND.key()).get(), 1));
                             }
                         }
 
@@ -237,7 +237,7 @@ public class CommonEventHandler {
         LivingEntity livingEntity = event.getEntity();
         MobEnchantAttachment attachment = livingEntity.getData(ModAttachments.MOB_ENCHANTS);
 
-        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.THORN.getKey());
+        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachment.getMobEnchants(), MobEnchants.THORN.key());
 
         if (event.getSource().getDirectEntity() instanceof LivingEntity && !event.getSource().is(DamageTypeTags.IS_PROJECTILE) && !event.getSource().is(DamageTypes.THORNS) && livingEntity.getRandom().nextFloat() < i * 0.1F) {
             LivingEntity attacker = (LivingEntity) event.getSource().getDirectEntity();

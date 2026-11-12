@@ -28,7 +28,7 @@ public class WindMobEnchant extends MobEnchant {
 
     @SubscribeEvent
     public static void onFall(LivingFallEvent event) {
-        MobEnchantUtils.executeIfPresent(event.getEntity(), MobEnchants.WIND.getKey(), () -> {
+        MobEnchantUtils.executeIfPresent(event.getEntity(), MobEnchants.WIND.key(), () -> {
 
             event.setDistance(event.getDistance() - 4F);
         });

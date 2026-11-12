@@ -60,9 +60,9 @@ public class PoisonCloudMobEnchant extends MobEnchant {
         if (owner != null) {
             MobEnchantAttachment attachmentAttacker = owner.getData(ModAttachments.MOB_ENCHANTS);
 
-            int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.getKey());
+            int i = MobEnchantUtils.getMobEnchantLevelFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.key());
 
-            if (attachmentAttacker.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.getKey())) {
+            if (attachmentAttacker.hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(attachmentAttacker.getMobEnchants(), MobEnchants.POISON_CLOUD.key())) {
                 //arrow is different
                 if (!(projectile instanceof AbstractArrow) || !projectile.onGround()) {
                     AreaEffectCloud areaeffectcloud = new AreaEffectCloud(owner.level(), event.getRayTraceResult().getLocation().x, event.getRayTraceResult().getLocation().y, event.getRayTraceResult().getLocation().z);
