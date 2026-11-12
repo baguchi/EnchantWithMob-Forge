@@ -17,6 +17,7 @@ import baguchi.enchantwithmob.registry.MobEnchants;
 import baguchi.enchantwithmob.registry.ModAttachments;
 import baguchi.enchantwithmob.registry.ModEntities;
 import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import com.google.common.reflect.Reflection;
 import com.google.common.reflect.TypeToken;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.renderpearl.api.pipeline.*;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityReference;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
@@ -43,30 +46,29 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientRegistrar {
-	public static final RenderPipeline MOB_ENCHANT =
-            RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
-					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant"))
-					.withVertexShader("core/glint").withFragmentShader("core/glint")
-					.withPrimitiveTopology(PrimitiveTopology.QUADS)
-					.withBindGroupLayout(BindGroupLayouts.SAMPLER0).withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false))
-					.withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE)).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
 	public static final RenderPipeline MOB_ENCHANT_BEAM =
-            RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
-                    .withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_beam"))
+			RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_beam"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
 					.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-					.withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
-					.withCull(false)
-					.withShaderDefine("APPLY_TEXTURE_MATRIX")
-                    .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-					.withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
-	public static final RenderPipeline MOB_ENCHANT_EYE =
-            RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET, RenderPipelines.EYES_SNIPPET)
-					.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/mob_enchant_eye"))
+					.withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+					.withCull(false).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false)).build();
+	public static final OitPipelineSet OIT_MOB_ENCHANT_BEAM =
+			OitPipelineSet.builder(EnchantWithMob.prefix("oit_mob_enchant_beam"), RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+							.withLocation(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "pipeline/oit_mob_enchant_beam"))
 					.withVertexShader("core/glint").withFragmentShader("core/glint")
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
-					.withBindGroupLayout(BindGroupLayouts.SAMPLER0).withCull(false).withDepthStencilState(new DepthStencilState(CompareOp.EQUAL, false)).withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT)).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).build();
+							.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+							.withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+							.withCull(false).withVertexBinding(0, DefaultVertexFormat.POSITION_TEX).withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false)))
+					.build();
+
+
+	@SubscribeEvent
+	public static void registerSetup(FMLClientSetupEvent event) {
+		Reflection.initialize(EnchantRenderTypes.class);
+	}
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
@@ -139,8 +141,7 @@ public class ClientRegistrar {
 
 	@SubscribeEvent
 	public static void registerPipelines(RegisterRenderPipelinesEvent event) {
-		event.registerPipeline(MOB_ENCHANT);
 		event.registerPipeline(MOB_ENCHANT_BEAM);
-		event.registerPipeline(MOB_ENCHANT_EYE);
+		event.registerOitPipelineSet(OIT_MOB_ENCHANT_BEAM);
 	}
 }

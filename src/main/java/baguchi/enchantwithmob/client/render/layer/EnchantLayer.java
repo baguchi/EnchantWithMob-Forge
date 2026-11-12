@@ -3,7 +3,7 @@ package baguchi.enchantwithmob.client.render.layer;
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
 import baguchi.enchantwithmob.api.MobEnchantType;
-import baguchi.enchantwithmob.client.ClientRegistrar;
+import baguchi.enchantwithmob.client.EnchantRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -11,9 +11,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.TextureTransform;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
@@ -38,30 +35,18 @@ public class EnchantLayer<T extends LivingEntityRenderState, M extends EntityMod
                 if (mobEnchantType != null) {
                     M entitymodel = this.getParentModel();
                     entitymodel.setupAnim(entitylivingbaseIn);
-                    submitNodeCollector.order(2).submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
+                    submitNodeCollector.order(2).submitModel(entitymodel, entitylivingbaseIn, poseStack, EnchantRenderTypes.MOB_ENCHANT.apply(mobEnchantType.texture()), i, OverlayTexture.NO_OVERLAY, -1,
                             null,
                             entitylivingbaseIn.outlineColor);
                 } else {
                     M entitymodel = this.getParentModel();
                     entitymodel.setupAnim(entitylivingbaseIn);
-                    submitNodeCollector.order(2).submitModel(entitymodel, entitylivingbaseIn, poseStack, enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
+                    submitNodeCollector.order(2).submitModel(entitymodel, entitylivingbaseIn, poseStack, EnchantRenderTypes.MOB_ENCHANT.apply(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), i, OverlayTexture.NO_OVERLAY, -1,
                             null,
                             entitylivingbaseIn.outlineColor);
                 }
             }
         }
-    }
-
-    public static RenderType enchantSwirl(Identifier resourceLocation) {
-        return RenderType.create("enchant_effect", RenderSetup.builder(ClientRegistrar.MOB_ENCHANT)
-                .withTexture("Sampler0", resourceLocation)
-                .setTextureTransform(TextureTransform.ENTITY_GLINT_TEXTURING).createRenderSetup());
-    }
-
-    public static RenderType enchantBeamSwirl(Identifier resourceLocation) {
-        return RenderType.create("enchant_beam_effect", RenderSetup.builder(ClientRegistrar.MOB_ENCHANT_BEAM)
-                .withTexture("Sampler0", resourceLocation)
-                .setTextureTransform(TextureTransform.ENTITY_GLINT_TEXTURING).createRenderSetup());
     }
 
 }

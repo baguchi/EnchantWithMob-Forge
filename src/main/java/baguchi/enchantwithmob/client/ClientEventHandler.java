@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.Entity;
@@ -29,12 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
-import static baguchi.enchantwithmob.client.render.layer.EnchantLayer.enchantBeamSwirl;
-
-/*
- * Base from Bumble Zone Lazer Layer
- * https://github.com/TelepathicGrunt/Bumblezone/blob/1.20-Arch/common/src/main/java/com/telepathicgrunt/the_bumblezone/client/rendering/cosmiccrystal/CosmicCrystalRenderer.java
- */
 
 @EventBusSubscriber(modid = EnchantWithMob.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
@@ -66,53 +60,41 @@ public class ClientEventHandler {
 		double d4 = livingEntityRenderState.y + vector3d1.y;
 		double d5 = livingEntityRenderState.z + d2;
 		poseStack.translate(d1, vector3d1.y, d2);
-		float f = (float) (vector3d.x - d3);
-		float f1 = (float) (vector3d.y - d4);
-		float f2 = (float) (vector3d.z - d5);
-		float f3 = 0.1F;
-		float f4 = Mth.fastInvCubeRoot(f * f + f2 * f2) * 0.1F / 2.0F;
-		float f5 = f2 * f4;
-		float f6 = f * f4;
-		int i = 15;
-		int j = 15;
-		int k = 15;
-		int l = 15;
+		float dx = (float) (vector3d.x - d3);
+		float dy = (float) (vector3d.y - d4);
+		float dz = (float) (vector3d.z - d5);
+		float offsetFactor = Mth.invSqrt(dx * dx + dz * dz) * 0.05F / 2.0F;
+		float dxOff = dz * offsetFactor;
+		float dzOff = dx * offsetFactor;
 
-		submitNodeCollector.submitCustomGeometry(poseStack, enchantBeamSwirl(mobEnchantType.texture()), (pose, vertexConsumer) -> {
-			renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.05F, 0.1F, f5, f6);
-			renderSide(vertexConsumer, pose.pose(), pose, f, f1, f2, i, j, k, l, 0.1F, 0.0F, f5, f6);
+		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(mobEnchantType.texture(), livingEntityRenderState.ageInTicks % 1.0F, livingEntityRenderState.ageInTicks * 0.01F % 1.0F), (pose, vertexConsumer) -> {
+			int lightCoords = livingEntityRenderState.lightCoords;
+
+
+			for (int k = 0; k <= 24; k++) {
+				addVertexPair(vertexConsumer, pose.pose(), pose, lightCoords, dx, dy, dz, k, dxOff, dzOff);
+			}
+
+			for (int k = 24; k >= 0; k--) {
+				addVertexPair(vertexConsumer, pose.pose(), pose, lightCoords, dx, dy, dz, k, dxOff, dzOff);
+			}
 		});
 		poseStack.popPose();
 	}
 
 
-	public static void renderSide(VertexConsumer p_229119_0_, Matrix4f p_229119_1_, PoseStack.Pose matrix3f, float p_229119_2_, float p_229119_3_, float p_229119_4_, int p_229119_5_, int p_229119_6_, int p_229119_7_, int p_229119_8_, float p_229119_9_, float p_229119_10_, float p_229119_11_, float p_229119_12_) {
-		int i = 24;
+	public static void addVertexPair(VertexConsumer vertexConsumer, Matrix4f matrix4f, PoseStack.Pose matrix3f, int light, float x, float y, float z, int i, float dxOff, float dzOff) {
+		float progress = (float) i / (float) 24.0F;
+		float f4 = x * progress;
+		float f5 = y * progress;
+		float f6 = z * progress;
+		float fudge = 0.05F;
+		vertexConsumer.addVertex(matrix4f, f4 - dxOff, f5 - fudge, f6 - dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
+		vertexConsumer.addVertex(matrix4f, f4 + dxOff, y - fudge, f6 - dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
 
-		for (int j = 0; j < 24; ++j) {
-			float f = (float) j / 23.0F;
-			int k = (int) Mth.lerp(f, (float) p_229119_5_, (float) p_229119_6_);
-			int l = (int) Mth.lerp(f, (float) p_229119_7_, (float) p_229119_8_);
-			int i1 = LightCoordsUtil.pack(k, l);
-			addVertexPair(p_229119_0_, p_229119_1_, matrix3f, i1, p_229119_2_, p_229119_3_, p_229119_4_, p_229119_9_, p_229119_10_, 24, j, false, p_229119_11_, p_229119_12_);
-			addVertexPair(p_229119_0_, p_229119_1_, matrix3f, i1, p_229119_2_, p_229119_3_, p_229119_4_, p_229119_9_, p_229119_10_, 24, j + 1, true, p_229119_11_, p_229119_12_);
-		}
+		vertexConsumer.addVertex(matrix4f, f4 + dxOff, y + fudge, f6 + dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
+		vertexConsumer.addVertex(matrix4f, f4 - dxOff, y + fudge, f6 + dzOff).setColor(236F / 255F, 150 / 255F, 254F / 255F, 0.8F).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
 
-	}
-
-	public static void addVertexPair(VertexConsumer p_229120_0_, Matrix4f p_229120_1_, PoseStack.Pose matrix3f, int p_229120_2_, float p_229120_3_, float p_229120_4_, float p_229120_5_, float p_229120_6_, float p_229120_7_, int p_229120_8_, int p_229120_9_, boolean p_229120_10_, float p_229120_11_, float p_229120_12_) {
-		float f3 = (float) p_229120_9_ / (float) p_229120_8_;
-		float f4 = p_229120_3_ * f3;
-		float f5 = p_229120_4_ * f3;
-		float f6 = p_229120_5_ * f3;
-		if (!p_229120_10_) {
-			p_229120_0_.addVertex(p_229120_1_, f4 + p_229120_11_, f5 + p_229120_6_ - p_229120_7_, f6 - p_229120_12_).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(p_229120_2_).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-		}
-
-		p_229120_0_.addVertex(p_229120_1_, f4 - p_229120_11_, f5 + p_229120_7_, f6 + p_229120_12_).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(p_229120_2_).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-		if (p_229120_10_) {
-			p_229120_0_.addVertex(p_229120_1_, f4 + p_229120_11_, f5 + p_229120_6_ - p_229120_7_, f6 - p_229120_12_).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(p_229120_2_).setNormal(matrix3f, 0.0F, 1.0F, 0.0F);
-		}
 
 	}
 

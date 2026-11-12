@@ -1,5 +1,6 @@
 package baguchi.enchantwithmob.mixin.client;
 
+import baguchi.enchantwithmob.client.EnchantRenderTypes;
 import baguchi.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -39,7 +40,7 @@ public class EnderDragonRendererMixin {
                 poseStack.translate(0.0F, -1.501F, 0.0F);
                 this.model.setupAnim(state);
                 if (state.deathTime <= 0) {
-                    submitNodeCollector.submitModel(this.model, state, poseStack, EnchantLayer.enchantSwirl(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                    submitNodeCollector.submitModel(this.model, state, poseStack, EnchantRenderTypes.MOB_ENCHANT.apply(ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 }
 
                 poseStack.popPose();

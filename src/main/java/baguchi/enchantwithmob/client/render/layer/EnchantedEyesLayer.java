@@ -2,29 +2,20 @@ package baguchi.enchantwithmob.client.render.layer;
 
 import baguchi.enchantwithmob.EnchantConfig;
 import baguchi.enchantwithmob.EnchantWithMob;
-import baguchi.enchantwithmob.client.ClientRegistrar;
+import baguchi.enchantwithmob.client.EnchantRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.context.ContextKey;
-
-import java.util.function.Function;
 
 
 public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends EntityModel<T>> extends RenderLayer<T, M> {
-
-    private static final Function<Identifier, RenderType> ENCHANTED_EYES = Util.memoize((p_173253_) -> {
-        return RenderType.create("enchanted_eye", RenderSetup.builder(ClientRegistrar.MOB_ENCHANT_EYE)
-                .withTexture("Sampler0", p_173253_).createRenderSetup());
-    });
 
 	public static final ContextKey<Identifier> ENCHANT_EYE = new ContextKey<>(Identifier.fromNamespaceAndPath(EnchantWithMob.MODID, "enchant_eye"));
 
@@ -45,6 +36,6 @@ public class EnchantedEyesLayer<T extends LivingEntityRenderState, M extends Ent
 	}
 
     public static RenderType enchantedEyes(Identifier p_110455_) {
-		return ENCHANTED_EYES.apply(p_110455_);
+        return EnchantRenderTypes.ENCHANTED_EYES.apply(p_110455_);
 	}
 }
