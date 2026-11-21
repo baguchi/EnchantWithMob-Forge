@@ -76,9 +76,10 @@ public class Enchanter extends SpellcasterIllager {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new Enchanter.CastingSpellGoal());
         this.goalSelector.addGoal(1, new AttackGoal(this));
-        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Creaking.class, 8.0F, 1.2, 1.35));
-        this.goalSelector.addGoal(3, new Enchanter.FollowEnchantedGoal(this));
-        this.goalSelector.addGoal(4, new Enchanter.SpellGoal());
+        this.goalSelector.addGoal(2, new Enchanter.FollowEnchantedGoal(this));
+        this.goalSelector.addGoal(3, new Enchanter.SpellGoal());
+
+        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, Creaking.class, 8.0F, 1.2, 1.35));
         this.goalSelector.addGoal(5, new AvoidTargetEntityGoal<>(this, LivingEntity.class, 8.0F, 0.8D, 1.05D));
 
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.8D));
@@ -285,6 +286,10 @@ public class Enchanter extends SpellcasterIllager {
         private final Predicate<LivingEntity> enchanted_fillter = (entity) -> {
             return !(entity instanceof Enchanter) && entity.getData(ModAttachments.MOB_ENCHANTS).hasEnchant();
         };
+
+        public SpellGoal() {
+            super();
+        }
 
         /**
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
